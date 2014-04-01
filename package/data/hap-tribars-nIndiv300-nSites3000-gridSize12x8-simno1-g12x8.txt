@@ -1,0 +1,37 @@
+Input parameter values:
+
+  scalar structure containing the fields:
+
+    numIter =  1200
+    numBurn =  600
+    numThin =  9
+    maxRate =  2.4771
+    minRate = -2.4771
+    absDiff =  2
+    effctS2 =  0.10000
+    coordS2 =  0.10000
+    log10S2 =  0.010000
+    ratesC =  1
+    ratesD =  1
+    s2locC =  1
+    s2locD =  1
+    negBiR =  5
+    negBiP =  0.50000
+
+Processing dataset ~/package/data/hap-tribars-nIndiv300-nSites3000-gridSize12x8
+MCMC output saved to ~/package/data/hap-tribars-nIndiv300-nSites3000-gridSize12x8-simno1-g12x8
+The triangular grid is 12x8
+Initial log prior:       -67.14489
+Initial log likelihood:  178428.26615
+Final log prior:         -14.63959
+Final log likelihood:    219252.12128
+Acceptance proportions:
+	(1787/2400) = 74.46% for type 1
+		(1200/1200) = 100.00% for subtype 1
+		(587/1200) = 48.92% for subtype 2
+	(2562/10390) = 24.66% for type 2
+	(126/1200) = 10.50% for type 3
+	(1093/10390) = 10.52% for type 4
+	(39/1200) = 3.25% for type 5
+		(13/592) = 2.20% for subtype 1
+		(26/608) = 4.28% for subtype 2

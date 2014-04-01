@@ -1,0 +1,37 @@
+Input parameter values:
+
+  scalar structure containing the fields:
+
+    numIter =  1200
+    numBurn =  600
+    numThin =  9
+    maxRate =  2.4771
+    minRate = -2.4771
+    absDiff =  2
+    effctS2 =  0.10000
+    coordS2 =  0.10000
+    log10S2 =  0.010000
+    ratesC =  1
+    ratesD =  1
+    s2locC =  1
+    s2locD =  1
+    negBiR =  5
+    negBiP =  0.50000
+
+Processing dataset ~/package/data/dip-tribars-nIndiv100-nSites1000-gridSize8x7
+MCMC output saved to ~/package/data/dip-tribars-nIndiv100-nSites1000-gridSize8x7-simno1-g12x8
+The triangular grid is 12x8
+Initial log prior:       -14.22374
+Initial log likelihood:  13348.10066
+Final log prior:         -11.13520
+Final log likelihood:    17305.03318
+Acceptance proportions:
+	(1894/2400) = 78.92% for type 1
+		(1200/1200) = 100.00% for subtype 1
+		(694/1200) = 57.83% for subtype 2
+	(3791/11456) = 33.09% for type 2
+	(264/1200) = 22.00% for type 3
+	(1721/11456) = 15.02% for type 4
+	(121/1200) = 10.08% for type 5
+		(58/597) = 9.72% for subtype 1
+		(63/603) = 10.45% for subtype 2

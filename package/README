@@ -1,0 +1,10 @@
+
+
+## 'data' contains small simulated datasets (haploid/diploid/microsatellite data)
+## 'examples' contains scripts to estimate effective migration rates for the simulated data
+## 'mscripts' contains the implementation in MATLAB/OCTAVE
+## 'rscripts' contains plotting scripts in R
+
+
+## Please see the examples which show how to run MCMC_haploid, MCMC_diploid, MCMC_microsats
+## (the MCMC inference for effective migration rates for three types of genetic data)
