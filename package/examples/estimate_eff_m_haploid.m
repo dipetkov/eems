@@ -20,8 +20,8 @@ xPop = 12;
 yPop = 8;
 
 %% Output filename
-simno = 1;
-mcmcpath = strcat(datapath,'-simno',num2str(simno));
+simno = 1;  %% If you simulate several realizations of the Markov chain
+mcmcpath = strcat(datapath,'-g',xPop,'x',yPop,'-simno',num2str(simno));
 
 
 %% The input arguments sourcepath, datapath, mcmcpath, xPop, yPop have to be explicitly specified
@@ -40,8 +40,8 @@ mcmcpath = strcat(datapath,'-simno',num2str(simno));
 %% dfS2: proposal variance for the degrees of freedom parameter
 
 
-addpath(sourcepath,option='-end');
-addpath(strcat(sourcepath,'/mscripts'),option='-end');
+addpath(sourcepath);
+addpath(strcat(sourcepath,'/mscripts'));
 
 MCMC_haploid(sourcepath,datapath,mcmcpath,xPop,yPop,...
 	     'numIter',1200,'numBurn',600,'numThin',9);

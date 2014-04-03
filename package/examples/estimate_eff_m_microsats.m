@@ -11,8 +11,8 @@ sourcepath = '~/package';
 %%                      range of x coordinate
 %%                      range of y coordinate
 %%                      #samples #snps
-datapath = '~/package/data/sat-tribars-nIndiv150-nSites16-gridSize8x7';
-%datapath = '~/package/data/sat-uniform-nIndiv150-nSites16-gridSize8x7';
+%datapath = '~/package/data/sat-tribars-nIndiv150-nSites16-gridSize8x7';
+datapath = '~/package/data/sat-uniform-nIndiv150-nSites16-gridSize8x7';
 
 %% Choose the size of the graph
 %% The population graph is a regular triangular graph with size xPop-by-yPop
@@ -20,8 +20,8 @@ xPop = 12;
 yPop = 8;
 
 %% Output filename
-simno = 1;
-mcmcpath = strcat(datapath,'-simno',num2str(simno));
+simno = 1;  %% If you simulate several realizations of the Markov chain
+mcmcpath = strcat(datapath,'-g',xPop,'x',yPop,'-simno',num2str(simno));
 
 
 %% The input arguments sourcepath, datapath, mcmcpath, xPop, yPop have to be explicitly specified
@@ -39,8 +39,8 @@ mcmcpath = strcat(datapath,'-simno',num2str(simno));
 %% negBiP: success probability for the Negative-Binomial prior on the number of Voronoi tiles
 
 
-addpath(sourcepath,option='-end');
-addpath(strcat(sourcepath,'/mscripts'),option='-end');
+addpath(sourcepath);
+addpath(strcat(sourcepath,'/mscripts'));
 
 MCMC_microsats(sourcepath,datapath,mcmcpath,xPop,yPop,...
 	       'numIter',1200,'numBurn',600,'numThin',9);
