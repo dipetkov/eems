@@ -10,7 +10,7 @@ type = 5;%
 T = Voronoi.ntiles;
 negBiR = params.negBiR;
 negBiP = params.negBiP;
-u = runif(1);
+u = rand(1);
 
 if (T==1)
   %% Since there must be at least one tile, rule out a death proposal %%
@@ -32,7 +32,8 @@ else
   %% Propose death %%
   ntiles = T-1;
   subtype = 2;
-  i = unidrnd(T);
+  %%i = unidrnd(T);
+  i = ceil(T*rand(1));
   Scoord = Voronoi.Scoord;
   Effcts = Voronoi.Effcts;
   Scoord(i,:) = [];

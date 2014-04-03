@@ -13,6 +13,6 @@ function R = resistance_distance(G)
 n = nrow(G);
 L = diag(sum(G))-G;
 % H is the inverse of the sum-matrix
-H = linsolve(L+1/n,eye(n));
+H = mldivide(L+1/n,eye(n));
 h1t = repmat(diag(H),1,n);
 R = h1t + h1t' - 2*H;
