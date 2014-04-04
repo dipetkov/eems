@@ -576,7 +576,7 @@ if strcmp(runMode, 'genRun')
 
                          end
 
-                    elseif min_ab < 1 & max_ab > 1
+                    elseif (min_ab < 1) && (max_ab > 1)
                          %  Atkinson's switching method
 
                          t = (1-min_ab)/(1+max_ab - min_ab);
@@ -888,11 +888,11 @@ if strcmp(runMode, 'genRun')
                     validateParam(funcName, 'Binomial', 'binomial', '[n, p]', 'n', n, {'> 0','==integer'});
                     validateParam(funcName, 'Binomial', 'binomial', '[n, p]', 'p', p, {'> 0','< 1'});
                     
-                    if n*p > 1e3 & n > 1e3
+                    if (n*p > 1e3) && (n > 1e3)
 
                          out = round( n*p + sqrt(n*p*(1-p))*randn( sampleSize ) );
 
-                    elseif p<1e-4 & n*p > 1 & n*p < 100
+                    elseif (p<1e-4) && (n*p > 1) && (n*p < 100)
 
                          out = feval(funcName,'poisson',n*p, sampleSize);
 
@@ -900,7 +900,7 @@ if strcmp(runMode, 'genRun')
 
                          % if n large and p near 1, generate j=Binom(n,1-p), return n-j
                          switchFlag = 0;
-                         if n>100 & p>0.99
+                         if (n>100) && (p>0.99)
                               p = 1-p;
                               switchFlag = 1;
                          end
@@ -1932,7 +1932,7 @@ if strcmp(runMode, 'genRun')
                     y1  = 2*exp(log(eta)/3) * cos(acos(-q/(2*eta))/3) - r/3;
                     y2  = 2*exp(log(eta)/3) * cos(acos(-q/(2*eta))/3 + 2/3*pi) - r/3;
                          
-                    if (h<=1 & b<=1) | abs(q/eta)>2 | y1<0 | y2>0
+                    if (h<=1 && b<=1) || (abs(q/eta)>2) || (y1<0) || (y2>0)
                          % without shifting by m                        
                                                  
                          ym = (-h-1 + sqrt((h+1)^2 + b^2))/b;

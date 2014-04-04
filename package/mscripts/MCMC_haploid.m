@@ -53,7 +53,6 @@ end
 [Mstruct,Sstruct,Jindex] = suff_haploid_SNPs(datapath,Vcoord,Mstruct);
 
 gridsize = strcat(num2str(xPop),'x',num2str(yPop));
-mcmcpath = strcat(mcmcpath,'-g',gridsize);
 fprintf(2,'\nProcessing dataset %s\n',datapath);
 fprintf(2,'MCMC output saved to %s\n',mcmcpath);
 fprintf(2,'The triangular grid is %s\n',gridsize);

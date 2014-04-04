@@ -22,7 +22,7 @@ else
   Hi11 = L(J,J) + 1/o;
   Hi22 = L(K,K) + 1/o;
   Hi12 = L(J,K) + 1/o;
-  H22Hi21 = linsolve(Hi22,Hi12');
+  H22Hi21 = mldivide(Hi22,Hi12');
   Hinv = Hi11 - Hi12*H22Hi21;
 end
 

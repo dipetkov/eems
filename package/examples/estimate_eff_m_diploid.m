@@ -21,8 +21,7 @@ yPop = 8;
 
 %% Output filename
 simno = 1;  %% If you simulate several realizations of the Markov chain
-mcmcpath = strcat(datapath,'-g',xPop,'x',yPop,'-simno',num2str(simno));
-
+mcmcpath = strcat(datapath,'-g',num2str(xPop),'x',num2str(yPop),'-simno',num2str(simno));
 
 %% The input arguments sourcepath, datapath, mcmcpath, xPop, yPop have to be explicitly specified
 %% There are optional input arguments (that have default values but can be tuned to improve convergence)
