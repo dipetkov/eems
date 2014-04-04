@@ -147,7 +147,7 @@ while ~mcmc.isfinished
 
     %% Metropolis-Hastings acceptance probability %%
     mcmc = MCMC_proceed(mcmc,proposal);
-    u = runif(1);
+    u = unifrnd(0,1);
     if isinf(pi1_pi0) && (pi1_pi0<0)
       %% Proposal is not accepted because the prior on it is 0 %%
       alpha = -Inf;

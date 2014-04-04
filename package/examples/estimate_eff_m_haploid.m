@@ -1,7 +1,7 @@
 
 
 %% Source directory where the *.m scripts are
-sourcepath = '~/package';
+sourcepath = '~/eems/package';
 
 %% Data directory where the input files are
 %% Input filename; the input files are: 
@@ -11,7 +11,7 @@ sourcepath = '~/package';
 %%                      range of x coordinate
 %%                      range of y coordinate
 %%                      #samples #snps
-datapath = '~/package/data/hap-tribars-nIndiv300-nSites3000-gridSize12x8';
+datapath = '~/eems/package/data/hap-tribars-nIndiv300-nSites3000-gridSize12x8';
 %datapath = '~/package/data/hap-uniform-nIndiv300-nSites3000-gridSize12x8';
 
 %% Choose the size of the graph
