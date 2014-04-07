@@ -21,8 +21,11 @@ for s = 1:nSites
   B = Ball(Juniq,Juniq);
   o = Sstruct.oDemes(s);
 
+  %% McRae's approximation implies the within-deme distances are equal
+  %% (proportional to 1)
   W = eye(o);
   BWinv = B;
+
   X{s} = mldivide(B*C-W,BWinv);
   XC{s} = X{s}*C;
   ldDinv(s) = - logabsdet(B-Cinv) ...

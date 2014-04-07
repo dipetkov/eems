@@ -10,7 +10,6 @@ G = sparse(Mstruct.Mi,Mstruct.Mj,mValues);
 L = diag(sum(G)) - G;
 
 Cconst = Sstruct.Cconst;
-Cinv = Sstruct.Cinv;
 C = Sstruct.Counts;
 o = Sstruct.oDemes;
 J = Mstruct.Juniq;
@@ -26,12 +25,12 @@ else
   Hinv = Hi11 - Hi12*H22Hi21;
 end
 
-W0 = ones(o,1)*Cconst;
-W = diag(W0);
-Winv = diag(1./W0);
-
+%% McRae's approximation implies the within-deme distances are equal
+%% (proportional to 1)
 Binv = -2*Hinv;
-BinvW = Binv*W;
+Winv = eye(o)/Cconst;
+BinvW = Binv*Cconst;
+
 X = mldivide(C-BinvW,Winv);
 ldDinv = logabsdet(X*BinvW);
 kernel = struct('X',{X},'XC',{X*C},...

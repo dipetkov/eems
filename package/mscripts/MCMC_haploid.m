@@ -7,40 +7,41 @@ addpath(strcat(sourcepath,'/mscripts/general'),...
         strcat(sourcepath,'/mscripts/project'),...
         strcat(sourcepath,'/mscripts/common'),...
         strcat(sourcepath,'/mscripts/mcmc'),...
-        strcat(sourcepath,'/mscripts/snps'),...
-        option='-end');
+        strcat(sourcepath,'/mscripts/snps'));
 
 opt = default_snps_params(sourcepath);
 
 %%%%%%%% Process the input arguments %%%%%%%%
 i = 0;
 while (i<length(varargin))
-  i++;
-  if (strcmpi(varargin{i},"numIter"))
-    opt.numIter = varargin{++i};
-  elseif (strcmpi(varargin{i},"numBurn"))
-    opt.numBurn = varargin{++i};
-  elseif (strcmpi(varargin{i},"numThin"))
-    opt.numThin = varargin{++i};
-  elseif (strcmpi(varargin{i},"effctS2"))
-    opt.effctS2 = varargin{++i};
-  elseif (strcmpi(varargin{i},"coordS2"))
-    opt.coordS2 = varargin{++i};
-  elseif (strcmpi(varargin{i},"log10S2"))
-    opt.log10S2 = varargin{++i};
-  elseif (strcmpi(varargin{i},"ratesC"))
-    opt.ratesC = varargin{++i};
-  elseif (strcmpi(varargin{i},"s2locC"))
-    opt.s2locC = varargin{++i};
-  elseif (strcmpi(varargin{i},"negBiR"))
-    opt.negBiR = varargin{++i};
-  elseif (strcmpi(varargin{i},"negBiP"))
-    opt.negBiP = varargin{++i};
-  elseif (strcmpi(varargin{i},"dfS2"))
-    opt.dfS2 = varargin{++i};
+  i = i + 1;
+  if (strcmpi(varargin{i},'numIter'))
+    opt.numIter = varargin{i+1};
+  elseif (strcmpi(varargin{i},'numBurn'))
+    opt.numBurn = varargin{i+1};
+  elseif (strcmpi(varargin{i},'numThin'))
+    opt.numThin = varargin{i+1};
+  elseif (strcmpi(varargin{i},'effctS2'))
+    opt.effctS2 = varargin{i+1};
+  elseif (strcmpi(varargin{i},'coordS2'))
+    opt.coordS2 = varargin{i+1};
+  elseif (strcmpi(varargin{i},'log10S2'))
+    opt.log10S2 = varargin{i+1};
+  elseif (strcmpi(varargin{i},'ratesC'))
+    opt.ratesC = varargin{i+1};
+  elseif (strcmpi(varargin{i},'s2locC'))
+    opt.s2locC = varargin{i+1};
+  elseif (strcmpi(varargin{i},'negBiR'))
+    opt.negBiR = varargin{i+1};
+  elseif (strcmpi(varargin{i},'negBiP'))
+    opt.negBiP = varargin{i+1};
+  elseif (strcmpi(varargin{i},'dfS2'))
+    opt.dfS2 = varargin{i+1};
   else
-    print_usage( );
+    fprintf(2,'Invalid call to MCMC_haploid. The correct usage is\n');
+    fprintf(2,'  MCMC_haploid(sourcepath,datapath,mcmcpath,xPop,yPop,...)');
   end
+  i = i + 1;
 end
 
 [Vcoord,Vedges,Mij] = make_triangular_grid(datapath,xPop,yPop);
@@ -57,7 +58,7 @@ fprintf(2,'\nProcessing dataset %s\n',datapath);
 fprintf(2,'MCMC output saved to %s\n',mcmcpath);
 fprintf(2,'The triangular grid is %s\n',gridsize);
 fprintf(2,'Input parameter values:\n');
-fdisp(2,opt);
+dispstruct(2,opt);
 fprintf(2,'\n\n');
   
 [Voronoi,params] = assign_effects(Sstruct,Vcoord,habitat,opt);
@@ -144,7 +145,7 @@ while ~mcmc.isfinished
 
     %% Metropolis-Hastings acceptance probability %%
     mcmc = MCMC_proceed(mcmc,proposal);
-    u = unifrnd(0,1);
+    u = rand(1);
     if isinf(pi1_pi0) && (pi1_pi0<0)
       %% Proposal is not accepted because the prior on it is 0 %%
       alpha = -Inf;
@@ -210,7 +211,7 @@ fprintf(2,'Final log likelihood:    %7.5f\n',ll0);
 
 runid = fopen(strcat(mcmcpath,'.txt'),'w');
 fprintf(runid,'Input parameter values:\n');
-fdisp(runid,opt);
+dispstruct(runid,opt);
 fprintf(runid,'\nProcessing dataset %s\n',datapath);
 fprintf(runid,'MCMC output saved to %s\n',mcmcpath);
 fprintf(runid,'The triangular grid is %s\n',gridsize);
