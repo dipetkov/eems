@@ -1,7 +1,7 @@
 
 
 %% Source directory where the *.m scripts are
-sourcepath = '~/package';
+sourcepath = '../';
 
 %% Data directory where the input files are
 %% Input filename; the input files are: 
@@ -12,7 +12,7 @@ sourcepath = '~/package';
 %%                      range of y coordinate
 %%                      #samples #snps
 %datapath = '~/package/data/sat-tribars-nIndiv150-nSites16-gridSize8x7';
-datapath = '~/package/data/sat-uniform-nIndiv150-nSites16-gridSize8x7';
+datapath = '../data/sat-uniform-nIndiv150-nSites16-gridSize8x7';
 
 %% Choose the size of the graph
 %% The population graph is a regular triangular graph with size xPop-by-yPop

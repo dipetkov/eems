@@ -6,7 +6,7 @@ source('src/myfunctions.R')
 
 ## Path to the OCTAVE/MATLAB output 
 datapath <- '../data/hap-tribars-nIndiv300-nSites3000-gridSize12x8'
-mcmcpath <- '..//data/hap-tribars-nIndiv300-nSites3000-gridSize12x8-g12x8-simno1'
+mcmcpath <- '../data/hap-tribars-nIndiv300-nSites3000-gridSize12x8-g12x8-simno1'
 plotpath <- './hap-tribars-nIndiv300-nSites3000-gridSize12x8-g12x8-simno1'
 
 

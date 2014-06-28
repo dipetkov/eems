@@ -1,7 +1,7 @@
 
 
 %% Source directory where the *.m scripts are
-sourcepath = '~/package';
+sourcepath = '../';
 
 %% Data directory where the input files are
 %% Input filename; the input files are: 
@@ -11,7 +11,7 @@ sourcepath = '~/package';
 %%                      range of x coordinate
 %%                      range of y coordinate
 %%                      #samples #snps
-datapath = '~/package/data/dip-tribars-nIndiv100-nSites1000-gridSize8x7';
+datapath = '../data/dip-tribars-nIndiv100-nSites1000-gridSize8x7';
 %datapath = '~/package/data/dip-uniform-nIndiv100-nSites1000-gridSize8x7';
 
 %% Choose the size of the graph
