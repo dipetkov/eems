@@ -1,7 +1,7 @@
 
 
-function [Mstruct,Vcoord,Vedges] = ...
-    make_irregular_grid(datapath,inPops,Mij,Vcoord,Vedges)
+function [Mstruct,Demes,Edges] = ...
+    make_irregular_grid(datapath,inPops,Mij,Demes,Edges)
 %% Remove vertices and edges that fall outside an irregularly %%
 %% shaped habitat                                             %%
 
@@ -33,12 +33,12 @@ if nPop~=nrow(inPops)
   Mij = indxPops(Mij);
   %% Re-index both the vertices and the edges
   %% (The edges are only needed for plotting)
-  Vcoord = Vcoord(inPops==1,:);
-  Vedges = Vedges(inPops==1,:);
+  Demes = Demes(inPops==1,:);
+  Edges = Edges(inPops==1,:);
   allPop = length(inPops);
   indxPops = [indxPops;0];
-  Vedges(Vedges==0) = allPop+1;
-  Vedges = indxPops(Vedges);
+  Edges(Edges==0) = allPop+1;
+  Edges = indxPops(Edges);
 end
 
 %% Check that the population graph is connected

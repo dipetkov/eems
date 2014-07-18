@@ -12,5 +12,5 @@ mcmc.iterDone = 0;
 mcmc.iterStart = 1;
 
 if mod(mcmc.currIter,1000)==1
-  fprintf(2,'Starting iteration %d of %d\n',mcmc.currIter,mcmc.numIters);
+  fprintf(2,'Starting iteration %d of %d\n',mcmc.currIter,mcmc.numMCMCIter);
 end

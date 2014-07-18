@@ -12,9 +12,9 @@ plotpath <- './hap-barrier-nIndiv300-nSites3000-gridSize12x8-g12x8-simno1'
 
 dimns <- read.dimns(datapath)
 plot.height <- 5
-plot.width <- 5*(dimns$xspan/dimns$yspan)
-plot.filename <- paste(plotpath,'-mrates.png',sep='')
+plot.width <- 6
+plot.filename <- paste(plotpath,'-rdist.png',sep='')
 
 png(file=plot.filename,height=plot.height,width=plot.width,units="in",res=150)
-mcmc.mrates(mcmcpath,dimns)
+dist.scatterplot(mcmcpath)
 dev.off( )

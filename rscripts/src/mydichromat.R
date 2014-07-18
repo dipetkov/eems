@@ -1,18 +1,23 @@
 
 
-## This is the Blue to Dark Orange scheme from the dichromat package,
-## with "white" as the midpoint color
-## The R package itself is based on a collection of color schemes for
-## scientific data graphics:
+## This is the default Dark Orange to Blue color scheme, with "white"
+## as the midpoint color.
+## It combines two color schemes from the dichromat package, which
+## itself is based on a collection of color schemes for scientific
+## data graphics:
 ## http://geog.uoregon.edu/datagraphics/color_scales.htm
 ## and 
 ## Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes
 ## for Improved Data Graphics.
 ## EOS Transactions of the American Geophysical Union, 85(40), 385.
 
-mycolors <- c("#1F8F99","#52C4CC","#99FAFF","#B2FCFF","#CCFEFF","#E6FFFF",
-              "#FFFFFF","#FFE6CC","#FFCA99","#FFAD66","#FF8F33","#CC5800",
-              "#994000")
+
+## The default Dark Orange to Blue color scheme:
+mycolors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC",
+              "#FFFFFF",
+              "#CCFDFF","#99F8FF","#66F0FF","#33E4FF","#00AACC","#007A99")
+
+
 numlevels <- length(mycolors)
 minZ <- -2.5
 maxZ <- +2.5
@@ -21,11 +26,32 @@ the.pts <- c(  2.1 ,  1.4 ,  0.7 ,    0 , -0.7 , -1.4 , -2.1 )
 the.lab <- c(' 2.1',' 1.4',' 0.7','   0','-0.7','-1.4','-2.1')
 mylevels <- seq(from=minZ,to=maxZ,by=step)
 
-## A collection of various colors
 
-varcolors <- c("#D5CD95","#F76946","#FFC822","#93C13C","#387272","#E08D3A",
-               "#5B4DB3","#4E4F2B","#CE2D79","#42B3B9","#553300","#708BDA",
-               "#C8CE46","#A00016","#34468F","#CCCCCC","#932680","#666666",
-               "#4FB5D2","#4E4E4E","#A4F2FB","#2041BC","#EFBE4E","#2B864F",
-               "#CB4441","#848235","#333333","#065F35","#935439","#339999",
-               "#EBEF32","#42B3B9","#935400","#CC9933","#F8B414","#994C19")
+## Additional color schemes can be designed based on the 'dichromat' package
+extra.color.schemes <- function(SchemeName='DarkOrangetoBlue2') {
+    library(dichromat)
+    ## 'DarkOrangetoBlue2' is the default color scheme
+    if (SchemeName == 'BrowntoBlue') {
+        colscheme <- colorschemes$BrowntoBlue.12
+    } else if (SchemeName == 'BluetoBrown') {
+        colscheme <- rev(colorschemes$BrowntoBlue.12)
+    } else if (SchemeName == 'BluetoDarkOrange') {
+        colscheme <- colorschemes$BluetoDarkOrange.12
+    } else if (SchemeName == 'BluetoDarkOrange2') {
+        Blues <- colorschemes$BrowntoBlue.12[12:7]
+        DarkOranges <- colorschemes$BluetoDarkOrange.12[7:12]
+        colscheme <- c(Blues,DarkOranges)
+    } else if (SchemeName == 'DarkOrangetoBlue') {
+        colscheme <- rev(colorschemes$BluetoDarkOrange.12)
+    } else if (SchemeName == 'DarkOrangetoBlue2') {
+        Blues <- colorschemes$BrowntoBlue.12[12:7]
+        DarkOranges <- colorschemes$BluetoDarkOrange.12[7:12]
+        colscheme <- rev(c(Blues,DarkOranges))
+    } else if (SchemeName == 'DarkRedtoBlue') {
+        colscheme <- colorschemes$DarkRedtoBlue.12
+    } else if (SchemeName == 'BluetoDarkRed') {
+        colscheme <- rev(colorschemes$DarkRedtoBlue.12)
+    }
+    mycolors <- c(colscheme[1:6],"#FFFFFF",colscheme[7:12])
+    return(mycolors)
+}

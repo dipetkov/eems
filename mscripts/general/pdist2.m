@@ -82,7 +82,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Return only the "closest" point, i.e.,         %
-% pdist2(Vcoord,Jcoord,'euclidean','Smallest',1) %
+% pdist2(Demes,Samples,'euclidean','Smallest',1) %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [D,I] = sort(D,1);
 D = D(1,:);

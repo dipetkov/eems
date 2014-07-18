@@ -15,16 +15,25 @@ n = Sstruct.nIndiv;
 df = params.df;
 
 if (thetai==1)
-  trDinvQxD = params.trDinvQxD;
-  c = params.s2locC + df*(n-1);
-  d = params.s2locD + df*trDinvQxD;
+  XC = kernel.XC;
+  X = kernel.X;
+  n = Sstruct.nIndiv;
+  oDinvo = Sstruct.oDinvoconst ...
+         + sum(sum(X.*Sstruct.JtOJ));
+  A = sum(sum(X.*Sstruct.JtDJ));
+  B = Sstruct.Bconst ...
+    - sum(sum(X.*Sstruct.JtDJvct)) ...
+    + sum(sum(XC'*Sstruct.JtDJ*XC));
+  trDinvQxD = A - B/oDinvo;
+  c = params.s2locShape + df*(n-1);
+  d = params.s2locScale + df*trDinvQxD;
   s2loc = rinvgam(c/2,d/2);
   proposal.params.s2loc = s2loc;
   % This guarantees that the proposal is always accepted
   % i.e., a Gibbs update
   pi1_pi0 = Inf;
 elseif (thetai==2)
-  df = draw_df(params.dfmin,params.dfmax,params.df,params.dfS2);
+  df = rnorm(params.df,params.dfProposalS2);
   if (df>params.dfmin && df<params.dfmax)
     % This corresponds to pi(df)\propto(1/df)
     pi1_pi0 = log(params.df)-log(df);

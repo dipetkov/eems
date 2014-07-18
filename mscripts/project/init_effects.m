@@ -1,9 +1,7 @@
 
 
-function Effcts = init_effects(T,absDiff,rateS2)
+function Effects = init_effects(T,halfInterval,rateS2)
 %% Prior distribution for the cell effects %%
 
 
-lob = -absDiff;
-upb =  absDiff;
-Effcts = rtnorm(T,lob,upb,0,rateS2);
+Effects = rtnorm(T,-halfInterval,halfInterval,0,rateS2);

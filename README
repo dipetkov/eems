@@ -7,7 +7,7 @@
 
 ####################
 
-The examples show how to run MCMC_haploid, MCMC_diploid, MCMC_microsats
+The examples show how to run MCMC_haploid, MCMC_diploid, MCMC_microsat
 (the MCMC inference for effective migration rates for three types of genetic data)
 
 ####################
@@ -19,7 +19,7 @@ These use the 'fields' and 'deldir' R packages, so they should be installed firs
   visualizes the posterior mean migration surface
 * plot-posterior-mean.R:
   draws samples from the posterior migration distribution
+* plot-posterior-rdist.R
+  scatterplot of fitted vs observed distances between demes (locations)
 * merge-posterior-means.R :
   averages the surfaces from several realizations of the Markov chain
-* conv-log-posterior.R:
-  plots traces of the log posterior

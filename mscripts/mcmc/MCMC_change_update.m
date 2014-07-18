@@ -15,7 +15,7 @@ else
   error('MCMC:Run','Unknown update type. Parameters not updated.')
 end
 
-if (mcmc.currType>mcmc.numTypes)
+if (mcmc.currType>mcmc.numUpdateTypes)
   % End the iteration
   mcmc.currType = 1;
   mcmc.iterDone = 1;

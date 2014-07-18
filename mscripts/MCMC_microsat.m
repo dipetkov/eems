@@ -1,13 +1,13 @@
 
 
-function MCMC_haploid(sourcepath,datapath,mcmcpath,xPop,yPop,varargin)
+function MCMC_microsat(sourcepath,datapath,mcmcpath,xPop,yPop,varargin)
 
 
 addpath(strcat(sourcepath,'/mscripts/general'),...
         strcat(sourcepath,'/mscripts/project'),...
         strcat(sourcepath,'/mscripts/common'),...
         strcat(sourcepath,'/mscripts/mcmc'),...
-        strcat(sourcepath,'/mscripts/snps'));
+        strcat(sourcepath,'/mscripts/sats'));
 
 opt = default_params(sourcepath);
 
@@ -39,11 +39,9 @@ while (i<length(varargin))
     opt.mSeedsProposalS2 = varargin{i+1};
   elseif (strcmpi(varargin{i},'mrateMuProposalS2'))
     opt.mrateMuProposalS2 = varargin{i+1};
-  elseif (strcmpi(varargin{i},'dfProposalS2'))
-    opt.dfProposalS2 = varargin{i+1};
   else
     error(['Invalid call to MCMC_microsats. The correct usage is:\n\t',...
-	   'MCMC_haploid(sourcepath,datapath,mcmcpath,xPop,yPop,...)']);
+	   'MCMC_microsat(sourcepath,datapath,mcmcpath,xPop,yPop,...)']);
   end
   i = i + 1;
 end
@@ -54,7 +52,7 @@ end
 %% The population graph must remain connected %%
 
 [Mstruct,Demes,Edges] = make_irregular_grid(datapath,inPops,Mij,Demes,Edges);
-[Mstruct,Sstruct,Jindex] = suff_haploid_SNPs(datapath,Demes,Mstruct);
+[Mstruct,Sstruct,Jindex] = suff_microsats(datapath,Demes,Mstruct);
 
 gridsize = strcat(num2str(xPop),'x',num2str(yPop));
 fprintf(2,'\nProcessing dataset %s\n',datapath);
@@ -83,6 +81,9 @@ mcmcmEffcts = cell(numSteps,1);
 mcmcmRates = cell(numSteps,1);
 mcmcxCoord = cell(numSteps,1);
 mcmcyCoord = cell(numSteps,1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+mcmcvS2loc = zeros(numSteps,Sstruct.nSites);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fprintf(2,'Initial log prior:       %7.5f\n',initpi);
 fprintf(2,'Initial log likelihood:  %7.5f\n',initll);
@@ -99,7 +100,8 @@ while ~mcmc.isfinished
 
     %% Get a new configuration %%
     if (mcmc.currType==1)
-      %% Propose to update the scale parameter sigma^22 and the degrees of freedom %%
+      %% Propose to update the scale parameters sigma_s^2 %%
+      %% There is one parameter for each microsatellite   %%
       [proposal,pi1_pi0] = ...
           propose_thetas(Sstruct,kernel,params,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
@@ -171,7 +173,7 @@ while ~mcmc.isfinished
 
   end
   
-  %% Update the hyperparameters (the cell effect variance tau_m^2)
+  %% Update the hyperparameters (the tile effect variance tau_m^2)
   %% This changes the prior (but not the log likelihood)
   currmEffcts = mVoronoi.mEffcts;
   currmRates = realpow(10,params.mrateMu + currmEffcts);
@@ -182,8 +184,9 @@ while ~mcmc.isfinished
   if sum(mcmc.currIter==mcmc.ii)
     currIndex = mcmc.kk(mcmc.currIter==mcmc.ii);
     mcmcmhyper(currIndex,:) = [params.mrateMu,params.mrateS2];
-    mcmcthetas(currIndex,:) = [params.s2loc,params.df];
+    mcmcthetas(currIndex,:) = [-9,params.df];
     mcmcpilogl(currIndex,:) = [pi0,ll0];
+    mcmcvS2loc(currIndex,:) = params.s2loc';
     mcmcmtiles(currIndex) = mVoronoi.mtiles;
     mcmcmEffcts{currIndex} = currmEffcts;
     mcmcmRates{currIndex} = currmRates;
@@ -195,7 +198,7 @@ while ~mcmc.isfinished
 
   if mod(mcmc.currIter,100)==1
     fprintf(2,'    effective degrees of freedom = %.2f\n',params.df);
-    fprintf(2,'        number of mVoronoi tiles = %d\n',mVoronoi.mtiles);
+    fprintf(2,'        number of mVoronoi cells = %d\n',mVoronoi.mtiles);
   end
 
 end
@@ -209,7 +212,7 @@ fprintf(2,'Initial log prior:       %7.5f\n',initpi);
 fprintf(2,'Initial log likelihood:  %7.5f\n',initll);
 fprintf(2,'Final log prior:         %7.5f\n',pi0);
 fprintf(2,'Final log likelihood:    %7.5f\n',ll0);
-
+  
 runid = fopen(strcat(mcmcpath,'.txt'),'w');
 fprintf(runid,'Input parameter values:\n');
 dispstruct(runid,opt);
@@ -227,6 +230,7 @@ dlmwrite(strcat(mcmcpath,'.mcmcmhyper'),mcmcmhyper,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.mcmcthetas'),mcmcthetas,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.mcmcmtiles'),mcmcmtiles,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.mcmcpilogl'),mcmcpilogl,'delimiter',' ');
+dlmwrite(strcat(mcmcpath,'.mcmcvS2loc'),mcmcvS2loc,'delimiter',' ');
 
 dlmcell(strcat(mcmcpath,'.mcmcxcoord'),mcmcxCoord);
 dlmcell(strcat(mcmcpath,'.mcmcycoord'),mcmcyCoord);
@@ -236,14 +240,14 @@ dlmwrite(strcat(mcmcpath,'.edges'),Edges,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.demes'),Demes,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.ipmap'),Jindex,'delimiter',' ');
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Fitted and observed distance matrices (for scatterplots)
 
-dimns = dlmread(strcat(datapath,'.dimns'));
+Sites = dlmread(strcat(datapath,'.sites'));
 Coord = dlmread(strcat(datapath,'.coord'));
-nIndiv = dimns(3,1);
-nSites = dimns(3,2);
+nSites = ncol(Sites)/2;
+nIndiv = nrow(Sites);
 nDemes = nrow(Demes);
 
 [oDemes,Jinvpt] = samples_to_demes(Coord,Demes);
@@ -253,8 +257,30 @@ Sizes = Jpt'*onev;
 Counts = Sizes*Sizes';
 Counts = Counts-diag(Sizes);
 
-Dobs = Sstruct.Diffs;
+Dobs = zeros(nIndiv);
 Dhat = zeros(nIndiv);
+Pairs = zeros(nIndiv);
+
+for s = 1:nSites
+    
+  a1 = Sites(:,2*s-1);
+  a2 = Sites(:,2*s);
+  obsrv = ~(a1<0)+0;
+  a1(~obsrv) = NaN;
+  a2(~obsrv) = NaN;
+
+  z = (a1+a2)/2;
+  z = z-nanmean(z);
+  z = z/nanstd(z);
+  z(isnan(z)) = 0;
+  %% Similarity matrix (with rank 1)
+  Sim = z*z';
+  %% Dissimilarity matrix
+  S0 = repmat(diag(Sim),1,nIndiv);
+  Dobs = Dobs + S0 + S0' - 2*Sim;  
+  Pairs = Pairs + obsrv*obsrv';
+
+end
 
 nIters = length(mcmcmtiles);
 
@@ -265,7 +291,6 @@ for iter = 1:nIters
   xCoord = mcmcxCoord{iter};
   yCoord = mcmcyCoord{iter};
   mSeeds = [xCoord,yCoord];
-  s2loc = mcmcthetas(iter,1);
 
   mValues = average_rates(Mstruct,mRates,mSeeds,Demes);
   qValues = ones(nDemes);
@@ -279,10 +304,11 @@ for iter = 1:nIters
   JBJt = Jpt*B*Jpt';
   Jw = Jpt*w;
   D = JBJt + onev*Jw'/2 + Jw*onev'/2 - diag(Jw);
-  Dhat = Dhat + D*s2loc;
+  Dhat = Dhat + D;
 
 end
 
+Dobs = Dobs./Pairs;
 Dhat = Dhat/nIters;
 JtDobsJ = Jpt'*Dobs*Jpt;
 JtDhatJ = Jpt'*Dhat*Jpt;

@@ -1,18 +1,17 @@
 
 
-function [Vcoord,Vedges,Mij] = make_triangular_grid(datapath,xPop,yPop)
-%% Construct three data structures that describe the triangular grid        %%
-%% Vcoord: list of vertices (one vertex per row, with x- and y-coordinates) %%
-%% Vedges: list of neighbors (one vertex per row, at most six neighbors)    %%
-%% Mij: pairs of connected vertices (one edge per row)                      %%
+function [Demes,Edges,habitat,inPops,Mij] = make_triangular_grid(datapath,xPop,yPop)
+%% Construct three data structures that describe the triangular grid       %%
+%% Demes: list of vertices (one vertex per row, with x- and y-coordinates) %%
+%% Edges: list of neighbors (one vertex per row, at most six neighbors)    %%
+%% Mij: pairs of connected vertices (one edge per row)                     %%
 
 
 dimns = dlmread(strcat(datapath,'.dimns'));
-minxco = dimns(1,1);
-maxxco = dimns(1,2);
-minyco = dimns(2,1);
-maxyco = dimns(2,2);
-
+xmin = dimns(1,1);
+xmax = dimns(1,2);
+ymin = dimns(2,1);
+ymax = dimns(2,2);
 nPop   = xPop*yPop;        %% n_{alpha,alpha} %%
 nPairs = nPop*(nPop-1)/2;  %% n_{alpha,beta}  %%
 nEdges = (xPop-1)*yPop+(2*xPop-1)*(yPop-1);
@@ -20,26 +19,30 @@ nEdges = (xPop-1)*yPop+(2*xPop-1)*(yPop-1);
 %% A triangular grid extends half a triangle on the right %%
 scalex = 1;
 scaley = 1;
-if ( (minxco<maxxco) && (xPop>1) ) 
-  scalex = (maxxco-minxco)/(xPop-0.5);
+if ( (xmin<xmax) && (xPop>1) ) 
+  scalex = (xmax-xmin)/(xPop-0.5);
 end
-if ( (minyco<maxyco) && (yPop>1) ) 
-  scaley = (maxyco-minyco)/(yPop-1);
+if ( (ymin<ymax) && (yPop>1) ) 
+  scaley = (ymax-ymin)/(yPop-1);
 end
 
-Vcoord = zeros(nPop,2);
-Vedges = zeros(nPop,6);    %% 0 means that there is no neighbor in the  %%
-Mij = zeros(2*nEdges,2);   %% corresponding position                    %%
+habitat = struct('xmin',{xmin},'xmax',{xmax},...
+                 'ymin',{ymin},'ymax',{ymax},...
+		 'xPop',{xPop},'yPop',{yPop});
+inPops = ones(nPop,1);
+Demes = zeros(nPop,2);
+Edges = zeros(nPop,6);    %% 0 means that there is no neighbor in the  %%
+Mij = zeros(2*nEdges,2);  %% corresponding position                    %%
 e = 0;
 
 for r = 1:yPop
 for c = 1:xPop
   alpha = (r-1)*xPop+c;
-  Vcoord(alpha,1) = minxco+scalex*(c-1+0.5*mod(r-1,2));
-  Vcoord(alpha,2) = minyco+scaley*(r-1);
+  Demes(alpha,1) = xmin+scalex*(c-1+0.5*mod(r-1,2));
+  Demes(alpha,2) = ymin+scaley*(r-1);
   for pos = 1:6
     beta = fixed_neighbor(r,c,pos,xPop,yPop);
-    Vedges(alpha,pos) = beta;
+    Edges(alpha,pos) = beta;
     if (beta>0)
       e = e+1;
       Mij(e,1) = alpha;

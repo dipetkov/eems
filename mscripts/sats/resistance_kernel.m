@@ -6,32 +6,32 @@ function kernel = resistance_kernel(Sstruct,Mstruct,mValues)
 %% Det(-inv(Delta)*Q) and tr(-inv(Delta)*Q*S)                     %%
 
 
-Ball = sparse_solve_for_R(Mstruct,mValues);
+G = sparse(Mstruct.Mi,Mstruct.Mj,mValues);
+Ball = resistance_distance(G)/4;
+Wall = ones(Mstruct.nDemes,1);
+
+%if (Sstruct.microsat)
+%   Ball = Ball/4;
+%   Wall = Wall/2;
+%end
 
 nSites = Sstruct.nSites;
 X = cell(nSites,1);
 XC = cell(nSites,1);
-ldDinv = zeros(nSites,1);
+ldCiBwi = zeros(nSites,1);
 
 for s = 1:nSites
-
-  C = Sstruct.Counts{s};
-  Cinv = Sstruct.Cinv{s};
-  Juniq = Mstruct.Juniq{s};
-  B = Ball(Juniq,Juniq);
-  o = Sstruct.oDemes(s);
-
-  %% McRae's approximation implies the within-deme distances are equal
-  %% (proportional to 1)
-  W = eye(o);
-  BWinv = B;
-
-  X{s} = mldivide(B*C-W,BWinv);
+  Sizes = Sstruct.Sizes{s};   %% the number of samples per deme
+  oDemes = Sstruct.oDemes{s}; %% the observed demes
+  Cinv = diag(1./Sizes);
+  C = diag(Sizes); 
+  B = Ball(oDemes,oDemes);
+  w = Wall(oDemes);
+  BWinv = B*diag(1./w);
+  X{s} = mldivide(B*C-diag(w),BWinv);
   XC{s} = X{s}*C;
-  ldDinv(s) = - logabsdet(B-Cinv) ...
-              - sum(log(diag(C)));
-
+  ldCiBwi(s) = logabsdet(Cinv-BWinv);
 end
 
 kernel = struct('X',{X},'XC',{XC},...
-	 	'ldDinv',{ldDinv});
+	 	'ldCiBwi',{ldCiBwi});

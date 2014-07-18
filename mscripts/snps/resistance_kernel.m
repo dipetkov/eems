@@ -7,31 +7,22 @@ function kernel = resistance_kernel(Sstruct,Mstruct,mValues)
 
 
 G = sparse(Mstruct.Mi,Mstruct.Mj,mValues);
-L = diag(sum(G)) - G;
+Ball = resistance_distance(G)/4;
+Wall = ones(Mstruct.nDemes,1);
 
-Cconst = Sstruct.Cconst;
-C = Sstruct.Counts;
-o = Sstruct.oDemes;
-J = Mstruct.Juniq;
-K = Mstruct.Kuniq;
-
-if Mstruct.allobsrv
-  Hinv = L + 1/o;
-else
-  Hi11 = L(J,J) + 1/o;
-  Hi22 = L(K,K) + 1/o;
-  Hi12 = L(J,K) + 1/o;
-  H22Hi21 = mldivide(Hi22,Hi12');
-  Hinv = Hi11 - Hi12*H22Hi21;
+if (Sstruct.diploid)
+   Ball = 4*Ball;
+   Wall = 2*Wall;
 end
 
-%% McRae's approximation implies the within-deme distances are equal
-%% (proportional to 1)
-Binv = -2*Hinv;
-Winv = eye(o)/Cconst;
-BinvW = Binv*Cconst;
-
-X = mldivide(C-BinvW,Winv);
-ldDinv = logabsdet(X*BinvW);
+Sizes = Sstruct.Sizes;   %% the number of samples per deme
+oDemes = Sstruct.oDemes; %% the observed demes
+Cinv = diag(1./Sizes);
+C = diag(Sizes); 
+B = Ball(oDemes,oDemes);
+w = Wall(oDemes);
+BWinv = B*diag(1./w);
+X = mldivide(B*C-diag(w),BWinv);
+ldCiBwi = logabsdet(Cinv-BWinv);
 kernel = struct('X',{X},'XC',{X*C},...
-		'ldDinv',{ldDinv});
+	 	'ldCiBwi',{ldCiBwi});

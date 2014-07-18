@@ -9,14 +9,11 @@ function params = update_dfsupp(Sstruct,Voronoi,params,mcmc)
 %% initial state
 
 
-iter = mcmc.currIter;
-numi = mcmc.numIters;
 dfmin = params.dfmin;
 dfmax = params.dfmax;
 dflob = params.dflob;
 dfupb = params.dfupb;
-if iter>(mcmc.numBurn/2)
-  params.SmallWorld_s = 0;
+if mcmc.currIter>(mcmc.numBurnIter/2)
   prop = 1;
 else 
   prop = 0;

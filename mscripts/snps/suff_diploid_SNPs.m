@@ -1,6 +1,6 @@
 
 
-function [Mstruct,Sstruct,Jindex] = suff_diploid_SNPs(datapath,Vcoord,Mstruct)
+function [Mstruct,Sstruct,Jindex] = suff_diploid_SNPs(datapath,Demes,Mstruct)
 %% Read the sufficient statistic Diffs (the matrix of observed pairwise %%
 %% genetic differences) and precompute some auxiliary matrices used to  %%
 %% compute the log likelihood                                           %%
@@ -11,65 +11,55 @@ function [Mstruct,Sstruct,Jindex] = suff_diploid_SNPs(datapath,Vcoord,Mstruct)
 %%   where D = diag(Sims) and v is a vector of ones                     %%
 
 
-%% Important:
 %% ZZt is the _average_ similarity matrix
-Jcoord = dlmread(strcat(datapath,'.coord'));
 dimns = dlmread(strcat(datapath,'.dimns'));
+Coord = dlmread(strcat(datapath,'.coord'));
 Diffs = dlmread(strcat(datapath,'.diffs'));
 nIndiv = dimns(3,1);
 nSites = dimns(3,2);
 
+if ~issymetric(Diffs)
+   error('The dissimilarity matrix is not symmetric.')
+end
 if rank(Diffs)<nIndiv
   error('The dissimilarity matrix is rank-deficient.')
 end
 
-[tempi,Jindex] = pdist2(Vcoord,Jcoord,'euclidean');
-[Juniq,tempi,Jinvpt] = unique(Jindex);
-[dC,u] = hist(Jinvpt,unique(Jinvpt));
-nDemes = Mstruct.nDemes;
-oDemes = length(Juniq);
+[oDemes,Jinvpt] = samples_to_demes(Coord,Demes);
+Jindex = oDemes(Jinvpt);
 
-Kuniq = 1:nDemes;
-allobsrv = 1;
-if (oDemes~=nDemes)
-  Kuniq(Juniq) = [];
-  allobsrv = 0;
-end
+n = length(Jinvpt);
+o = length(oDemes);
+winv = ones(o,1)/2;
 
-Mstruct.Juniq = Juniq;
-Mstruct.Kuniq = Kuniq;
-Mstruct.allobsrv = allobsrv;
-
-n = nIndiv;
-o = oDemes;
-oDinvoconst = - 2*n;
-ldDinvconst = + log(n) + (n-o)*log(2);
-Bconst = 4*sum(sum(Diffs));
-
-Onev = ones(n);
 Jpt = sparse(1:n,Jinvpt,1);
-JtOJ = Jpt'*Onev*Jpt;
-JtDJ = Jpt'*Diffs*Jpt;
-JtDOJ = 2*Jpt'*(Diffs*Onev+Onev*Diffs)*Jpt;
-Counts = sparse(1:o,1:o,dC);
-Cinv = sparse(1:o,1:o,1./dC);
+JtO = Jpt'*ones(n);
+JtD = Jpt'*Diffs;
+JtOJ = JtO*Jpt;
+JtDJ = JtD*Jpt;
+Sizes = Jpt'*ones(n,1);
+cwinvt = Sizes*winv';
+JtDJvct = JtDJ*cwinvt' + cwinvt*JtDJ';
 
-DviQ = projection_DinvQ(Diffs/2);
-ldDviQ = pseudo_logdet(-DviQ);
+Bconst = winv'*JtDJ*winv;    %% winv'*J'*D*J*winv
+oDinvoconst = - Sizes'*winv; %% -diag(J*J')'*winv
+ldDinvconst = log(n) - sum(log(Sizes)) + sum(log(winv).*Sizes); 
+
+%% A basis for contrasts %%
+L = [-ones(n-1,1),eye(n-1)];
+ldDviQ = logdet(L*L') - logdet(-L*Diffs*L');
 
 Sstruct = struct('nIndiv',{nIndiv},...
                  'nSites',{nSites},...
-                 'oDemes',{oDemes},...
-                 'diploid',{1},...
+		 'oDemes',{oDemes},...
+		 'Diffs',{Diffs},...
+		 'Sizes',{Sizes},...
 		 'microsat',{0},...
-                 'Jinvpt',{Jinvpt},...
-                 'Counts',{Counts},...
+		 'diploid',{1},...
                  'ldDinvconst',{ldDinvconst},...
                  'oDinvoconst',{oDinvoconst},...
                  'Bconst',{Bconst},...
-		 'Cconst',{1/2},...
-		 'Cinv',{Cinv},...
 		 'JtOJ',{JtOJ},...
 		 'JtDJ',{JtDJ},...
-		 'JtDOJ',{JtDOJ},...
-		 'ldDviQ',{ldDviQ});
+		 'ldDviQ',{ldDviQ},...
+		 'JtDJvct',{JtDJvct});

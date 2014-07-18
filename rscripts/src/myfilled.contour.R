@@ -45,7 +45,7 @@ myfilled.contour <-
         storage.mode(z) <- "double"
     .filled.contour(as.double(x), as.double(y), z, as.double(levels),
                     col = col)
-    if (frame.plot) { box(col=axis.col) }
+    if (frame.plot) { box( ) }
     if (missing(plot.title)) { title(...) }
     else { plot.title }
     if (!missing(plot.axes)) { plot.axes }
@@ -93,7 +93,7 @@ myfilled.legend <-
     if (!missing(key.axes)) {
         key.axes
     } else {
-        axis(4, col.axis = fg.col, tick = FALSE)
+        axis(4,tick = FALSE)
     }
     if (!missing(key.title)) {
         key.title

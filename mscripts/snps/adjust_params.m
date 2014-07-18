@@ -15,10 +15,10 @@ oDinvo = Sstruct.oDinvoconst ...
        + sum(sum(X.*Sstruct.JtOJ));
 A = sum(sum(X.*Sstruct.JtDJ));
 B = Sstruct.Bconst ...
-  - sum(sum(X.*Sstruct.JtDOJ)) ...
+  - sum(sum(X.*Sstruct.JtDJvct)) ...
   + sum(sum(XC'*Sstruct.JtDJ*XC));
-trDinvQxD = (A - B/oDinvo)/2;
-c = params.s2locC + df*(n-1);
-d = params.s2locD + df*trDinvQxD;
+trDinvQxD = A - B/oDinvo;
+c = params.s2locShape + df*(n-1);
+d = params.s2locScale + df*trDinvQxD;
 s2loc = rinvgam(c/2,d/2);
 params.s2loc = s2loc;
