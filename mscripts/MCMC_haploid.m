@@ -223,14 +223,15 @@ fprintf(runid,'Final log likelihood:    %7.5f\n',ll0);
 mcmc = MCMC_fdisp(runid,mcmc);
 fclose(runid);
 
-dlmwrite(strcat(mcmcpath,'.mcmcmhyper'),mcmcmhyper,'delimiter',' ');
-dlmwrite(strcat(mcmcpath,'.mcmcthetas'),mcmcthetas,'delimiter',' ');
-dlmwrite(strcat(mcmcpath,'.mcmcmtiles'),mcmcmtiles,'delimiter',' ');
-dlmwrite(strcat(mcmcpath,'.mcmcpilogl'),mcmcpilogl,'delimiter',' ');
+dlmwrite(strcat(mcmcpath,'.mcmcmhyper'),mcmcmhyper,'delimiter',' ','precision',6);
+dlmwrite(strcat(mcmcpath,'.mcmcthetas'),mcmcthetas,'delimiter',' ','precision',6);
+dlmwrite(strcat(mcmcpath,'.mcmcpilogl'),mcmcpilogl,'delimiter',' ','precision',6);
 
-dlmcell(strcat(mcmcpath,'.mcmcxcoord'),mcmcxCoord);
-dlmcell(strcat(mcmcpath,'.mcmcycoord'),mcmcyCoord);
-dlmcell(strcat(mcmcpath,'.mcmcmrates'),mcmcmRates);
+dlmwrite(strcat(mcmcpath,'.mcmcmtiles'),mcmcmtiles,'delimiter',' ');
+
+dlmcell(strcat(mcmcpath,'.mcmcxcoord'),mcmcxCoord,'delimiter',' ','precision',6);
+dlmcell(strcat(mcmcpath,'.mcmcycoord'),mcmcyCoord,'delimiter',' ','precision',6);
+dlmcell(strcat(mcmcpath,'.mcmcmrates'),mcmcmRates,'delimiter',' ','precision',6);
 
 dlmwrite(strcat(mcmcpath,'.edges'),Edges,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.demes'),Demes,'delimiter',' ');
