@@ -223,19 +223,19 @@ fprintf(runid,'Final log likelihood:    %7.5f\n',ll0);
 mcmc = MCMC_fdisp(runid,mcmc);
 fclose(runid);
 
-dlmwrite(strcat(mcmcpath,'.mcmcmhyper'),mcmcmhyper,'delimiter',' ','precision',6);
-dlmwrite(strcat(mcmcpath,'.mcmcthetas'),mcmcthetas,'delimiter',' ','precision',6);
-dlmwrite(strcat(mcmcpath,'.mcmcpilogl'),mcmcpilogl,'delimiter',' ','precision',6);
+dlmwrite(strcat(mcmcpath,'.mcmcmhyper'),mcmcmhyper,'delimiter',' ','precision','%.6f');
+dlmwrite(strcat(mcmcpath,'.mcmcthetas'),mcmcthetas,'delimiter',' ','precision','%.6f');
+dlmwrite(strcat(mcmcpath,'.mcmcpilogl'),mcmcpilogl,'delimiter',' ','precision','%.6f');
 
-dlmwrite(strcat(mcmcpath,'.mcmcmtiles'),mcmcmtiles,'delimiter',' ');
+dlmwrite(strcat(mcmcpath,'.mcmcmtiles'),mcmcmtiles,'delimiter',' '); %% integers
 
-dlmcell(strcat(mcmcpath,'.mcmcxcoord'),mcmcxCoord,'delimiter',' ','precision',6);
-dlmcell(strcat(mcmcpath,'.mcmcycoord'),mcmcyCoord,'delimiter',' ','precision',6);
-dlmcell(strcat(mcmcpath,'.mcmcmrates'),mcmcmRates,'delimiter',' ','precision',6);
+dlmcell(strcat(mcmcpath,'.mcmcxcoord'),mcmcxCoord,'delimiter',' ','precision','%.6f');
+dlmcell(strcat(mcmcpath,'.mcmcycoord'),mcmcyCoord,'delimiter',' ','precision','%.6f');
+dlmcell(strcat(mcmcpath,'.mcmcmrates'),mcmcmRates,'delimiter',' ','precision','%.6f');
 
-dlmwrite(strcat(mcmcpath,'.edges'),Edges,'delimiter',' ');
-dlmwrite(strcat(mcmcpath,'.demes'),Demes,'delimiter',' ');
-dlmwrite(strcat(mcmcpath,'.ipmap'),Jindex,'delimiter',' ');
+dlmwrite(strcat(mcmcpath,'.demes'),Demes,'delimiter',' ','precision','%.6f');
+dlmwrite(strcat(mcmcpath,'.edges'),Edges,'delimiter',' '); %% integers
+dlmwrite(strcat(mcmcpath,'.ipmap'),Jindex,'delimiter',' '); %% integers
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -296,5 +296,5 @@ Counts = Counts + ~Counts;
 JtDobsJ = JtDobsJ./Counts;
 JtDhatJ = JtDhatJ./Counts;
 
-dlmwrite(strcat(mcmcpath,'.rdistJtDobsJ'),JtDobsJ,'delimiter',' ','precision',6);
-dlmwrite(strcat(mcmcpath,'.rdistJtDhatJ'),JtDhatJ,'delimiter',' ','precision',6);
+dlmwrite(strcat(mcmcpath,'.rdistJtDobsJ'),JtDobsJ,'delimiter',' ','precision','%.6f');
+dlmwrite(strcat(mcmcpath,'.rdistJtDhatJ'),JtDhatJ,'delimiter',' ','precision','%.6f');

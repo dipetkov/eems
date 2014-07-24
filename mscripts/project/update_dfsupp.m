@@ -13,7 +13,7 @@ dfmin = params.dfmin;
 dfmax = params.dfmax;
 dflob = params.dflob;
 dfupb = params.dfupb;
-if mcmc.currIter>(mcmc.numBurnIter/2)
+if mcmc.currIter>(mcmc.numBurnIter/3)
   prop = 1;
 else 
   prop = 0;
