@@ -1,0 +1,46 @@
+Input parameter values:
+             numMCMCIter:  1200
+             numBurnIter:  600
+             numThinIter:  9
+      mEffctHalfInterval:  2.4771
+      qEffctHalfInterval:  0.1
+     mrateMuHalfInterval:  2
+     qrateMuHalfInterval:  1e-12
+        mSeedsProposalS2:  0.01
+        qSeedsProposalS2:  0.1
+        mEffctProposalS2:  0.1
+        qEffctProposalS2:  0.001
+       mrateMuProposalS2:  0.01
+       qrateMuProposalS2:  0.01
+              mrateShape:  0.001
+              qrateShape:  0.001
+              s2locShape:  0.001
+              qrateScale:  1
+              mrateScale:  1
+              s2locScale:  1
+               negBiSize:  10
+               negBiProb:  0.66667
+
+Processing dataset ../data/uniform-schemeZ-nIndiv300-s12x8-u4Nm1-L3000
+MCMC output saved to ../data/uniform-schemeZ-nIndiv300-s12x8-u4Nm1-L3000-g13x7-simno1
+The triangular grid is 13x7
+Initial log prior:       -9.61521
+Initial log likelihood:  159133.88904
+Final log prior:         21.92472
+Final log likelihood:    186857.05785
+Acceptance proportions:
+	(1845/2400) = 76.88% for type 1
+		(1200/1200) = 100.00% for subtype 1
+		(645/1200) = 53.75% for subtype 2
+	(4295/18212) = 23.58% for type 2
+	(0/1200) = 0.00% for type 3
+	(2010/18212) = 11.04% for type 4
+	(1570/18630) = 8.43% for type 5
+		(784/9254) = 8.47% for subtype 1
+		(786/9376) = 8.38% for subtype 2
+	(177/2314) = 7.65% for type 6
+	(94/1200) = 7.83% for type 7
+	(1175/2314) = 50.78% for type 8
+	(31/2329) = 1.33% for type 9
+		(16/1425) = 1.12% for subtype 1
+		(15/904) = 1.66% for subtype 2

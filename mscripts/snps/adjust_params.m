@@ -1,7 +1,9 @@
 
 
 function params = adjust_params(Sstruct,kernel,params)
-%% Initialize the scale parameters (s2loc) %%
+%% Initialize the scale parameter s2loc       %%
+%% The other scale parameter is df, which is  %%
+%% already initiailized as df = n (nIndiv)    %%
 
 
 %%%%%%%%%%%%%%%%%%%%%%
@@ -11,11 +13,11 @@ df = params.df;
 XC = kernel.XC;
 X = kernel.X;
 n = Sstruct.nIndiv;
-oDinvo = Sstruct.oDinvoconst ...
+oDinvo = kernel.oDinvoconst ...
        + sum(sum(X.*Sstruct.JtOJ));
 A = sum(sum(X.*Sstruct.JtDJ));
-B = Sstruct.Bconst ...
-  - sum(sum(X.*Sstruct.JtDJvct)) ...
+B = kernel.Bconst ...
+  - sum(sum(X.*kernel.cvtJtDJvct)) ...
   + sum(sum(XC'*Sstruct.JtDJ*XC));
 trDinvQxD = A - B/oDinvo;
 c = params.s2locShape + df*(n-1);

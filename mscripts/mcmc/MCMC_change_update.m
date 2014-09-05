@@ -5,7 +5,7 @@ function [mcmc,schedule] = MCMC_change_update(mcmc,schedule)
 
 type = mcmc.currType;
 
-if (type<=5)
+if (type<=9)
   schedule.paramtoupdate{type} = schedule.paramtoupdate{type} + 1;
   if (schedule.paramtoupdate{type} > schedule.numparams{type})
     schedule.paramtoupdate{type} = 1;

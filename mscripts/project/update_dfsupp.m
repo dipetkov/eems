@@ -1,6 +1,6 @@
 
 
-function params = update_dfsupp(Sstruct,Voronoi,params,mcmc)
+function params = update_dfsupp(Sstruct,params,mcmc)
 %% During the burn-in phase, the degrees of freedom parameter
 %% is kept fixed at its lowest possible value, nIndiv
 %% (Actually, for 3/4-ths of the burn-in iterations)

@@ -1,9 +1,0 @@
-
-
-bed2diffs is a small program that reads in plink files in bed/bim/fam format and computes the average pairwise differences.
-
-For reading the plink genotype files, bed2diffs requires the libplinkio C library, which has to be installed first and which can be downloaded from the https://github.com/fadern/libplinkio.
-
-For the actual computation, bed2diffs requires the Eigen template library, which does not need to be installed and  which can be downloaded from http://eigen.tuxfamily.org.
-
-After obtaining the required libraries, update the paths in the Makefile.

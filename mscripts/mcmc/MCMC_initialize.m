@@ -1,15 +1,16 @@
 
 
-function [mcmc,schedule] = MCMC_initialize(Voronoi,params,opt)
+function [mcmc,schedule] = MCMC_initialize(qVoronoi,mVoronoi,params,opt)
 
 
-numUpdateTypes = 5;
+numUpdateTypes = 9;
 numThetas = params.numthetas;
 okayMoves = cell(numUpdateTypes,1);
 totalMoves = cell(numUpdateTypes,1);
 dimUpdateTypes = ones(numUpdateTypes,1);
-dimUpdateTypes(1) = numThetas;  %% The first type of update is a nuisance parameter  %%
-dimUpdateTypes(end) = 2;        %% The final type of update is birth/death of a tile %%
+dimUpdateTypes(1) = numThetas;     %% This update is a nuisance parameter   %%
+dimUpdateTypes(5) = 2;             %% This update is birth/death of a qtile %%
+dimUpdateTypes(9) = 2;             %% This update is birth/death of a mtile %%
 
 for i=1:numUpdateTypes
   okayMoves{i} = zeros(dimUpdateTypes(i),1);
@@ -36,20 +37,32 @@ mcmc.kk = 1:mcmc.numSteps;
 
 %% Initialize the tile and rate indices %%
 
-numparams = cell(5,1);
-numparams{1} = params.numthetas;
-numparams{2} = Voronoi.mtiles;
-numparams{3} = 1;
-numparams{4} = Voronoi.mtiles;
-numparams{5} = 1;
+qtiles = qVoronoi.qtiles;
+mtiles = mVoronoi.mtiles;
 
-paramtoupdate = cell(5,1);
+numparams = cell(9,1);
+numparams{1} = params.numthetas;
+numparams{2} = qtiles;
+numparams{3} = 1;
+numparams{4} = qtiles;
+numparams{5} = qtiles;
+
+numparams{6} = mtiles;
+numparams{7} = 1;
+numparams{8} = mtiles;
+numparams{9} = mtiles;
+
+paramtoupdate = cell(9,1);
 paramtoupdate{1} = 1;
 paramtoupdate{2} = 1;
 paramtoupdate{3} = 1;
 paramtoupdate{4} = 1;
 paramtoupdate{5} = 1;
+paramtoupdate{6} = 1;
+paramtoupdate{7} = 1;
+paramtoupdate{8} = 1;
+paramtoupdate{9} = 1;
 
 schedule = struct('numparams',{numparams},...
                   'paramtoupdate',{paramtoupdate});
-[mcmc,schedule] = index_schedule(Voronoi,params,mcmc,schedule);
+[mcmc,schedule] = index_schedule(qVoronoi,mVoronoi,params,mcmc,schedule);

@@ -7,7 +7,7 @@ next = 0;
 type = mcmc.currType;
 
 
-if (type<=5)
+if (type<=9)
   if (schedule.paramtoupdate{type} == schedule.numparams{type})
     next = 1;
   end

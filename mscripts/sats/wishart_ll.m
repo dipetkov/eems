@@ -1,13 +1,11 @@
 
 
 function ll = wishart_ll(Sstruct,kernel,params)
-%% Compute the log likelihood for               %%
-%% Sv ~ Wishart(-L*Delta*L'*(s2loc/df),df)      %%
-%% where Sv is the observed similarity matrix   %%
-%% from microsats with possibly missing alleles %%
-%% Note that because of the loop, it would be   %%
-%% much faster to use sats/wishart_ll.m if      %%
-%% there are no missing alleles                 %%
+%% Compute the log likelihood for                 %%
+%% -L*Dobs*L' ~ Wishart(-L*Dhat*L'*(s2loc/df),df) %%
+%% where Sv is the observed similarity matrix     %%
+%% from microsats with possibly missing alleles   %%
+%% This function loops over the microsats         %%
 
 
 n = Sstruct.nIndiv;
@@ -16,37 +14,36 @@ nSites = Sstruct.nSites;
 trDinvQxD = zeros(nSites,1);
 ldetDinvQ = zeros(nSites,1);
 
+%% oDinvo = 1'*inv(Dhat)*1                    
+%%        = -c'*inv(w) + trace(X*J'*1*1'*J)  %% where c = diag(J*J'), J'*1*1'*J = JtOJ
+%% A = trace(inv(Dhat)*Dobs)
+%%   = trace(X*J'*Dobs*J)                    %% where J'*Dobs*J = JtDJ
+%% B = trace(1*1'*inv(Dhat)*Dobs*inv(Dhat))
+%%   = inv(w)'*J'*Dobs*J*inv(w)                   
+%%   - trace(X*(c*inv(w)'*J'*Dobs*J + J'*Dobs*J*inv(w)*c'))
+%%          %% where (c*inv(w)'*J'*Dobs*J + J'*Dobs*J*inv(w)*c') = cvtJtDJvct
+%%   + 1'*C*X*J'*Dobs*J*X*C*1                     
 for s = 1:nSites
   X = kernel.X{s};
   XC = kernel.XC{s};
-  %% oDinvo = 1'*inv(Delta)*1                    %% where J'*1*1'*J = JtOJ
-  %%        = -c'*inv(w) + trace(X*J'*1*1'*J)    %% c = diag(J*J')
-  %%                                             %% w = 1 (McRae's approximation)
-  %%                                             %% Therefore, c'*inv(w) = n
-  %% A = trace(inv(Delta)*D)
-  %%   = trace(X*J'*D*J)                         %% where Jt*D*J = JtDJ
-  %% B = trace(1*1'*inv(Delta)*D*inv(Delta))
-  %%   = inv(w)'*J'*D*J*inv(w)                   %% where inv(w)'*J'*D*J*inv(w) = sum(sum(D))
-  %%   - trace(X*(c*inv(w)'*J'*D*J + J'*D*J*inv(w)*c'))
-  %%   + 1'*C*X*J'*D*J*X*C*1                     %% where c*inv(w)'*J'*D*J = J'*1*1'*D*J
-  oDinvo = Sstruct.oDinvoconst(s) ...
+  oDinvo = kernel.oDinvoconst(s) ...
          + sum(sum(X.*Sstruct.JtOJ{s}));
   A = sum(sum(X.*Sstruct.JtDJ{s}));
-  B = Sstruct.Bconst(s) ...
-    - sum(sum(X.*Sstruct.JtDJvct{s})) ...
+  B = kernel.Bconst(s) ...
+    - sum(sum(X.*kernel.cvtJtDJvct{s})) ...
     + sum(sum(XC'*Sstruct.JtDJ{s}*XC));
   %% ldDinvconst = log(1'*1) - logdet(J*J') + logdet(Winv)
   %%     ldCiBwi = logdet(inv(C)-B*inv(W))
   %%     where C = diag(c), W = diag(J*w) and Winv = diag(J*winv)
-  ldetDinvQ(s) = Sstruct.ldDinvconst(s) ...      %% logDet(-inv(Delta)*Q)
+  ldetDinvQ(s) = kernel.ldDinvconst(s) ...   %% logDet(-inv(Dhat)*Q)
                - kernel.ldCiBwi(s) ...
                - log(abs(oDinvo));
-  trDinvQxD(s) = A - B/oDinvo;                   %% trace(inv(Delta)*Q*D)
+  trDinvQxD(s) = A - B/oDinvo;               %% trace(inv(Dhat)*Q*Dobs)
 end
 
-%% If the degrees of freedom are not updated,   %%
-%% then the log likelihood across p independent %%
-%% microsates is proportional to                %%
+%% If the degrees of freedom are not updated,    %%
+%% then the log likelihood across p independent  %%
+%% microsates is proportional to                 %%
 ll = sum(ldetDinvQ) ...
    - sum((n-1).*log(s2loc)) ...
    - sum(trDinvQxD./s2loc);

@@ -5,17 +5,24 @@ source('src/myeems.plots.R')
 
 
 ## Path to the OCTAVE/MATLAB output 
-datapath <- '../data/dip-uniform-nIndiv100-nSites1000-gridSize8x7'
-mcmcpath <- '../data/dip-uniform-nIndiv100-nSites1000-gridSize8x7-g12x8'
-plotpath <- './dip-uniform-nIndiv100-nSites1000-gridSize8x7-g12x8'
+datapath <- '../examples/data/uniform-schemeZ-nIndiv300-s12x8-u4Nm1-L3000'
+mcmcpath <- '../examples/data/uniform-schemeZ-nIndiv300-s12x8-u4Nm1-L3000-g13x7'
+plotpath <- '../examples/data/uniform-schemeZ-nIndiv300-s12x8-u4Nm1-L3000-g13x7'
 
-simnos <- 1:3
+simnos <- 1:5
 
 dimns <- read.dimns(datapath)
 plot.height <- 5
 plot.width <- 5*(dimns$xspan/dimns$yspan)
-plot.filename <- paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-avesoln.png',sep='')
 
-png(file=plot.filename,height=plot.height,width=plot.width,units="in",res=150)
-mcmc.mrates.simnos(mcmcpath,simnos,dimns)
+png(file=paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-avesoln%02d.png',sep=''),
+    height=plot.height,width=plot.width,units="in",res=150)
+mlegend <- mcmc.mrates.simnos(mcmcpath,simnos,dimns)
+qlegend <- mcmc.qrates.simnos(mcmcpath,simnos,dimns)
+dev.off( )
+
+png(file=paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-legend%02d.png',sep=''),
+    height=plot.height,width=0.3*plot.width,units="in",res=150)
+mcmc.mrates.legend(datapath,mcmcpath,dimns,mmrks,mlegend)
+mcmc.qrates.legend(datapath,mcmcpath,dimns,qmrks,qlegend)
 dev.off( )

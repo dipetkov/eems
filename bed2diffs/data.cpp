@@ -35,8 +35,10 @@ void Data::getsize( )
 // Expects PLINK BED in SNP-major format
 void Data::bed2diffs()
 {
-  std::string outfile = datapath + ".diffs";
-  std::ofstream out(outfile.c_str(), std::ios::out);
+  std::string diffsfile = datapath + ".diffs";
+  std::string orderfile = datapath + ".order";
+  std::ofstream outdiffs(diffsfile.c_str(), std::ios::out);
+  std::ofstream outorder(orderfile.c_str(), std::ios::out);
   std::stringstream errMsg;
 
   RowVectorXd zvec(nIndiv);
@@ -53,7 +55,7 @@ void Data::bed2diffs()
   while ( pio_next_row( &plink_file, snp_buffer ) == PIO_OK )
     {
 
-      for (unsigned int j = 0 ; j < nIndiv ; j++) 
+      for ( unsigned int j = 0 ; j < nIndiv ; j++ ) 
 	{
 	  
 	  /* Do not impute missing genotypes:
@@ -99,16 +101,29 @@ void Data::bed2diffs()
       Counts += obsrvBoth;
     }
   
-  if (!out.is_open())
+  if (!outdiffs.is_open())
     {
-      errMsg << "[Data::bed2diffs] Error writing file " << outfile << std::endl;
+      errMsg << "[Data::bed2diffs] Error writing file " << diffsfile << std::endl;
+      throw std::ios_base::failure(errMsg.str());
+    }   
+  if (!outorder.is_open())
+    {
+      errMsg << "[Data::bed2diffs] Error writing file " << orderfile << std::endl;
       throw std::ios_base::failure(errMsg.str());
     }   
   
+  for ( unsigned int j = 0 ; j < nIndiv ; j++ ) 
+    {
+
+      struct pio_sample_t *sample = pio_get_sample( &plink_file, j );
+      outorder << sample->fid << " " << sample->iid << std::endl;
+    }
+  
   Diffs = Diffs.cwiseQuotient(Counts);
-  out << Diffs << std::endl;
+  outdiffs << Diffs << std::endl;
   
   free( snp_buffer );
   pio_close( &plink_file );
-  out.close( );
+  outdiffs.close( );
+  outorder.close( );
 }

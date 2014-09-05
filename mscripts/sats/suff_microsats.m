@@ -14,7 +14,7 @@ Coord = dlmread(strcat(datapath,'.coord'));    %% coordinates
 nSites = ncol(Sites)/2;
 
 %% Pattern of missingness most likely varies across microsats
-%% so save information for each locus in cell arrays
+%% so save information for each locus in a cell array
 %% Then will loop over the loci to compute the log likelihood (ll),
 %% so wishart_ll takes longer to evaluate for microsats than for snps
 Sizes = cell(nSites,1);
@@ -62,7 +62,6 @@ for s = 1:nSites
 
   n = length(Jinvpt);
   o = length(oDemes{s});
-  winv = ones(o,1);
 
   %% Jpt is an indicator variable such that
   %% Jpt(i,a) = 1 if individual i comes from deme a and 0 otherwise
@@ -72,26 +71,15 @@ for s = 1:nSites
   JtOJ{s} = JtO*Jpt;
   JtDJ{s} = JtD*Jpt;
   Sizes{s} = Jpt'*ones(n,1);
-  cwinvt = Sizes{s}*winv';
-  JtDJvct{s} = JtDJ{s}*cwinvt' + cwinvt*JtDJ{s}';
-
-  Bconst(s) = winv'*JtDJ{s}*winv;    %% winv'*J'*D*J*winv
-  oDinvoconst(s) = - Sizes{s}'*winv; %% -diag(J*J')'*winv
-  ldDinvconst(s) = log(n) - sum(log(Sizes{s})) + sum(log(winv).*Sizes{s}); 
-
 end
 
 Sstruct = struct('nIndiv',{nIndiv},...
                  'nSites',{nSites},...
 		 'oDemes',{oDemes},...
-		 'microsat',{1},...
-                 'ldDinvconst',{ldDinvconst},...
-                 'oDinvoconst',{oDinvoconst},...
-                 'Bconst',{Bconst},...
 		 'Sizes',{Sizes},...
+		 'microsat',{1},...
 		 'JtOJ',{JtOJ},...
-                 'JtDJ',{JtDJ},...
-                 'JtDJvct',{JtDJvct});
+                 'JtDJ',{JtDJ});
 
 [oDemes,Jinvpt] = samples_to_demes(Coord,Demes);
 Jindex = oDemes(Jinvpt);
