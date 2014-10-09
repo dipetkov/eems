@@ -12,7 +12,7 @@ int main(int argc, char * argv[])
   ////////////////////////////////////////////////////////////////////////////////
   // Parse commandline arguments
   if ( argc!=3 || strcmp(argv[1],"--bfile")!=0 ) {
-    std::cerr << "Usage: " << argv[0] << " --bfile NAME " << std::endl;
+    std::cerr << "Usage: " << argv[0] << " --bfile PlinkData " << std::endl;
     return 1;
   }
   std::string bfilepath(argv[2]);

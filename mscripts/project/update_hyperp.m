@@ -1,6 +1,6 @@
 
 
-function params = update_hyperp(Sstruct,qVoronoi,mVoronoi,params,mcmc)
+function params = update_hyperp(Data,qVoronoi,mVoronoi,params,mcmc)
 %% Update hyperparameters (the effects variance rateS2) %%
 
 

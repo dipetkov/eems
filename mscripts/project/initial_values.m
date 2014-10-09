@@ -1,10 +1,10 @@
 
 
-function [qVoronoi,mVoronoi,params] = initial_values(Sstruct,Demes,habitat,opt)
+function [qVoronoi,mVoronoi,params] = initial_values(Data,Demes,habitat,opt)
 
 
-p = Sstruct.nSites;
-n = Sstruct.nIndiv;
+p = Data.nSites;
+n = Data.nIndiv;
 
 if ~isfield(opt,'dfProposalS2')
   dfProposalS2 = sqrt(p);
@@ -68,7 +68,7 @@ params = struct('mrateShape',{opt.mrateShape},...
 		'qSeedsProposalS2',{qSeedsProposalS2},...
 		'dfProposalS2',{dfProposalS2});
 
-if Sstruct.microsat
+if Data.microsat
   params.df = p;
   params.dflob = p - 1;
   params.dfmin = p - 1;

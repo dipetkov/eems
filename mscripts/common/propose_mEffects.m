@@ -1,7 +1,7 @@
 
 
 function [proposal,pi1_pi0] = ...
-    propose_mEffects(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule)
+    propose_mEffects(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule)
 
 %%%%%%%%%%
 type = 6;%
@@ -20,8 +20,8 @@ if min( abs(mEffcts)<params.mEffctHalfInterval )
   mRates = realpow(10,mEffcts + params.mrateMu);
   qRates = realpow(10,qEffcts + params.qrateMu);
   [qValues,mValues] = ...
-    average_rates(Mstruct,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,qVoronoi.Demes);
-  proposal.kernel = resistance_kernel(Sstruct,Mstruct,mValues,qValues);
+    average_rates(Graph,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,qVoronoi.Demes);
+  proposal.kernel = resistance_kernel(Data,Graph,mValues,qValues);
   pi1_pi0 = -sum(((mEffcts.^2)-(mVoronoi.mEffcts.^2))/(2*params.mrateS2));
 else
   pi1_pi0 = -Inf;

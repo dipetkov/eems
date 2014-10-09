@@ -1,10 +1,10 @@
 
 
-function [Demes,Edges,habitat,inDemes,Mij] = make_triangular_grid(datapath,xDemes,yDemes)
+function [Demes,Edges,Pairs,habitat,inDeme] = make_triangular_grid(datapath,xDemes,yDemes)
 %% Construct three data structures that describe the triangular grid       %%
 %% Demes: list of vertices (one vertex per row, with x- and y-coordinates) %%
 %% Edges: list of neighbors (one vertex per row, at most six neighbors)    %%
-%% Mij: pairs of connected vertices (one edge per row)                     %%
+%% Pairs: pairs of connected vertices (one edge per row)                   %%
 
 
 dimns = dlmread(strcat(datapath,'.dimns'));
@@ -12,8 +12,8 @@ xmin = dimns(1,1);
 xmax = dimns(1,2);
 ymin = dimns(2,1);
 ymax = dimns(2,2);
-nDemes = xDemes*yDemes;        %% n_{alpha,alpha} %%
-nPairs = nDemes*(nDemes-1)/2;  %% n_{alpha,beta}  %%
+nDemes = xDemes*yDemes;
+nPairs = nDemes*(nDemes-1)/2;
 nEdges = (xDemes-1)*yDemes+(2*xDemes-1)*(yDemes-1);
 
 %% A triangular grid extends half a triangle on the right %%
@@ -31,10 +31,10 @@ habitat = struct('xmin',{xmin},'xmax',{xmax},...
 		 'xDemes',{xDemes},...
 		 'yDemes',{yDemes},...
 		 'isregular',{1});
-inDemes = ones(nDemes,1);
+inDeme = ones(nDemes,1);
 Demes = zeros(nDemes,2);
-Edges = zeros(nDemes,6);  %% 0 means that there is no neighbor in the  %%
-Mij = zeros(2*nEdges,2);  %% corresponding position                    %%
+Edges = zeros(nDemes,6);
+Pairs = zeros(nEdges*2,2);
 e = 0;
 
 for r = 1:yDemes
@@ -47,18 +47,18 @@ for c = 1:xDemes
     Edges(alpha,pos) = beta;
     if (beta>0)
       e = e+1;
-      Mij(e,1) = alpha;
-      Mij(e,2) = beta;
+      Pairs(e,1) = alpha;
+      Pairs(e,2) = beta;
     end
   end
 end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function beta = fixed_neighbor(r,c,pos,xDemes,yDemes)
-%% In a triangular grid, a vertex has (at most) %%
-%% six neighbors. This function returns the     %%
-%% indices of the neighbors.                    %%
+%% In a triangular grid, a vertex has (at most) six
+%% six neighbors. This function returns the indices
+%% of the neighbors
 
 % It is simpler to suppose indices start from 0
 r = r-1;
@@ -66,14 +66,14 @@ c = c-1;
 alpha = r*xDemes+c;
 beta = -1;
 
-if     ( (pos==1) && (mod(alpha,xDemes)>0) )
+if     ( (pos==1) && (mod(alpha  ,xDemes)>0) )
   beta = alpha-1;
+elseif ( (pos==4) && (mod(alpha+1,xDemes)>0) )
+  beta = alpha+1; 
 elseif ( (pos==2) && (r<(yDemes-1) && mod(alpha  ,2*xDemes)>0) )
   beta = xDemes*(r+1)+c-mod(r+1,2);
 elseif ( (pos==3) && (r<(yDemes-1) && mod(alpha+1,2*xDemes)>0) )
   beta = xDemes*(r+1)+c+1-mod(r+1,2);
-elseif ( (pos==4) && (mod(alpha+1,xDemes)>0) )
-  beta = alpha+1; 
 elseif ( (pos==5) && (r>0 && mod(alpha+1,2*xDemes)>0) )
   beta = xDemes*(r-1)+c+1-mod(r+1,2);
 elseif ( (pos==6) && (r>0 && mod(alpha  ,2*xDemes)>0) )
@@ -83,4 +83,3 @@ end
 % In MATLAB indices start from 1
 alpha = alpha+1;
 beta = beta+1;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,7 +1,7 @@
 
 
 function [proposal,pi1_pi0] = ...
-    birthdeath_qVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct)
+    birthdeath_qVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph)
 
 %%%%%%%%%%
 type = 5;%
@@ -53,5 +53,5 @@ proposal = struct('type',{type},'subtype',{subtype},...
 mRates = realpow(10,mEffcts + params.mrateMu);
 qRates = realpow(10,qEffcts + params.qrateMu);
 [qValues,mValues] = ...
-  average_rates(Mstruct,qRates,mRates,qSeeds,mSeeds,qVoronoi.Demes);
-proposal.kernel = resistance_kernel(Sstruct,Mstruct,mValues,qValues);
+  average_rates(Graph,qRates,mRates,qSeeds,mSeeds,qVoronoi.Demes);
+proposal.kernel = resistance_kernel(Data,Graph,mValues,qValues);

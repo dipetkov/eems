@@ -52,13 +52,13 @@ while (i<length(varargin))
   i = i + 1;
 end
 
-[Demes,Edges,habitat,inDemes,Mij] = make_triangular_grid(datapath,xDemes,yDemes);
+[Demes,Edges,Pairs,habitat,inDemes] = make_triangular_grid(datapath,xDemes,yDemes);
 
 %% Possibly remove vertex alpha from the graph by setting inDemes(alpha) = 0
 %% The graph must remain connected
 
-[Mstruct,Demes,Edges] = make_irregular_grid(datapath,inDemes,Mij,Demes,Edges);
-[Mstruct,Sstruct,Jindex] = suff_haploid_SNPs(datapath,Demes,Mstruct);
+[Graph,Demes,Edges] = update_irregular_grid(datapath,inDemes,Demes,Edges,Pairs);
+[Graph,Data,Jindex] = suff_haploid_SNPs(datapath,Demes,Graph);
 
 gridsize = strcat(num2str(xDemes),'x',num2str(yDemes));
 fprintf(2,'\nProcessing dataset %s\n',datapath);
@@ -68,16 +68,15 @@ fprintf(2,'Input parameter values:\n');
 dispstruct(2,opt);
 fprintf(2,'\n\n');
   
-[qVoronoi,mVoronoi,params] = initial_values(Sstruct,Demes,habitat,opt);
+[qVoronoi,mVoronoi,params] = initial_values(Data,Demes,habitat,opt);
 mRates = realpow(10,mVoronoi.mEffcts + params.mrateMu);
 qRates = realpow(10,qVoronoi.qEffcts + params.qrateMu);
-[qValues,mValues] = ...
-  average_rates(Mstruct,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,Demes);
-kernel = resistance_kernel(Sstruct,Mstruct,mValues,qValues);
+[qValues,mValues] = average_rates(Graph,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,Demes);
+kernel = resistance_kernel(Data,Graph,mValues,qValues);
 
-params = adjust_params(Sstruct,kernel,params);
-initpi = wishart_prior(Sstruct,qVoronoi,mVoronoi,params);
-initll = wishart_ll(Sstruct,kernel,params);
+params = adjust_params(Data,kernel,params);
+initpi = wishart_prior(Data,qVoronoi,mVoronoi,params);
+initll = wishart_ll(Data,kernel,params);
 [mcmc,schedule] = MCMC_initialize(qVoronoi,mVoronoi,params,opt);
 
 numSteps = mcmc.numSteps;
@@ -114,83 +113,83 @@ while ~mcmc.isfinished
       %% Propose to update the scale parameters sigma_s^2 %%
       %% There is one parameter for each microsatellite   %%
       [proposal,pi1_pi0] = ...
-        propose_thetas(Sstruct,kernel,params,schedule);
+        propose_thetas(Data,kernel,params,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,kernel,proposal.params);
+        ll1 = wishart_ll(Data,kernel,proposal.params);
       end
     elseif (mcmc.currType==2)
       %% Propose to update the coalescence log rates %%
       [proposal,pi1_pi0] = ...
-        propose_qEffects(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule);
+        propose_qEffects(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==3)
       %% Propose to update the mean coalescence log rate %%
       [proposal,pi1_pi0] = ...
-        propose_qrateMu(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct);
+        propose_qrateMu(kernel,params,qVoronoi,mVoronoi,Data,Graph);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==4)
       %% Propose to move the Voronoi tiles around %%
       [proposal,pi1_pi0] = ...
-        move_qVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule);
+        move_qVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==5)
       %% Propose the birth or the death of a tile %%
       [proposal,pi1_pi0] = ...
-        birthdeath_qVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct);
+        birthdeath_qVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==6)
       %% Propose to update the migration log rates %%
       [proposal,pi1_pi0] = ...
-        propose_mEffects(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule);
+        propose_mEffects(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==7)
       %% Propose to update the mean migration log rate %%
       [proposal,pi1_pi0] = ...
-        propose_mrateMu(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct);
+        propose_mrateMu(kernel,params,qVoronoi,mVoronoi,Data,Graph);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==8)
       %% Propose to move the Voronoi tiles around %%
       [proposal,pi1_pi0] = ...
-        move_mVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule);
+        move_mVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     elseif (mcmc.currType==9)
       %% Propose the birth or the death of a tile %%
       [proposal,pi1_pi0] = ...
-        birthdeath_mVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct);
+        birthdeath_mVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph);
       if isinf(pi1_pi0) && (pi1_pi0<0)
         ll1 = 0;
       else
-        ll1 = wishart_ll(Sstruct,proposal.kernel,params);
+        ll1 = wishart_ll(Data,proposal.kernel,params);
       end
     end
 
@@ -224,9 +223,9 @@ while ~mcmc.isfinished
   %% This also changes the prior (but not the likelihood term) %%
   mRates = realpow(10,mVoronoi.mEffcts + params.mrateMu);
   qRates = realpow(10,qVoronoi.qEffcts + params.qrateMu);	
-  params = update_hyperp(Sstruct,qVoronoi,mVoronoi,params,mcmc);
-  params = update_dfsupp(Sstruct,params,mcmc);
-  pi0 = wishart_prior(Sstruct,qVoronoi,mVoronoi,params);
+  params = update_hyperp(Data,qVoronoi,mVoronoi,params,mcmc);
+  params = update_dfsupp(Data,params,mcmc);
+  pi0 = wishart_prior(Data,qVoronoi,mVoronoi,params);
 
   if sum(mcmc.currIter==mcmc.ii)
     currIndex = mcmc.kk(mcmc.currIter==mcmc.ii);
@@ -315,7 +314,7 @@ Sizes = Jpt'*onev;
 Counts = Sizes*Sizes';
 Counts = Counts-diag(Sizes);
 
-Dobs = Sstruct.Diffs;
+Dobs = Data.Diffs;
 Dhat = zeros(nIndiv);
 
 nIters = length(mcmcmtiles);
@@ -332,14 +331,15 @@ for iter = 1:nIters
   qSeeds = [wCoord,zCoord];
   s2loc = mcmcthetas(iter,1);
 
-  [qValues,mValues] = average_rates(Mstruct,qRates,mRates,qSeeds,mSeeds,Demes);
+  [qValues,mValues] = average_rates(Graph,qRates,mRates,qSeeds,mSeeds,Demes);
  
-  G = sparse(Mstruct.Mi,Mstruct.Mj,mValues);
+  G = sparse(Graph.Vi,Graph.Vj,mValues);
   R = resistance_distance(G);
-  B = R(oDemes,oDemes)/4;
-  w = qValues(oDemes);
+  B = R(oDemes,oDemes)/4; %% between-deme distances
+  w = qValues(oDemes);    %% within-deme distances
   w = reshape(w,[],1);
 
+  %% Construct the entire n-ny-n fitted distance matrix
   JBJt = Jpt*B*Jpt';
   Jw = Jpt*w;
   D = JBJt + onev*Jw'/2 + Jw*onev'/2 - diag(Jw);
@@ -356,8 +356,8 @@ Counts = Counts + ~Counts;
 JtDobsJ = JtDobsJ./Counts;
 JtDhatJ = JtDhatJ./Counts;
 
-dlmwrite(strcat(mcmcpath,'.rdistDobs'),Dobs,'delimiter',' ','precision','%.6f');
-dlmwrite(strcat(mcmcpath,'.rdistDhat'),Dhat,'delimiter',' ','precision','%.6f');
+%dlmwrite(strcat(mcmcpath,'.rdistDobs'),Dobs,'delimiter',' ','precision','%.6f');
+%dlmwrite(strcat(mcmcpath,'.rdistDhat'),Dhat,'delimiter',' ','precision','%.6f');
 dlmwrite(strcat(mcmcpath,'.rdistSizes'),Sizes,'delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.rdistoDemes'),oDemes','delimiter',' ');
 dlmwrite(strcat(mcmcpath,'.rdistJtDobsJ'),JtDobsJ,'delimiter',' ','precision','%.6f');

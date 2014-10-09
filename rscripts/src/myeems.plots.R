@@ -17,7 +17,9 @@ eems.colors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC",
                  "#FFFFFF",
                  "#CCFDFF","#99F8FF","#66F0FF","#33E4FF","#00AACC","#007A99")
 numlevels <- length(eems.colors)
-
+x <- 1-1:numlevels/(numlevels+1)
+var.colors <- rgb(cbind(x,x,x))
+var.levels <- seq(from=0,to=1,length.out=numlevels)
 ###########################################################################################
 ###########################################################################################
 ## modification by Ian Taylor of the filled.contour function
@@ -57,9 +59,7 @@ myfilled.contour <-
         stop("increasing 'x' and 'y' values expected")
     }
     plot.new( )
-
     plot.window(xlim=xlim, ylim=ylim, xaxs = xaxs, yaxs = yaxs, asp = asp)
-
     if (!is.matrix(z) || nrow(z) <= 1 || ncol(z) <= 1) 
         stop("no proper 'z' matrix specified")
     if (!is.double(z)) 
@@ -105,10 +105,8 @@ myfilled.legend <-
     }
     plot.new( )
     nlevels = length(levels)
-
-    plot.window(xlim = c(0,1), ylim = range(levels), xaxs = "i", yaxs = "i")
-    
-    rect(0, levels[-nlevels], 1, levels[-1], col = colors, border="white")
+    plot.window(xlim = c(0,1), ylim = range(levels),xaxs = "i",yaxs = "i")
+    rect(0, levels[-nlevels], 1, levels[-1], col = colors, border = NA)
     if (!missing(key.axes)) {
         key.axes
     } else {
@@ -147,12 +145,12 @@ center.mrates <- function(Zmrks) {
 center.qrates <- function(Zmrks) {
     minZ <- min(Zmrks)
     maxZ <- max(Zmrks)
-    numlevels <- length(eems.colors)
     ## The qrates should be centered at about zero
     maxZ2 <- max(maxZ,-minZ)
     maxZ2 <- ceiling(maxZ2*1000)/1000
     minZ <- -maxZ2
     maxZ <- maxZ2
+    numlevels <- length(eems.colors)
     if ((maxZ - minZ)>0.001) {
         eems.levels <- seq(from=minZ,to=maxZ,length=numlevels)
     } else {
@@ -175,9 +173,7 @@ read.dimns <- function(datapath,nxmrks=NULL,nymrks=NULL) {
     return(list(nxmrks=nxmrks,xmrks=xmrks,xrange=xrange,xspan=xspan,
                 nymrks=nymrks,ymrks=ymrks,yrange=yrange,yspan=yspan))
 }
-mcmc.mrates.pt1 <- function(mcmcpath,dimns) {
-    print('Computing posterior mean surface of mrates')
-    print(mcmcpath)
+standardize.mmrks <- function(mcmcpath,dimns) {
     mrates <- scan(paste(mcmcpath,'.mcmcmrates',sep=''),what=numeric())
     mtiles <- scan(paste(mcmcpath,'.mcmcmtiles',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'.mcmcxcoord',sep=''),what=numeric())
@@ -203,7 +199,7 @@ mcmc.mrates.pt1 <- function(mcmcpath,dimns) {
         ## by weighting each tile by its relative size
         ## Rather than compute the exact area of each polygon,
         ## approximate its area by the number of zmrks that
-        ## fall within the tile  
+        ## fall within the tile
         weights <- numeric(curr.mtiles)
         for (t in 1:curr.mtiles) { weights[t] <- sum(closest==t) }
         curr.effcts <- curr.mrates - weighted.mean(curr.mrates,weights)
@@ -211,9 +207,52 @@ mcmc.mrates.pt1 <- function(mcmcpath,dimns) {
         Zmrks <- Zmrks + zmrks/niter
         count <- count + curr.mtiles
     }
-    return (Zmrks)
+    return(Zmrks)
 }
-mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE) {
+standardize.mmrks.var <- function(mcmcpath,dimns,Zmmu) {
+    mrates <- scan(paste(mcmcpath,'.mcmcmrates',sep=''),what=numeric())
+    mtiles <- scan(paste(mcmcpath,'.mcmcmtiles',sep=''),what=numeric())
+    xcoord <- scan(paste(mcmcpath,'.mcmcxcoord',sep=''),what=numeric())
+    ycoord <- scan(paste(mcmcpath,'.mcmcycoord',sep=''),what=numeric())
+    mrates <- log10(mrates)
+    xmrks <- dimns$xmrks
+    ymrks <- dimns$ymrks
+    nxmrks <- length(xmrks)
+    nymrks <- length(ymrks)
+    marks <- cbind(rep(xmrks,nymrks),rep(ymrks,each=nxmrks))
+    Zmvar <- matrix(0,nxmrks,nymrks)
+    niter <- length(mtiles)
+    count <- 0
+    for (i in 1:niter) {
+        curr.mtiles <- mtiles[i]
+        curr.mrates <- mrates[(count+1):(count+curr.mtiles)]
+        curr.xcoord <- xcoord[(count+1):(count+curr.mtiles)]
+        curr.ycoord <- ycoord[(count+1):(count+curr.mtiles)]
+        centers <- cbind(curr.xcoord,curr.ycoord)
+        distances <- rdist(centers,marks)
+        closest <- apply(distances,2,which.min)
+        ## Standardize the log-transformed migration rates
+        ## by weighting each tile by its relative size
+        ## Rather than compute the exact area of each polygon,
+        ## approximate its area by the number of zmrks that
+        ## fall within the tile
+        weights <- numeric(curr.mtiles)
+        for (t in 1:curr.mtiles) { weights[t] <- sum(closest==t) }
+        curr.effcts <- curr.mrates - weighted.mean(curr.mrates,weights)
+        mmrks <- matrix(curr.effcts[closest],nxmrks,nymrks,byrow=FALSE)
+        Zmvar <- Zmvar + (mmrks - Zmmu)^2/niter
+        count <- count + curr.mtiles
+    }
+    return(Zmvar)
+}
+mcmc.mrates.pt1 <- function(mcmcpath,dimns) {
+    print('Computing posterior mean surface of mrates')
+    print(mcmcpath)
+    Zmmu <- standardize.mmrks(mcmcpath,dimns)
+    Zmvar <- standardize.mmrks.var(mcmcpath,dimns,Zmmu)
+    return(list(Zmmu=Zmmu,Zmvar=Zmvar))
+}
+mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.samples=TRUE) {
     print('Plotting posterior mean surface of mrates')
     print(mcmcpath)
     ipmap <- scan(paste(mcmcpath,'.ipmap',sep=''),what=numeric())
@@ -227,10 +266,9 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE)
     sizes <- table(ipmap)
     demes <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
-    eems.levels <- center.mrates(Zmrks)
-    plot.new( )
-    par(new = TRUE, plt = c(0,1,0,1), las = 1, cex.axis = 1)
-    myfilled.contour(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
+    eems.levels <- center.mrates(Zmmu)
+    par(plt=c(0,1,0,1),las=1,cex.axis=1)
+    myfilled.contour(dimns$xmrks,dimns$ymrks,Zmmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
@@ -247,42 +285,48 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE)
                                    if (add.samples) {
                                        points(coord[demes,1],pch=19,
                                               coord[demes,2],col="gray10",
-                                              cex=1+sizes/max(sizes));
+                                              cex=1+sizes/max(sizes))
                                    }
                                })
+    if (!is.null(Zmvar)) {
+        min.Zmvar <- min(Zmvar)
+        max.Zmvar <- max(Zmvar)
+        Zmvar <- (Zmvar - min.Zmvar)/(max.Zmvar - min.Zmvar)
+        myfilled.contour(dimns$xmrks,dimns$ymrks,Zmvar,asp=1,
+                         xlim=dimns$xrange,ylim=dimns$yrange,
+                         col=var.colors,levels=var.levels,frame.plot=FALSE)
+    }
     return(list(colors=eems.colors,levels=eems.levels))
 }
 mcmc.mrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE) {
     Zmrks <- mcmc.mrates.pt1(mcmcpath,dimns)
-    eems.legend <- NULL
-    if (file.exists(paste(mcmcpath,'.mcmcmrates',sep=''))) {
-        eems.legend <- mcmc.mrates.pt2(mcmcpath,dimns,Zmrks,add.grid,add.samples)
-    }
+    eems.legend <- mcmc.mrates.pt2(mcmcpath,dimns,Zmrks$Zmmu,Zmrks$Zmvar,
+                                   add.grid=add.grid,add.samples=add.samples)
     return(eems.legend)
 }
 mcmc.mrates.simnos <- function(mcmcpath,simnos,dimns,add.grid=TRUE,add.samples=TRUE) {
-    Zmrks <- matrix(0,dimns$nxmrks,dimns$nymrks)
+    Zmmu <- matrix(0,dimns$nxmrks,dimns$nymrks)
     nSimno <- 0
     existsSimno <- 0
+    eems.legend <- NULL
     for (simno in simnos) {
         File <- paste(mcmcpath,'-simno',simno,sep='')
         if (file.exists(paste(File,'.mcmcmrates',sep=''))) {
-            Zmrks <- Zmrks + mcmc.mrates.pt1(File,dimns)
+            Zmrks <- mcmc.mrates.pt1(File,dimns)
+            Zmmu <- Zmmu + Zmrks$Zmmu
             nSimno <- nSimno + 1
             existsSimno <- simno
         }
     }
-    eems.legend <- NULL
-    if (existsSimno) {
-        Zmrks <- Zmrks/nSimno
-        eems.legend <- mcmc.mrates.pt2(paste(mcmcpath,'-simno',existsSimno,sep=''),dimns,Zmrks,add.grid,add.samples)
+    if (nSimno>0) {
+        Zmmu <- Zmmu/nSimno
+        eems.legend <- mcmc.mrates.pt2(paste(mcmcpath,'-simno',existsSimno,sep=''),dimns,Zmmu,
+                                       add.grid=add.grid,add.samples=add.samples)
     }
     return(eems.legend)
 }
-mcmc.qrates.pt1 <- function(mcmcpath,dimns) {
-    print('Computing posterior mean surface of qrates')
-    print(mcmcpath)
-    mrates <- scan(paste(mcmcpath,'.mcmcqrates',sep=''),what=numeric())
+standardize.qmrks <- function(mcmcpath,dimns) {
+   mrates <- scan(paste(mcmcpath,'.mcmcqrates',sep=''),what=numeric())
     qtiles <- scan(paste(mcmcpath,'.mcmcqtiles',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'.mcmcwcoord',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'.mcmczcoord',sep=''),what=numeric())
@@ -312,7 +356,50 @@ mcmc.qrates.pt1 <- function(mcmcpath,dimns) {
     }
     return (Zmrks)
 }
-mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE) {
+standardize.qmrks.var <- function(mcmcpath,dimns,Zqmu) {
+    qrates <- scan(paste(mcmcpath,'.mcmcqrates',sep=''),what=numeric())
+    qtiles <- scan(paste(mcmcpath,'.mcmcqtiles',sep=''),what=numeric())
+    xcoord <- scan(paste(mcmcpath,'.mcmcwcoord',sep=''),what=numeric())
+    ycoord <- scan(paste(mcmcpath,'.mcmczcoord',sep=''),what=numeric())
+    qrates <- log10(qrates)
+    xmrks <- dimns$xmrks
+    ymrks <- dimns$ymrks
+    nxmrks <- length(xmrks)
+    nymrks <- length(ymrks)
+    marks <- cbind(rep(xmrks,nymrks),rep(ymrks,each=nxmrks))
+    Zqvar <- matrix(0,nxmrks,nymrks)
+    niter <- length(qtiles)
+    count <- 0
+    for (i in 1:niter) {
+        curr.qtiles <- qtiles[i]
+        curr.qrates <- qrates[(count+1):(count+curr.qtiles)]
+        curr.xcoord <- xcoord[(count+1):(count+curr.qtiles)]
+        curr.ycoord <- ycoord[(count+1):(count+curr.qtiles)]
+        centers <- cbind(curr.xcoord,curr.ycoord)
+        distances <- rdist(centers,marks)
+        closest <- apply(distances,2,which.min)
+        ## Standardize the log-transformed migration rates
+        ## by weighting each tile by its relative size
+        ## Rather than compute the exact area of each polygon,
+        ## approximate its area by the number of zmrks that
+        ## fall within the tile
+        weights <- numeric(curr.qtiles)
+        for (t in 1:curr.qtiles) { weights[t] <- sum(closest==t) }
+        curr.effcts <- curr.qrates - weighted.mean(curr.qrates,weights)
+        qmrks <- matrix(curr.effcts[closest],nxmrks,nymrks,byrow=FALSE)
+        Zqvar <- Zqvar + (qmrks - Zqmu)^2/niter
+        count <- count + curr.qtiles
+    }
+    return(Zqvar)
+}
+mcmc.qrates.pt1 <- function(mcmcpath,dimns) {
+    print('Computing posterior mean surface of qrates')
+    print(mcmcpath)
+    Zqmu <- standardize.qmrks(mcmcpath,dimns)
+    Zqvar <- standardize.qmrks.var(mcmcpath,dimns,Zqmu)
+    return(list(Zqmu=Zqmu,Zqvar=Zqvar))
+}
+mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zqmu,Zqvar=NULL,add.grid=TRUE,add.samples=TRUE) {
     print('Plotting posterior mean surface of qrates')
     print(mcmcpath)
     ipmap <- scan(paste(mcmcpath,'.ipmap',sep=''),what=numeric())
@@ -326,11 +413,9 @@ mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE)
     sizes <- table(ipmap)
     demes <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
-    eems.levels <- center.qrates(Zmrks)
-    plot.new( )
-    eems.levels <- center.qrates(Zmrks)
-    par(new = TRUE, plt = c(0,1,0,1), las = 1, cex.axis = 1)
-    myfilled.contour(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
+    eems.levels <- center.qrates(Zqmu)
+    par(plt=c(0,1,0,1),las=1,cex.axis=1)
+    myfilled.contour(dimns$xmrks,dimns$ymrks,Zqmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
@@ -350,51 +435,57 @@ mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zmrks,add.grid=TRUE,add.samples=TRUE)
                                               cex=1+sizes/max(sizes))
                                    }
                                })
+    if (!is.null(Zqvar)) {
+        min.Zqvar <- min(Zqvar)
+        max.Zqvar <- max(Zqvar)
+        Zqvar <- (Zqvar - min.Zqvar)/(max.Zqvar - min.Zqvar)
+        myfilled.contour(dimns$xmrks,dimns$ymrks,Zqvar,asp=1,
+                         xlim=dimns$xrange,ylim=dimns$yrange,
+                         col=var.colors,levels=var.levels,frame.plot=FALSE)
+    }
     return(list(colors=eems.colors,levels=eems.levels))
 }
 mcmc.qrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE) {
     Zmrks <- mcmc.qrates.pt1(mcmcpath,dimns)
-    eems.legend <- NULL
-    if (file.exists(paste(mcmcpath,'.mcmcmrates',sep=''))) {
-        eems.legend <- mcmc.qrates.pt2(mcmcpath,dimns,Zmrks,add.grid,add.samples)
-    }
+    eems.legend <- mcmc.qrates.pt2(mcmcpath,dimns,Zmrks$Zqmu,Zmrks$Zqvar,
+                                   add.grid=add.grid,add.samples=add.samples)
     return(eems.legend)
 }
 mcmc.qrates.simnos <- function(mcmcpath,simnos,dimns,add.grid=TRUE,add.samples=TRUE) {
-    Zmrks <- matrix(0,dimns$nxmrks,dimns$nymrks)
+    Zqmu <- matrix(0,dimns$nxmrks,dimns$nymrks)
     nSimno <- 0
     existsSimno <- 0
+    eems.legens <- NULL
     for (simno in simnos) {
         File <- paste(mcmcpath,'-simno',simno,sep='')
         if (file.exists(paste(File,'.mcmcqrates',sep=''))) {
-            Zmrks <- Zmrks + mcmc.qrates.pt1(File,dimns)
+            Zmrks <- mcmc.qrates.pt1(File,dimns)
+            Zqmu <- Zqmu + Zmrks$Zqmu
             nSimno <- nSimno + 1
             existsSimno <- simno
         }
     }
-    eems.legend <- NULL
-    if (existsSimno) {
-        Zmrks <- Zmrks/nSimno
-        eems.legend <- mcmc.qrates.pt2(paste(mcmcpath,'-simno',simnos[1],sep=''),dimns,Zmrks)
+    if (nSimno>0) {
+        Zqmu <- Zqmu/nSimno
+        eems.legend <- mcmc.qrates.pt2(paste(mcmcpath,'-simno',existsSimno,sep=''),dimns,Zqmu,
+                                       add.grid=add.grid,add.samples=add.samples)
     }
     return(eems.legend)
 }
 mcmc.mrates.legend <- function(datapath,mcmcpath,dimns,Zmrks,legend) {
-    plot.new( )
-    par(new = TRUE, plt = c(0,0.3,0,1), las = 1, cex.axis = 1.2)
+    par(plt=c(0,0.3,0,1),las=1,cex.axis=1.2)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
                     colors=legend$colors,levels=legend$levels,
-                    key.axes = axis(4,tick=FALSE,line=-0.5),
+                    key.axes = axis(4,tick=FALSE,line=1,hadj=1),
                     key.title = mtext(expression(paste("e"["m"],sep="")),side=3,line=1))
 }
 mcmc.qrates.legend <- function(datapath,mcmcpath,dimns,Zmrks,legend) {
-    plot.new( )
-    par(new = TRUE, plt = c(0,0.3,0,1), las = 1, cex.axis = 1.2)
+    par(plt=c(0,0.3,0,1),las=1,cex.axis=1.2)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
                     colors=legend$colors,levels=legend$levels,
-                    key.axes = axis(4,tick=FALSE,line=-0.5),
+                    key.axes = axis(4,tick=FALSE,line=2,hadj=1),
                     key.title = mtext(expression(paste("e"["q"],sep="")),side=3,line=1))
 }
 mcmc.mrates.voronoi <- function(mcmcpath,dimns) {
@@ -425,9 +516,9 @@ mcmc.mrates.voronoi <- function(mcmcpath,dimns) {
         indices <- which(curr.effcts>eems.levels[L])
         curr.effcts[indices] <- 0.999*eems.levels[L]
         centers <- cbind(curr.xcoord,curr.ycoord)
-        plot.new( )
-        par(new = TRUE,plt = c(0,1,0,1),las = 1,cex.axis = 1)
-        plot.window(xlim=xrange,ylim=yrange,asp=1,xlab='',ylab='')
+        par(plt=c(0,1,0,1),las=1,cex.axis=1)
+        plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
+             xlim=dimns$xrange,ylim=dimns$yrange)
         if (curr.mtiles==1) {
             ## There is only one tile
             which.tile <- max((1:L)[eems.levels<curr.effcts])
@@ -479,9 +570,9 @@ mcmc.qrates.voronoi <- function(mcmcpath,dimns) {
         indices <- which(curr.effcts>eems.levels[L])
         curr.effcts[indices] <- 0.999*eems.levels[L]
         centers <- cbind(curr.xcoord,curr.ycoord)
-        plot.new( )
-        par(new = TRUE,plt = c(0,1,0,1),las = 1,cex.axis = 1)
-        plot.window(xlim=xrange,ylim=yrange,asp=1,xlab='',ylab='')
+        par(plt=c(0,1,0,1),las=1,cex.axis=1)
+        plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
+             xlim=dimns$xrange,ylim=dimns$yrange)
         if (curr.qtiles==1) {
             ## There is only one tile
             which.tile <- max((1:L)[eems.levels<curr.effcts])
@@ -545,7 +636,7 @@ plot.logposterior.simnos <- function(mcmcpath,simnos) {
         legend(1.01*nIters,max(posteriors),legend=plotSimnos,col=1:8,lwd=5,bty="n")
     }
 }
-dist.scatterplot <- function(mcmcpath,singletons=TRUE) {
+dist.scatterplot <- function(mcmcpath,singletons=FALSE) {
     print('Plotting average distances between demes')
     print(mcmcpath)
     Sizes <- scan(paste(mcmcpath,'.rdistSizes',sep=''))
@@ -557,55 +648,48 @@ dist.scatterplot <- function(mcmcpath,singletons=TRUE) {
     JtDobsJ <- as.matrix(JtDobsJ)
     JtDhatJ <- as.matrix(JtDhatJ)
     minSize <- pmin(Size1,Size2)
+    if (!singletons) {
+        ## Remove singleton locations
+        remove <- (1:nPops)[Sizes<=1]
+        if (length(remove)) {
+            JtDobsJ <- JtDobsJ[-remove,-remove]
+            JtDhatJ <- JtDhatJ[-remove,-remove]
+            minSize <- minSize[-remove,-remove]
+            Sizes <- Sizes[-remove]
+            nPops <- nPops - length(remove)
+        }
+    }
     ypts <- JtDobsJ[upper.tri(JtDobsJ,diag=TRUE)]
     xpts <- JtDhatJ[upper.tri(JtDhatJ,diag=TRUE)]
     par(font.main=1)
-    plot(xpts,ypts,type="n",
-         ylab=expression(paste("Observed distances between and within demes  ",D[ab],sep="")),
-         xlab=expression(paste("Fitted distances between and within demes  ",hat(D)[ab],sep="")),
+    plot(xpts,ypts,
+         ylab=expression(paste("Observed distances between and within demes,  ",D[ab],sep="")),
+         xlab=expression(paste("Fitted distances between and within demes,  ",hat(D)[ab],sep="")),
          main="Distances between and within demes")
-    abline(a=0,b=1,col="red",lwd=2)
-    points(xpts,ypts)
     Wobs <- diag(JtDobsJ)
     What <- diag(JtDhatJ)
     ones <- matrix(1,nPops,1)
     Bobs <- JtDobsJ - (Wobs%*%t(ones) + ones%*%t(Wobs))/2
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2
-    if (!singletons) {
-        ## Remove singleton locations
-        remove <- (1:nPops)[Sizes<=1]
-        if (length(remove)) {
-            Bobs <- Bobs[-remove,-remove]
-            Bhat <- Bhat[-remove,-remove]
-            Wobs <- Wobs[-remove]
-            What <- What[-remove]
-            Sizes <- Sizes[-remove]
-            minSize <- minSize[-remove,-remove]
-        }
-    }
-    ypts <- Bobs[upper.tri(Bobs,diag=TRUE)]
-    xpts <- Bhat[upper.tri(Bhat,diag=TRUE)]
-    cnts <- minSize[upper.tri(minSize,diag=TRUE)]
-    plot(xpts,ypts,type="n",
-         xlab=expression(paste("Fitted distances between demes  ",hat(D)[ab],"-(",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
-         ylab=expression(paste("Observed distances between demes  ",D[ab],"-(",D[aa],"+",D[bb],")/2",sep="")))
+    ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
+    xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
+    cnts <- minSize[upper.tri(minSize,diag=FALSE)]
+    plot(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)],
+         xlab=expression(paste("Fitted distances between demes,  ",hat(D)[ab],"-(",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
+         ylab=expression(paste("Observed distances between demes,  ",D[ab],"-(",D[aa],"+",D[bb],")/2",sep="")))
     if (!singletons) {
         title(main="Distances between demes\nSingleton demes excluded from plot (not from EEMS)")
     } else {
         title(main="Distances between demes\nGray means a or b has a single individual sampled from")
     }
-    abline(a=0,b=1,col="red",lwd=2)
-    points(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)])
     ypts <- Wobs
     xpts <- What
-    plot(xpts,ypts,type="n",
-         xlab=expression(paste("Fitted distances within demes  ",hat(D)[aa],sep="")),
-         ylab=expression(paste("Observed distances within demes  ",D[aa],sep="")))
+    plot(xpts,ypts,col=c("black","gray60")[1+1*(Sizes==1)],
+         xlab=expression(paste("Fitted distances within demes,  ",hat(D)[aa],sep="")),
+         ylab=expression(paste("Observed distances within demes,  ",D[aa],sep="")))
     if (!singletons) {
         title(main="Distances within demes\nSingleton demes excluded from plot (not from EEMS)")
     } else {
         title(main="Distances within demes\nGray means a has a single individual sampled from")
     }
-    abline(a=0,b=1,col="red",lwd=2)
-    points(xpts,ypts,col=c("black","gray60")[1+1*(Sizes==1)])
 }

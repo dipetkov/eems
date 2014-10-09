@@ -1,16 +1,18 @@
 
 
-function [Mstruct,Sstruct,Jindex] = suff_diploid_SNPs(datapath,Demes,Mstruct)
-%% Read the sufficient statistic Diffs (the matrix of observed pairwise %%
-%% genetic differences) and precompute some auxiliary matrices used to  %%
-%% compute the log likelihood                                           %%
-%% Diffs is precomputed but if Z = (Z_{ij}) is the allele count matrix  %%
-%% for i = 1..n individuals at j = 1..p SNPs, then                      %%
-%%   the similarities are Sims = Z*Z'/p                                 %%
-%%   the dissimilarities are Diffs = ov*s0' + s0*ov' - 2*Sims           %%
-%%   where s0 = diag(Sims) are the self-similarities                    %%
-%%   and ov is an n-vector of ones                                      %%
+function [Graph,Data,Jindex] = suff_diploid_SNPs(datapath,Demes,Graph)
+%% Read the sufficient statistic Diffs (the matrix of observed pairwise
+%% genetic differences) and precompute some auxiliary matrices used to
+%% compute the log likelihood
+%% Diffs is precomputed but if Z = (Z_{ij}) is the allele count matrix
+%% for i = 1..n individuals at j = 1..p SNPs, then
+%%   the similarities are Sims = Z*Z'/p
+%%   the dissimilarities are Diffs = ov*s0' + s0*ov' - 2*Sims
+%%   where s0 = diag(Sims) are the self-similarities
+%%   and ov is an n-vector of ones
 
+
+Testing = 0;
 
 dimns = dlmread(strcat(datapath,'.dimns'));
 Coord = dlmread(strcat(datapath,'.coord'));
@@ -31,8 +33,7 @@ if rank(Diffs)<nIndiv
   error('The dissimilarity matrix is rank-deficient.')
 end
 
-[oDemes,Jinvpt] = samples_to_demes(Coord,Demes);
-Jindex = oDemes(Jinvpt);
+[oDemes,Jinvpt,Jindex] = samples_to_demes(Coord,Demes);
 
 n = length(Jinvpt);
 o = length(oDemes);
@@ -48,13 +49,33 @@ Sizes = Jpt'*ones(n,1);
 L = [-ones(n-1,1),eye(n-1)];
 ldDviQ = logdet(L*L') - logdet(-L*Diffs*L');
 
-Sstruct = struct('nIndiv',{nIndiv},...
-                 'nSites',{nSites},...
-		 'oDemes',{oDemes},...
-		 'Diffs',{Diffs},...
-		 'Sizes',{Sizes},...
-		 'microsat',{0},...
-		 'diploid',{1},...
-		 'JtOJ',{JtOJ},...
-		 'JtDJ',{JtDJ},...
-		 'ldDviQ',{ldDviQ});
+Data = struct('nIndiv',{nIndiv},...
+              'nSites',{nSites},...
+	      'Diffs',{Diffs},...
+	      'Sizes',{Sizes},...
+	      'microsat',{0},...
+	      'diploid',{1},...
+	      'JtOJ',{JtOJ},...
+	      'JtDJ',{JtDJ},...
+	      'ldDviQ',{ldDviQ},...
+	      'Testing',{Testing});
+
+if (Testing)
+  Data.L = L;
+  Data.oDemes = oDemes;
+  Data.Jinvpt = Jinvpt;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nDemes = nrow(Demes);
+Juniq = oDemes;
+Kuniq = 1:nDemes;
+allobsrv = 1;
+if length(Juniq)~=length(Kuniq)
+  Kuniq(Juniq) = [];
+  allobsrv = 0;
+end
+Graph.Juniq = Juniq;
+Graph.Kuniq = Kuniq;
+Graph.allobsrv = allobsrv;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

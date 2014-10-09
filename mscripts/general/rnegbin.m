@@ -11,6 +11,7 @@ end
 
 x = zeros(0,1);
 while (length(x)<n)
+  %%t = nbinrnd(r,1-p,n,1);
   t = randraw('negbinom',[r,1-p],1);
   x = [x;t];
   x = x(x>0);

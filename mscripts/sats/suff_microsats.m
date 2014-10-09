@@ -1,12 +1,14 @@
 
 
-function [Mstruct,Sstruct,Jindex] = suff_microsats(datapath,Demes,Mstruct)
+function [Graph,Data,Jindex] = suff_microsats(datapath,Demes,Graph)
 %% Read in the raw count data Z = (Z_{ik}) for i = 1..n individuals and %%
 %% j = 1..p microsatellites and precompute some auxiliary matrices used %%
 %% to compute the log likelihood                                        %%
 %% There are two copies for each site, so Z has 2*p columns             %%
 %% and missing alleles are coded as a negative number                   %%
 
+
+Testing = 0;
 
 %% Data is stored with one individual per line %%
 Sites = dlmread(strcat(datapath,'.sites'));    %% alleles
@@ -26,6 +28,9 @@ nIndiv = zeros(nSites,1);
 Bconst = zeros(nSites,1);
 oDinvoconst = zeros(nSites,1);
 ldDinvconst = zeros(nSites,1);
+
+Z = cell(nSites,1);
+O = cell(nSites,1);
 
 for s = 1:nSites
 
@@ -49,8 +54,8 @@ for s = 1:nSites
   %% Similarity matrix (with rank 1)
   Sim = z*z';
   %% Dissimilarity matrix
-  S0 = diag(Sim)*ones(1,n);
-  Diff = S0 + S0' - 2*Sim;
+  s0 = diag(Sim)*ones(1,n);
+  Diff = s0 + s0' - 2*Sim;
 
   %% Demes: deme locations
   %% Samples: sampling locations
@@ -71,15 +76,26 @@ for s = 1:nSites
   JtOJ{s} = JtO*Jpt;
   JtDJ{s} = JtD*Jpt;
   Sizes{s} = Jpt'*ones(n,1);
+  
+  Z{s} = z;
+  O{s} = obsrv;
 end
 
-Sstruct = struct('nIndiv',{nIndiv},...
-                 'nSites',{nSites},...
-		 'oDemes',{oDemes},...
-		 'Sizes',{Sizes},...
-		 'microsat',{1},...
-		 'JtOJ',{JtOJ},...
-                 'JtDJ',{JtDJ});
+Data = struct('nIndiv',{nIndiv},...
+              'nSites',{nSites},...
+	      'oDemes',{oDemes},...
+	      'Sizes',{Sizes},...
+	      'microsat',{1},...
+	      'JtOJ',{JtOJ},...
+              'JtDJ',{JtDJ},...
+	      'Testing',{Testing});
 
 [oDemes,Jinvpt] = samples_to_demes(Coord,Demes);
 Jindex = oDemes(Jinvpt);
+
+if (Testing)
+  Data.oDemes2 = oDemes;
+  Data.Jinvpt2 = Jinvpt;
+  Data.Z = Z;
+  Data.O = O;
+end

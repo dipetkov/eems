@@ -1,7 +1,7 @@
 
 
 function [proposal,pi1_pi0] = ...
-    propose_qrateMu(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct)
+    propose_qrateMu(kernel,params,qVoronoi,mVoronoi,Data,Graph)
 
 %%%%%%%%%%
 type = 3;%
@@ -17,8 +17,8 @@ if ( abs(qrateMu)<params.qrateMuHalfInterval )
   mRates = realpow(10,mVoronoi.mEffcts + mrateMu);
   qRates = realpow(10,qVoronoi.qEffcts + qrateMu);
   [qValues,mValues] = ...
-    average_rates(Mstruct,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,qVoronoi.Demes);
-  proposal.kernel = resistance_kernel(Sstruct,Mstruct,mValues,qValues);
+    average_rates(Graph,qRates,mRates,qVoronoi.qSeeds,mVoronoi.mSeeds,qVoronoi.Demes);
+  proposal.kernel = resistance_kernel(Data,Graph,mValues,qValues);
   pi1_pi0 = 0;
 else
   pi1_pi0 = -Inf;

@@ -1,6 +1,6 @@
 
 
-function [proposal,pi1_pi0] = propose_thetas(Sstruct,kernel,params,schedule)
+function [proposal,pi1_pi0] = propose_thetas(Data,kernel,params,schedule)
 
 %%%%%%%%%%
 type = 1;%
@@ -11,19 +11,18 @@ proposal.params = params;
 proposal.type = type;
 proposal.subtype = thetai;
 
-n = Sstruct.nIndiv;
+n = Data.nIndiv;
 df = params.df;
 
 if (thetai==1)
   XC = kernel.XC;
   X = kernel.X;
-  n = Sstruct.nIndiv;
   oDinvo = kernel.oDinvoconst ...
-         + sum(sum(X.*Sstruct.JtOJ));
-  A = sum(sum(X.*Sstruct.JtDJ));
+         + sum(sum(X.*Data.JtOJ));
+  A = sum(sum(X.*Data.JtDJ));
   B = kernel.Bconst ...
     - sum(sum(X.*kernel.cvtJtDJvct)) ...
-    + sum(sum(XC'*Sstruct.JtDJ*XC));
+    + sum(sum(XC'*Data.JtDJ*XC));
   trDinvQxD = A - B/oDinvo;
   c = params.s2locShape + df*(n-1);
   d = params.s2locScale + df*trDinvQxD;

@@ -1,7 +1,7 @@
 
 
 function [proposal,pi1_pi0] = ...
-    move_mVoronoi(kernel,params,qVoronoi,mVoronoi,Sstruct,Mstruct,schedule)
+    move_mVoronoi(kernel,params,qVoronoi,mVoronoi,Data,Graph,schedule)
 
 %%%%%%%%%%
 type = 8;%
@@ -20,8 +20,8 @@ if min(is_in_habitat(mVoronoi.habitat,mSeeds))
   mRates = realpow(10,mVoronoi.mEffcts + params.mrateMu);
   qRates = realpow(10,qVoronoi.qEffcts + params.qrateMu);
   [qValues,mValues] = ...
-    average_rates(Mstruct,qRates,mRates,qSeeds,mSeeds,mVoronoi.Demes);
-  proposal.kernel = resistance_kernel(Sstruct,Mstruct,mValues,qValues);
+    average_rates(Graph,qRates,mRates,qSeeds,mSeeds,mVoronoi.Demes);
+  proposal.kernel = resistance_kernel(Data,Graph,mValues,qValues);
   pi1_pi0 = 0;
 else
   pi1_pi0 = -Inf;

@@ -2,16 +2,32 @@
 
 ## How to run EEMS on a simulated dataset
 
-This script uses a dataset simulated with `ms` to show to run EEMS, with either MATLAB or Octave.
+This script uses a dataset simulated with `ms` to show how to run EEMS, in either MATLAB or Octave.
 
 ### EEMS input files
 
 There are three input files:
 * datapath.coord: sample coordinates (two coordinates per sample, one sample per line)
-* datapath.diffs: matrix of average pairwise genetic differences
+* datapath.diffs: matrix of average pairwise genetic differences (can be computed with the program bed2diffs if the dataset is already in plink binary format)
 * datapath.dimns: 3x2 matrix which specifies the habitat range in the x direction (longitude), the habitat range in the y direction (latitude), and on the third line, the number of samples and the number of markers
 
-In datapath.dimns, the range can be slightly bigger than the actual observed range to include a border around the samples.
+Comment about the last file, `datapath.dimns`: It might be a good idea to add a "border" around the sampling locations, which is the reason for introducing `datapath.dimns`. Suppose that `x` is a vector of longitudes and `y` is a vector of latitudes. (Note that `datapath.coord` is simply the matrix `[x,y]`, without a header or sample IDs.) Most straightforwardly, the first two lines in `datapath.dimns` can be specified as
+
+```
+min(x) max(x)
+min(y) max(y)
+```
+
+However, in practice it seems to be a good idea to extend the habitat range by a little bit in all four directions. (EEMS can be sensitive to border effects, so it is better to avoid placing samples at the border.) For example,
+
+```
+min(x)-1 max(x)+1
+min(y)-1 max(y)+1
+```
+
+The values -1 and +1 might not be appropriate for a particular dataset; they should be chosen in view of the actual range of $x$ and $y$.
+
+### Simulated datasets
 
 The `data` folder contains six datasets simulated with `ms` and in EEMS format. (These datasets were used for Figure 2 in the EEMS paper.)
 

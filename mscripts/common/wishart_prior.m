@@ -1,6 +1,6 @@
 
 
-function logpi = wishart_prior(Sstruct,qVoronoi,mVoronoi,params)
+function logpi = wishart_prior(Data,qVoronoi,mVoronoi,params)
 %% Prior probability on the log scale %%
 
 
@@ -45,7 +45,7 @@ if (inrange)
           - ((qrateShape/2+1)*log(qrateS2) + (qrateScale/2)/qrateS2) ...
           - ((mtiles/2)*log(pi*mrateS2) + (mEffcts'*mEffcts)/mrateS2) ...
           - ((qtiles/2)*log(pi*qrateS2) + (qEffcts'*qEffcts)/qrateS2);
-  if (Sstruct.microsat)
+  if (Data.microsat)
      s2loc = params.s2loc;
      logpi = logpi - sum((s2locShape/2+1)*log(s2loc) + (s2locScale/2)./s2loc);
   end
