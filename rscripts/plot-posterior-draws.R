@@ -13,13 +13,12 @@ plotpath <- '../examples/data/barrier-schemeZ-nIndiv300-s12x8-u4Nm1-L3000-g13x7-
 dimns <- read.dimns(datapath)
 plot.height <- 5
 plot.width <- 5*(dimns$xspan/dimns$yspan)
-plot.filename <- 
 
-png(file=paste(plotpath,'-mVoronoi%03d.png',sep=''),
-    height=plot.height,width=plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-mVoronoi%03d.png',sep=''),type='png16m',res=300,
+       height=plot.height,width=plot.width,units='in')
 mlegend <- mcmc.mrates.voronoi(mcmcpath,dimns)
 dev.off( )
-png(file=paste(plotpath,'-qVoronoi%03d.png',sep=''),
-    height=plot.height,width=plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-qVoronoi%03d.png',sep=''),type='png16m',res=300,
+       height=plot.height,width=plot.width,units='in')
 mlegend <- mcmc.qrates.voronoi(mcmcpath,dimns)
 dev.off( )

@@ -12,7 +12,7 @@ plotpath <- '../examples/data/barrier-schemeZ-nIndiv300-s12x8-u4Nm1-L3000-g13x7-
 plot.height <- 5
 plot.width <- 6
 
-png(file=paste(plotpath,'-rdist%02d.png',sep=''),
-    height=plot.height,width=plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-rdist%02d.png',sep=''),type='png16m',res=300,
+       height=plot.height,width=plot.width,units='in')
 dist.scatterplot(mcmcpath)
 dev.off( )

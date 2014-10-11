@@ -16,7 +16,7 @@ dimns <- read.dimns(datapath)
 plot.height <- 5
 plot.width <- 7
 
-png(file=paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-pilogl%02d.png',sep=''),
-    height=plot.height,width=plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-pilogl%02d.png',sep=''),
+       type='png16m',res=300,height=plot.height,width=plot.width,units='in')
 plot.logposterior.simnos(mcmcpath,simnos)
 dev.off( )

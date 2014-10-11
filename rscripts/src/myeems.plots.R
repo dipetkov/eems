@@ -138,7 +138,7 @@ center.mrates <- function(Zmrks) {
         maxZ2 <- ceiling(maxZ2*1000)/1000
         minZ <- -maxZ2
         maxZ <- maxZ2
-        eems.levels <- seq(from=minZ,to=maxZ,length=numlevels)
+        eems.levels <- seq(from=minZ,to=maxZ,length=numlevels+1)
     }
     return(eems.levels)
 }
@@ -152,9 +152,9 @@ center.qrates <- function(Zmrks) {
     maxZ <- maxZ2
     numlevels <- length(eems.colors)
     if ((maxZ - minZ)>0.001) {
-        eems.levels <- seq(from=minZ,to=maxZ,length=numlevels)
+        eems.levels <- seq(from=minZ,to=maxZ,length=numlevels+1)
     } else {
-        eems.levels <- seq(from=minZ-0.001/2,to=maxZ+0.001/2,length=numlevels)
+        eems.levels <- seq(from=minZ-0.001/2,to=maxZ+0.001/2,length=numlevels+1)
     }
     return(eems.levels)
 }
@@ -267,9 +267,10 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.sam
     demes <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
     eems.levels <- center.mrates(Zmmu)
-    par(plt=c(0,1,0,1),las=1,cex.axis=1)
+    par(plt=c(0.03,0.97,0.03,0.9),las=1,xpd=TRUE,font.main=1)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zmmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
+                     main='Effective migration rates m : posterior mean',
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.grid) {
@@ -285,7 +286,7 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.sam
                                    if (add.samples) {
                                        points(coord[demes,1],pch=19,
                                               coord[demes,2],col="gray10",
-                                              cex=1+sizes/max(sizes))
+                                              cex=1+2*sizes/max(sizes))
                                    }
                                })
     if (!is.null(Zmvar)) {
@@ -294,6 +295,7 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.sam
         Zmvar <- (Zmvar - min.Zmvar)/(max.Zmvar - min.Zmvar)
         myfilled.contour(dimns$xmrks,dimns$ymrks,Zmvar,asp=1,
                          xlim=dimns$xrange,ylim=dimns$yrange,
+                         main='Effective migration rates m : posterior variance',
                          col=var.colors,levels=var.levels,frame.plot=FALSE)
     }
     return(list(colors=eems.colors,levels=eems.levels))
@@ -326,7 +328,7 @@ mcmc.mrates.simnos <- function(mcmcpath,simnos,dimns,add.grid=TRUE,add.samples=T
     return(eems.legend)
 }
 standardize.qmrks <- function(mcmcpath,dimns) {
-   mrates <- scan(paste(mcmcpath,'.mcmcqrates',sep=''),what=numeric())
+    mrates <- scan(paste(mcmcpath,'.mcmcqrates',sep=''),what=numeric())
     qtiles <- scan(paste(mcmcpath,'.mcmcqtiles',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'.mcmcwcoord',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'.mcmczcoord',sep=''),what=numeric())
@@ -414,9 +416,10 @@ mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zqmu,Zqvar=NULL,add.grid=TRUE,add.sam
     demes <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
     eems.levels <- center.qrates(Zqmu)
-    par(plt=c(0,1,0,1),las=1,cex.axis=1)
+    par(plt=c(0.03,0.97,0.03,0.9),las=1,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zqmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
+                     main='Effective diversity rates q : posterior mean',
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.grid) {
@@ -432,7 +435,7 @@ mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zqmu,Zqvar=NULL,add.grid=TRUE,add.sam
                                    if (add.samples) {
                                        points(coord[demes,1],pch=19,
                                               coord[demes,2],col="gray10",
-                                              cex=1+sizes/max(sizes))
+                                              cex=1+2*sizes/max(sizes))
                                    }
                                })
     if (!is.null(Zqvar)) {
@@ -441,6 +444,7 @@ mcmc.qrates.pt2 <- function(mcmcpath,dimns,Zqmu,Zqvar=NULL,add.grid=TRUE,add.sam
         Zqvar <- (Zqvar - min.Zqvar)/(max.Zqvar - min.Zqvar)
         myfilled.contour(dimns$xmrks,dimns$ymrks,Zqvar,asp=1,
                          xlim=dimns$xrange,ylim=dimns$yrange,
+                         main='Effective diversity rates q : posterior variance',
                          col=var.colors,levels=var.levels,frame.plot=FALSE)
     }
     return(list(colors=eems.colors,levels=eems.levels))
@@ -473,20 +477,20 @@ mcmc.qrates.simnos <- function(mcmcpath,simnos,dimns,add.grid=TRUE,add.samples=T
     return(eems.legend)
 }
 mcmc.mrates.legend <- function(datapath,mcmcpath,dimns,Zmrks,legend) {
-    par(plt=c(0,0.3,0,1),las=1,cex.axis=1.2)
+    par(plt=c(0.03,0.3,0.03,0.9),las=1)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
                     colors=legend$colors,levels=legend$levels,
                     key.axes = axis(4,tick=FALSE,line=1,hadj=1),
-                    key.title = mtext(expression(paste("e"["m"],sep="")),side=3,line=1))
+                    key.title = mtext(expression(paste("e"["m"],sep="")),side=3,line=1,cex=1.5))
 }
 mcmc.qrates.legend <- function(datapath,mcmcpath,dimns,Zmrks,legend) {
-    par(plt=c(0,0.3,0,1),las=1,cex.axis=1.2)
+    par(plt=c(0.03,0.3,0.03,0.9),las=1)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
                     colors=legend$colors,levels=legend$levels,
                     key.axes = axis(4,tick=FALSE,line=2,hadj=1),
-                    key.title = mtext(expression(paste("e"["q"],sep="")),side=3,line=1))
+                    key.title = mtext(expression(paste("e"["q"],sep="")),side=3,line=1,cex=1.5))
 }
 mcmc.mrates.voronoi <- function(mcmcpath,dimns) {
     print('Plotting mrates Voronoi tessellation')
@@ -516,9 +520,10 @@ mcmc.mrates.voronoi <- function(mcmcpath,dimns) {
         indices <- which(curr.effcts>eems.levels[L])
         curr.effcts[indices] <- 0.999*eems.levels[L]
         centers <- cbind(curr.xcoord,curr.ycoord)
-        par(plt=c(0,1,0,1),las=1,cex.axis=1)
+        par(plt=c(0.03,0.97,0.03,0.9),las=1,font.main=1,xpd=TRUE)
         plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
-             xlim=dimns$xrange,ylim=dimns$yrange)
+             xlim=dimns$xrange,ylim=dimns$yrange,
+             main=paste('Effective migration rates m : iteration ',i,' (after thinning)',sep=''))
         if (curr.mtiles==1) {
             ## There is only one tile
             which.tile <- max((1:L)[eems.levels<curr.effcts])
@@ -570,9 +575,10 @@ mcmc.qrates.voronoi <- function(mcmcpath,dimns) {
         indices <- which(curr.effcts>eems.levels[L])
         curr.effcts[indices] <- 0.999*eems.levels[L]
         centers <- cbind(curr.xcoord,curr.ycoord)
-        par(plt=c(0,1,0,1),las=1,cex.axis=1)
+        par(plt=c(0.03,0.97,0.03,0.9),las=1,font.main=1,xpd=TRUE)
         plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
-             xlim=dimns$xrange,ylim=dimns$yrange)
+             xlim=dimns$xrange,ylim=dimns$yrange,
+             main=paste('Effective diversity rates q : iteration ',i,' (after thinning)',sep=''))
         if (curr.qtiles==1) {
             ## There is only one tile
             which.tile <- max((1:L)[eems.levels<curr.effcts])
@@ -627,12 +633,13 @@ plot.logposterior.simnos <- function(mcmcpath,simnos) {
                 }
             }
         }
-        par(xpd=TRUE)
+        par(las=1,font.main=1,xpd=TRUE)
         x = strsplit(mcmcpath,'/')[[1]]
         filename = x[length(x)]
         matplot(posteriors,type="l",col=1:8,
-                xlab="iteration (after thinning)",ylab="log posterior",main=filename,
+                xlab="iteration (after thinning)",ylab="",main=filename,
                 lwd=3,lty=1,xlim=c(1,1.06*nIters),bty="n")
+        text(0,max(posteriors),labels="log\nposterior:\n",pos=2)
         legend(1.01*nIters,max(posteriors),legend=plotSimnos,col=1:8,lwd=5,bty="n")
     }
 }
@@ -661,11 +668,15 @@ dist.scatterplot <- function(mcmcpath,singletons=FALSE) {
     }
     ypts <- JtDobsJ[upper.tri(JtDobsJ,diag=TRUE)]
     xpts <- JtDhatJ[upper.tri(JtDhatJ,diag=TRUE)]
-    par(font.main=1)
+    par(las=1,font.main=1)
     plot(xpts,ypts,
-         ylab=expression(paste("Observed distances between and within demes,  ",D[ab],sep="")),
-         xlab=expression(paste("Fitted distances between and within demes,  ",hat(D)[ab],sep="")),
-         main="Distances between and within demes")
+         ylab=expression(paste("Observed distances,  ",D[ab],sep="")),
+         xlab=expression(paste("Fitted distances,  ",hat(D)[ab],sep="")))
+    if (!singletons) {
+        title(main="Pairwise distances\nSingleton demes excluded from plot (not from EEMS)")
+    } else {
+        title(main="Pairwise distances\nGray means a or b has a single individual sampled from")
+    }
     Wobs <- diag(JtDobsJ)
     What <- diag(JtDhatJ)
     ones <- matrix(1,nPops,1)

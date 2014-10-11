@@ -15,14 +15,14 @@ dimns <- read.dimns(datapath)
 plot.height <- 5
 plot.width <- 5*(dimns$xspan/dimns$yspan)
 
-png(file=paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-avesoln%02d.png',sep=''),
-    height=plot.height,width=plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-avesoln%02d.png',sep=''),
+       type='png16m',res=300,height=plot.height,width=plot.width,units='in')
 mlegend <- mcmc.mrates.simnos(mcmcpath,simnos,dimns)
 qlegend <- mcmc.qrates.simnos(mcmcpath,simnos,dimns)
 dev.off( )
 
-png(file=paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-legend%02d.png',sep=''),
-    height=plot.height,width=0.3*plot.width,units="in",res=150)
+bitmap(paste(plotpath,'-simno',min(simnos),'_',max(simnos),'-legend%02d.png',sep=''),
+       type='png16m',res=300,height=plot.height,width=0.3*plot.width,units='in')
 mcmc.mrates.legend(datapath,mcmcpath,dimns,mmrks,mlegend)
 mcmc.qrates.legend(datapath,mcmcpath,dimns,qmrks,qlegend)
 dev.off( )
