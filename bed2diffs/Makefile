@@ -1,13 +1,11 @@
 
 .PHONY: all
 
-PLINKIO = /usr/local/src/plinkio
-EIGEN = /usr/local/src/eigen-6b38706d90a9
-
+PLINKIO = /home/petkova/local
 EXE = bed2diffs
 OBJ = bed2diffs.o data.o
 
-CXXFLAGS = -I${PLINKIO}/include -I${EIGEN} -Wall -Wextra -O2 -m64 -DEIGEN_NO_DEBUG
+CXXFLAGS = -I${PLINKIO}/include -O3 -Wall -Werror -fopenmp
 LDFLAGS = -L${PLINKIO}/lib -lplinkio
 
 all: $(EXE)
