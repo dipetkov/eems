@@ -6,4 +6,5 @@
 * `examples` shows how to run EEMS using data simulated with `ms`
 * `mscripts` contains the source code for MATLAB/OCTAVE
 * `rscripts` contains scripts to visualize EEMS results
+* `python_pipeline` contains a pipeline with the goal to combine all scripts
 
