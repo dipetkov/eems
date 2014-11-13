@@ -289,6 +289,7 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.sam
                                               cex=1+2*sizes/max(sizes))
                                    }
                                })
+    map(add=T)
     if (!is.null(Zmvar)) {
         min.Zmvar <- min(Zmvar)
         max.Zmvar <- max(Zmvar)
@@ -298,6 +299,7 @@ mcmc.mrates.pt2 <- function(mcmcpath,dimns,Zmmu,Zmvar=NULL,add.grid=TRUE,add.sam
                          main='Effective migration rates m : posterior variance',
                          col=var.colors,levels=var.levels,frame.plot=FALSE)
     }
+    map(add=T)
     return(list(colors=eems.colors,levels=eems.levels))
 }
 mcmc.mrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE) {
