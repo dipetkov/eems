@@ -20,7 +20,8 @@ steps:
 I am still experimenting with modules, but to install the notebook, simply
 
 ```
-sudo apt-get install ipython-notebook python-numpy python-matplotlib python-pandas
+sudo apt-get install ipython-notebook python-numpy python-matplotlib python-pandas python-pygments
+sudo apt-get install pandoc
 ipython notebook
 ``` 
 then  view the notebook in a webbrowser
