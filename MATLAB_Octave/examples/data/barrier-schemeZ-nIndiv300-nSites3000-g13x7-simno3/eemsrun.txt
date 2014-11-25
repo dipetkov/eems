@@ -1,0 +1,45 @@
+Input parameter values:
+             numMCMCIter:  12000
+             numBurnIter:  6000
+             numThinIter:  99
+      mEffctHalfInterval:  2.4771
+      qEffctHalfInterval:  0.1
+     mrateMuHalfInterval:  2
+     qrateMuHalfInterval:  1e-12
+        mSeedsProposalS2:  0.01
+        qSeedsProposalS2:  0.1
+        mEffctProposalS2:  0.1
+        qEffctProposalS2:  0.001
+       mrateMuProposalS2:  0.01
+       qrateMuProposalS2:  0.01
+              mrateShape:  0.001
+              qrateShape:  0.001
+              s2locShape:  0.001
+              qrateScale:  1
+              mrateScale:  1
+              s2locScale:  1
+               negBiSize:  10
+               negBiProb:  0.66667
+
+Processing dataset ./data/barrier-schemeZ-nIndiv300-nSites3000
+MCMC output saved to ./data/barrier-schemeZ-nIndiv300-nSites3000-g13x7-simno3
+The triangular grid is 13x7
+Initial log prior:       -11.75704
+Initial log likelihood:  156629.52006
+Final log prior:         28.58830
+Final log likelihood:    187205.74571
+Acceptance proportions:
+	(38028/169569) = 22.43% for type 1
+	(16517/169569) = 9.74% for type 2
+	(12155/173113) = 7.02% for type 3
+		(6075/86644) = 7.01% for subtype 1
+		(6080/86469) = 7.03% for subtype 2
+	(3852/41633) = 9.25% for type 4
+	(954/12000) = 7.95% for type 5
+	(9565/41633) = 22.97% for type 6
+	(811/41950) = 1.93% for type 7
+		(402/21029) = 1.91% for subtype 1
+		(409/20921) = 1.95% for subtype 2
+	(19414/24000) = 80.89% for type 8
+		(12000/12000) = 100.00% for subtype 1
+		(7414/12000) = 61.78% for subtype 2

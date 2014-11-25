@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Tue Nov 25 18:02:38 GMT 2014
+markTmpDer=true
+builderNum=7
+outputDir=
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=eems-doc.tex
+outputFile=eems-doc.pdf
+langSpell=en
+markDer=true
+srcDir=

@@ -1,0 +1,36 @@
+[EEMS::Params] Random seed = 123
+
+Input parameters:
+               datapath = ./data/sat-barrier-nIndiv150-nSites16
+               mcmcpath = ./data/sat-barrier-nIndiv150-nSites16-EEMS-nDemes200-simno1
+                 nIndiv = 150
+                 nSites = 16
+                 nDemes = 200
+            numMCMCIter = 12000
+            numBurnIter = 6000
+            numThinIter = 59
+              negBiSize = 10
+              negBiProb = 0.670000
+             mrateShape = 0.001000
+             qrateShape = 0.001000
+             s2locShape = 0.001000
+             qrateScale = 1.000000
+             mrateScale = 1.000000
+             s2locScale = 1.000000
+       mSeedsProposalS2 = 0.010000
+       qSeedsProposalS2 = 0.100000
+       mEffctProposalS2 = 0.100000
+       qEffctProposalS2 = 0.001000
+      mrateMuProposalS2 = 0.010000
+
+Acceptance proportions:
+	(177040/226445) = 78.18% for type 0
+	(137742/226445) = 60.83% for type 1
+	(8260/12000) = 68.83% for type 2
+	(178756/241710) = 73.95% for type 3
+	(6569/12000) = 54.74% for type 4
+	(182256/241710) = 75.40% for type 5
+	(6415/12000) = 53.46% for type 6
+
+Final log prior = -27.92
+Final log llike = -18710.83
