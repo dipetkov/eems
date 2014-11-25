@@ -17,7 +17,7 @@ The plotting scripts use two R packages, `fields` and `deldir`, that should be i
 One function generates several figures that represent the EEMS results:
 
 ```
-source('myeems.plots.R')
+source('default.eems.plots.R')
 
 mcmcpath <-
 paste('barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes-simno',1:3,sep='')

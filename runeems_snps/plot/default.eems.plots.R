@@ -262,7 +262,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="world",fill=FALSE,add=TRUE,col=map.color)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color)
                                    }
                                    if (add.grid) {
                                        for (v in 2:nrow(outer)) {
@@ -301,7 +301,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="world",fill=FALSE,add=TRUE,col=map.color2)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2)
                                    }
                                    if (add.grid) {
                                        for (v in 2:nrow(outer)) {
@@ -439,7 +439,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="world",fill=FALSE,add=TRUE,col=map.color)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color)
                                    }
                                    if (add.grid) {
                                        for (v in 2:nrow(outer)) {
@@ -478,7 +478,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="world",fill=FALSE,add=TRUE,col=map.color2)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2)
                                    }
                                    if (add.grid) {
                                        for (v in 2:nrow(outer)) {
@@ -756,7 +756,7 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
 }
 eemsplots <- function(mcmcpath,plotpath,add.map=FALSE) {
 
-    if (add.map) { library(maps) }
+    if (add.map) { library(mapdata) }
     
     mcmcpath1 <- character()
     for (file in mcmcpath) {

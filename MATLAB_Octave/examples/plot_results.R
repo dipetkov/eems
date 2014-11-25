@@ -1,6 +1,6 @@
 
 
-source('../rscripts/myeems.plots.R')
+source('../rscripts/default.eems.plots.R')
 
 
 mcmcpath <-
