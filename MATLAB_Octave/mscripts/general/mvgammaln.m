@@ -4,7 +4,6 @@ function x = mvgammaln(a,p)
 % Compute the logarithm of the multivariate gamma function
 
 
-%%% isscalar(p) != isint(p)
 if ~isscalar(p)
   error('mvngammaln','The second argument of mvngamma must be an integer.')
 end

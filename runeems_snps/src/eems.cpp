@@ -75,11 +75,11 @@ void EEMS::initialize_diffs( ) {
 	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);
   }
   cerr << "  Read dissimilarities matrix from " << params.datapath + ".diffs" << endl;
-  // Check that Diffs is symmetric and full-rank
-  FullPivLU<MatrixXd> lu(Diffs);
-  if (lu.rank()!=n) {
-    cerr << "  The dissimilarity matrix is rank-deficient" << endl; exit(1);
+  ///////////////////////////////////////////
+  if (!isdistmat(Diffs)) {
+    cerr << "  The dissimilarity matrix is not a full-rank distance matrix" << endl; exit(1);
   }
+  ///////////////////////////////////////////
   MatrixXd L0 = -1.0*MatrixXd::Ones(nmin1,1);
   MatrixXd L1 = MatrixXd::Identity(nmin1,nmin1);
   L = MatrixXd::Zero(nmin1,n); L << L0, L1;

@@ -29,7 +29,7 @@ inrange = (inrange && min(is_in_habitat(qVoronoi.habitat,qVoronoi.qSeeds)));
 inrange = (inrange && min(abs(mEffcts)<params.mEffctHalfInterval));
 inrange = (inrange && min(abs(qEffcts)<params.qEffctHalfInterval));
 inrange = (inrange && abs(mrateMu)<params.mrateMuHalfInterval);
-inrange = (inrange && df>params.dfmin && df<params.dfmax);
+inrange = (inrange && df>=params.dfmin && df<=params.dfmax);
 
 %% prior = NegativeBinomial(T;negBiSize,negBiProb)
 %% * InverseGamma(rateS2;ratesShape,ratesScale)

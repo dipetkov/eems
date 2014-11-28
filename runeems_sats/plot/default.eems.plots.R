@@ -22,8 +22,8 @@ var.colors <- rgb(cbind(x,x,x))
 var.levels <- seq(from=0,to=1,length.out=numlevels)
 map.color <- "gray60" ## the color of the map over a blue/orange effective rates contour
 grid.color <- "gray80" ## the color of the grid over a blue/orange effective rates contour
-map.color2 <- "orange2" ## the color of the map over a black/white variance contour
-grid.color2 <- "orange1" ## the color of the grid over a black/white variance contour
+map.color2 <- "white" ## the color of the map over a black/white variance contour
+grid.color2 <- "white" ## the color of the grid over a black/white variance contour
 ###########################################################################################
 ###########################################################################################
 ## modification by Ian Taylor of the filled.contour function
@@ -162,9 +162,12 @@ center.qrates <- function(Zmrks) {
     }
     return(eems.levels)
 }
-read.dimns <- function(mcmcpath,nxmrks=NULL,nymrks=NULL) {
+read.dimns <- function(mcmcpath,longlat,nxmrks=NULL,nymrks=NULL) {
     outer <- scan(paste(mcmcpath,'/outer.txt',sep=''),what=numeric())
     outer <- matrix(outer,ncol=2,byrow=TRUE)
+    if (!longlat) {
+        outer <- outer[,c(2,1)]
+    }
     xrange <- range(outer[,1])
     yrange <- range(outer[,2])
     xspan <- xrange[2]-xrange[1]
@@ -178,11 +181,16 @@ read.dimns <- function(mcmcpath,nxmrks=NULL,nymrks=NULL) {
     return(list(nxmrks=nxmrks,xmrks=xmrks,xrange=xrange,xspan=xspan,
                 nymrks=nymrks,ymrks=ymrks,yrange=yrange,yspan=yspan))
 }
-standardize.mmrks <- function(mcmcpath,dimns) {
+standardize.mmrks <- function(mcmcpath,dimns,longlat) {
     mrates <- scan(paste(mcmcpath,'/mcmcmrates.txt',sep=''),what=numeric())
     mtiles <- scan(paste(mcmcpath,'/mcmcmtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcxcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmcycoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     mrates <- log10(mrates)
     xmrks <- dimns$xmrks
     ymrks <- dimns$ymrks
@@ -207,11 +215,16 @@ standardize.mmrks <- function(mcmcpath,dimns) {
     }
     return(list(Zmrks=Zmrks,niters=niters))
 }
-standardize.mmrks.var <- function(mcmcpath,dimns,Zmmu) {
+standardize.mmrks.var <- function(mcmcpath,dimns,Zmmu,longlat) {
     mrates <- scan(paste(mcmcpath,'/mcmcmrates.txt',sep=''),what=numeric())
     mtiles <- scan(paste(mcmcpath,'/mcmcmtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcxcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmcycoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     mrates <- log10(mrates)
     xmrks <- dimns$xmrks
     ymrks <- dimns$ymrks
@@ -236,8 +249,11 @@ standardize.mmrks.var <- function(mcmcpath,dimns,Zmmu) {
     }
     return(list(Zmvar=Zmvar,niters=niters))
 }
-mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
-                         add.grid=TRUE,add.samples=TRUE,add.map=FALSE) {
+mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
+                         add.map=FALSE,col.map=map.color,lwd.map=1,
+                         add.grid=TRUE,col.grid=grid.color,lwd.grid=1,
+                         add.samples=TRUE,col.samples="black",pch.samples=19,cex.samples=1,max.cex.samples=2,
+                         add.outline=TRUE,col.outline="red",lwd.outline=3) {
     ipmap <- scan(paste(mcmcpath,'/ipmap.txt',sep=''),what=numeric())
     coord <- scan(paste(mcmcpath,'/demes.txt',sep=''),what=numeric())
     edges <- scan(paste(mcmcpath,'/edges.txt',sep=''),what=numeric())
@@ -245,6 +261,12 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
     coord <- matrix(coord,ncol=2,byrow=TRUE)
     edges <- matrix(edges,ncol=6,byrow=TRUE)
     outer <- matrix(outer,ncol=2,byrow=TRUE)
+
+    if (!longlat) {
+        coord <- coord[,c(2,1)]
+        outer <- outer[,c(2,1)]
+    }
+    
     nv <- nrow(edges)
     nn <- ncol(edges)
     nodes <- 1:nv
@@ -253,7 +275,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
     sizes <- as.numeric(sizes)
     eems.levels <- center.mrates(Zmmu)
 
-    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/5),c(1),respect=FALSE)
+    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),c(1),respect=FALSE)
 
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zmmu,asp=1,
@@ -262,26 +284,27 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=col.map,lwd=lwd.map,
+                                           xlim=dimns$xrange,ylim=dimns$yrange)
+                                   }
+                                   if (add.outline) {
+                                       for (v in 2:nrow(outer)) {
+                                           lines(outer[c(v-1,v),1],outer[c(v-1,v),2],col=col.outline,lwd=lwd.outline)
+                                       }
                                    }
                                    if (add.grid) {
-                                       for (v in 2:nrow(outer)) {
-                                           lines(outer[c(v-1,v),1],
-                                                 outer[c(v-1,v),2],col="red",lwd=3)
-                                       }
                                        for (a in 1:nv) {
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],
-                                                     coord[c(a,b),2],col=grid.color)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=col.grid,lwd=lwd.grid)
                                            }
                                        } }
                                    }
                                    if (add.samples) {
-                                       points(coord[demes,1],pch=19,
-                                              coord[demes,2],col="gray10",
-                                              cex=1+2*sizes/max(sizes))
+                                       points(coord[demes,1],coord[demes,2],
+                                              col=col.samples,pch=pch.samples,
+                                              cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
     par(plt = c(0.03,0.45,0.03,0.92),cex.axis=1.7,las=1)
@@ -301,30 +324,35 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2,
+                                           xlim=dimns$xrange,ylim=dimns$yrange)
                                    }
-                                   if (add.grid) {
+                                   if (add.outline) {
                                        for (v in 2:nrow(outer)) {
-                                           lines(outer[c(v-1,v),1],
-                                                 outer[c(v-1,v),2],col="red",lwd=3)
+                                           lines(outer[c(v-1,v),1],outer[c(v-1,v),2],col=col.outline,lwd=lwd.outline)
                                        }
+                                   }                                       
+                                   if (add.grid) {
                                        for (a in 1:nv) {
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],
-                                                     coord[c(a,b),2],col=grid.color2)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=grid.color2,lwd=lwd.grid)
                                            }
                                        } }
                                    }
                                    if (add.samples) {
-                                       points(coord[demes,1],pch=19,
-                                              coord[demes,2],col="gray10",
-                                              cex=1+2*sizes/max(sizes))
+                                       points(coord[demes,1],coord[demes,2],
+                                              col=col.samples,pch=pch.samples,
+                                              cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
 }
-mcmc.mrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE,add.map=FALSE) {
+mcmc.mrates <- function(mcmcpath,dimns,longlat,
+                        add.map=FALSE,col.map=map.color,lwd.map=1,
+                        add.grid=TRUE,col.grid=grid.color,lwd.grid=1,
+                        add.samples=TRUE,col.samples="black",pch.samples=19,cex.samples=1,max.cex.samples=2,
+                        add.outline=TRUE,col.outline="red",lwd.outline=3) {
     print('Plotting posterior mean surface of mrates')
     mcmcpath1 <- character()
     for (file in mcmcpath) {
@@ -341,25 +369,34 @@ mcmc.mrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE,add.map=FA
     if (nsimnos==0) { return(0) }
     Zmmu <- matrix(0,dimns$nxmrks,dimns$nymrks)
     for (file in mcmcpath) {
-        rslt <- standardize.mmrks(file,dimns)
+        rslt <- standardize.mmrks(file,dimns,longlat)
         niters <- niters + rslt$niters
         Zmmu <- Zmmu + rslt$Zmrks
     }
     Zmmu <- Zmmu/niters
     Zmvar <- matrix(0,dimns$nxmrks,dimns$nymrks)
     for (file in mcmcpath) {
-        rslt <- standardize.mmrks.var(file,dimns,Zmmu)
+        rslt <- standardize.mmrks.var(file,dimns,Zmmu,longlat)
         Zmvar <- Zmvar + rslt$Zmvar
     }
     Zmvar <- Zmvar/(niters-1)
-    mcmc.mrates0(mcmcpath[1],dimns,Zmmu,Zmvar,
-                 add.grid=add.grid,add.samples=add.samples,add.map=add.map)
+    mcmc.mrates0(mcmcpath[1],dimns,Zmmu,Zmvar,longlat,
+                 add.map=add.map,col.map=col.map,lwd.map=lwd.map,
+                 add.grid=add.grid,col.grid=col.grid,lwd.grid=lwd.grid,
+                 add.samples=add.samples,col.samples=col.samples,
+                 pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
+                 add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
 }
-standardize.qmrks <- function(mcmcpath,dimns) {
+standardize.qmrks <- function(mcmcpath,dimns,longlat) {
     qrates <- scan(paste(mcmcpath,'/mcmcqrates.txt',sep=''),what=numeric())
     qtiles <- scan(paste(mcmcpath,'/mcmcqtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcwcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmczcoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     qrates <- log10(qrates)
     xmrks <- dimns$xmrks
     ymrks <- dimns$ymrks
@@ -384,11 +421,16 @@ standardize.qmrks <- function(mcmcpath,dimns) {
     }
     return(list(Zmrks=Zmrks,niters=niters))
 }
-standardize.qmrks.var <- function(mcmcpath,dimns,Zqmu) {
+standardize.qmrks.var <- function(mcmcpath,dimns,Zqmu,longlat) {
     qrates <- scan(paste(mcmcpath,'/mcmcqrates.txt',sep=''),what=numeric())
     qtiles <- scan(paste(mcmcpath,'/mcmcqtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcwcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmczcoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     qrates <- log10(qrates)
     xmrks <- dimns$xmrks
     ymrks <- dimns$ymrks
@@ -413,8 +455,11 @@ standardize.qmrks.var <- function(mcmcpath,dimns,Zqmu) {
     }
     return(list(Zqvar=Zqvar,niters=niters))
 }
-mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
-                         add.grid=TRUE,add.samples=TRUE,add.map=FALSE) {
+mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
+                         add.map=FALSE,col.map=map.color,lwd.map=1,
+                         add.grid=TRUE,col.grid=grid.color,lwd.grid=1,
+                         add.samples=TRUE,col.samples="black",pch.samples=19,cex.samples=1,max.cex.samples=2,
+                         add.outline=TRUE,col.outline="red",lwd.outline=3) {
     ipmap <- scan(paste(mcmcpath,'/ipmap.txt',sep=''),what=numeric())
     coord <- scan(paste(mcmcpath,'/demes.txt',sep=''),what=numeric())
     edges <- scan(paste(mcmcpath,'/edges.txt',sep=''),what=numeric())
@@ -422,6 +467,12 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
     coord <- matrix(coord,ncol=2,byrow=TRUE)
     edges <- matrix(edges,ncol=6,byrow=TRUE)
     outer <- matrix(outer,ncol=2,byrow=TRUE)
+
+    if (!longlat) {
+        coord <- coord[,c(2,1)]
+        outer <- outer[,c(2,1)]
+    }
+
     nv <- nrow(edges)
     nn <- ncol(edges)
     nodes <- 1:nv
@@ -430,7 +481,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
     sizes <- as.numeric(sizes)
     eems.levels <- center.qrates(Zqmu)
 
-    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/5),c(1),respect=FALSE)
+    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),c(1),respect=FALSE)
 
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zqmu,asp=1,
@@ -439,26 +490,27 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color,
+                                           xlim=dimns$xrange,ylim=dimns$yrange)
+                                   }
+                                   if (add.outline) {
+                                       for (v in 2:nrow(outer)) {
+                                           lines(outer[c(v-1,v),1],outer[c(v-1,v),2],col=col.outline,lwd=lwd.outline)
+                                       }
                                    }
                                    if (add.grid) {
-                                       for (v in 2:nrow(outer)) {
-                                           lines(outer[c(v-1,v),1],
-                                                 outer[c(v-1,v),2],col="red",lwd=3)
-                                       }
                                        for (a in 1:nv) {
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],
-                                                     coord[c(a,b),2],col=grid.color)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=col.grid,lwd=lwd.grid)
                                            }
                                        } }
                                    }
                                    if (add.samples) {
-                                       points(coord[demes,1],pch=19,
-                                              coord[demes,2],col="gray10",
-                                              cex=1+2*sizes/max(sizes))
+                                       points(coord[demes,1],coord[demes,2],
+                                              col=col.samples,pch=pch.samples,
+                                              cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
     par(plt = c(0.03,0.45,0.03,0.92),cex.axis=1.7,las=1)
@@ -478,30 +530,35 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2)
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2,
+                                           xlim=dimns$xrange,ylim=dimns$yrange)
                                    }
-                                   if (add.grid) {
+                                   if (add.outline) {
                                        for (v in 2:nrow(outer)) {
-                                           lines(outer[c(v-1,v),1],
-                                                 outer[c(v-1,v),2],col="red",lwd=3)
+                                           lines(outer[c(v-1,v),1],outer[c(v-1,v),2],col=col.outline,lwd=lwd.outline)
                                        }
+                                   }                                       
+                                   if (add.grid) {
                                        for (a in 1:nv) {
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],
-                                                     coord[c(a,b),2],col=grid.color2)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=grid.color2,lwd=lwd.grid)
                                            }
                                        } }
                                    }
                                    if (add.samples) {
-                                       points(coord[demes,1],pch=19,
-                                              coord[demes,2],col="gray10",
-                                              cex=1+2*sizes/max(sizes))
+                                       points(coord[demes,1],coord[demes,2],
+                                              col=col.samples,pch=pch.samples,
+                                              cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
 }
-mcmc.qrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE,add.map=FALSE) {
+mcmc.qrates <- function(mcmcpath,dimns,longlat,
+                        add.map=FALSE,col.map=map.color,lwd.map=1,
+                        add.grid=TRUE,col.grid=grid.color,lwd.grid=1,
+                        add.samples=TRUE,col.samples="black",pch.samples=19,cex.samples=1,max.cex.samples=2,
+                        add.outline=TRUE,col.outline="red",lwd.outline=3) {
     print('Plotting posterior mean surface of qrates')
     mcmcpath1 <- character()
     for (file in mcmcpath) {
@@ -518,27 +575,36 @@ mcmc.qrates <- function(mcmcpath,dimns,add.grid=TRUE,add.samples=TRUE,add.map=FA
     if (nsimnos==0) { return(0) }
     Zqmu <- matrix(0,dimns$nxmrks,dimns$nymrks)
     for (file in mcmcpath) {
-        rslt <- standardize.qmrks(file,dimns)
+        rslt <- standardize.qmrks(file,dimns,longlat)
         niters <- niters + rslt$niters
         Zqmu <- Zqmu + rslt$Zmrks
     }
     Zqmu <- Zqmu/niters
     Zqvar <- matrix(0,dimns$nxmrks,dimns$nymrks)
     for (file in mcmcpath) {
-        rslt <- standardize.qmrks.var(file,dimns,Zqmu)
+        rslt <- standardize.qmrks.var(file,dimns,Zqmu,longlat)
         Zqvar <- Zqvar + rslt$Zqvar
     }
     Zqvar <- Zqvar/(niters-1)
-    mcmc.qrates0(mcmcpath[1],dimns,Zqmu,Zqvar,
-                 add.grid=add.grid,add.samples=add.samples,add.map=add.map)
+    mcmc.qrates0(mcmcpath[1],dimns,Zqmu,Zqvar,longlat,
+                 add.map=add.map,col.map=col.map,lwd.map=lwd.map,
+                 add.grid=add.grid,col.grid=col.grid,lwd.grid=lwd.grid,
+                 add.samples=add.samples,col.samples=col.samples,
+                 pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
+                 add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
 }
-mcmc.mrates.voronoi <- function(mcmcpath,dimns) {
+mcmc.mrates.voronoi <- function(mcmcpath,dimns,longlat) {
     print('Plotting mrates Voronoi tessellation')
     print(mcmcpath)
     mrates <- scan(paste(mcmcpath,'/mcmcmrates.txt',sep=''),what=numeric())
     mtiles <- scan(paste(mcmcpath,'/mcmcmtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcxcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmcycoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     mrates <- log10(mrates)
     xrange <- dimns$xrange
     yrange <- dimns$yrange
@@ -594,6 +660,11 @@ mcmc.qrates.voronoi <- function(mcmcpath,dimns) {
     qtiles <- scan(paste(mcmcpath,'/mcmcqtiles.txt',sep=''),what=numeric())
     xcoord <- scan(paste(mcmcpath,'/mcmcwcoord.txt',sep=''),what=numeric())
     ycoord <- scan(paste(mcmcpath,'/mcmczcoord.txt',sep=''),what=numeric())
+    if (!longlat) {
+        tempic <- xcoord
+        xcoord <- ycoord
+        ycoord <- tempic
+    }
     qrates <- log10(qrates)
     xrange <- dimns$xrange
     yrange <- dimns$yrange
@@ -726,7 +797,6 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
             nPops <- length(Sizes)
         }
     }
-    par(font.main=1)
     Wobs <- diag(JtDobsJ)
     What <- diag(JtDhatJ)
     ones <- matrix(1,nPops,1)
@@ -735,6 +805,7 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
     ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
     cnts <- minSize[upper.tri(minSize,diag=FALSE)]
+    par(font.main=1)
     plot(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)],
          xlab=expression(paste("Fitted dissimilarity between demes,  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
          ylab=expression(paste("Observed dissimilarity between demes,  ",D[ab]," - (",D[aa],"+",D[bb],")/2",sep="")))
@@ -754,9 +825,39 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
         title(main="Dissimilarities within demes\nGray means a has a single individual sampled from")
     }
 }
-eemsplots <- function(mcmcpath,plotpath,add.map=FALSE) {
-
+####################################################################################
+## eems.plots takes three required arguments:
+##   mcmcpath: one or several output directories (for the same dataset)
+##   plotpath: filename of figures to generate
+##     The following figures are created by default:
+##     plotpath-mrates01.png: effective migration rates
+##     plotpath-qrates01.png: effective diversity rates
+##     plotpath-rist01/02.png: fitted vs observed distances
+##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
+## eems.plots take a variety of optional arguments:
+##   plot.width and plot.height: width and height of the graphics region (in inches)
+##   res: resolution of png figures (generated with the bitmap function)                        
+##   add.map: add 'worldHires' map (using the mapdata package)?                                 
+##   add.grid: add triangular population grid?                                                  
+##   add.samples: add samples to their assigned location in the grid?                           
+##   add.outline: add the habitat ring (as declared in the .outer file)?                        
+##   col.map/col.grid/col.samples/col.outline: specify the colors                               
+##   lwd.max/lwd.grid/lwd.outline: specify the line width                                       
+##   pch.samples: specify the character                                                         
+##   cex.samples: specify the character size                                                    
+##   max.cex.samples: some demes might be assigned more samples than others.                    
+##     If max.cex.samples>0, then demes with more samples will also have bigger size.           
+##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
+####################################################################################
+eems.plots <- function(mcmcpath,plotpath,longlat,
+                       plot.width=0,plot.height=0,res=600,
+                       add.map=FALSE,col.map=map.color,lwd.map=1,
+                       add.grid=TRUE,col.grid=grid.color,lwd.grid=1,
+                       add.samples=TRUE,col.samples="black",pch.samples=19,cex.samples=1,max.cex.samples=2,
+                       add.outline=TRUE,col.outline="red",lwd.outline=3) {
+    
     if (add.map) { library(mapdata) }
+    if (max.cex.samples<0) { max.cex.samples = 0 }
     
     mcmcpath1 <- character()
     for (file in mcmcpath) {
@@ -770,27 +871,38 @@ eemsplots <- function(mcmcpath,plotpath,add.map=FALSE) {
     nsimnos <- length(mcmcpath)
     if (nsimnos==0) { return(0) }
     
-    dimns <- read.dimns(mcmcpath[1])
-    plot.height <- 5
-    plot.width <- 6*(dimns$xspan/dimns$yspan)
+    dimns <- read.dimns(mcmcpath[1],longlat)
 
-    bitmap(paste(plotpath,'-mrates%02d.png',sep=''),type='png16m',res=300,
+    if ((plot.height<=0)||(plot.width<=0)) {
+        plot.height <- 5
+        plot.width <- 6.25*(dimns$xspan/dimns$yspan)
+    }
+
+    bitmap(paste(plotpath,'-mrates%02d.png',sep=''),type='png16m',res=res,
            height=plot.height,width=plot.width,units='in')
-    mcmc.mrates(mcmcpath,dimns,add.map=add.map)
+    mcmc.mrates(mcmcpath,dimns,longlat,
+                add.grid=add.grid,add.map=add.map,
+                add.samples=add.samples,col.samples=col.samples,
+                pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
+                add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
     dev.off( )
-    bitmap(paste(plotpath,'-qrates%02d.png',sep=''),type='png16m',res=300,
+
+    bitmap(paste(plotpath,'-qrates%02d.png',sep=''),type='png16m',res=res,
            height=plot.height,width=plot.width,units='in')
-    mcmc.qrates(mcmcpath,dimns,add.map=add.map)
+    mcmc.qrates(mcmcpath,dimns,longlat,
+                add.grid=add.grid,add.map=add.map,
+                add.samples=add.samples,col.samples=col.samples,
+                pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
+                add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
     dev.off( )
 
     plot.height <- 5
     plot.width <- 6
-    bitmap(paste(plotpath,'-rdist%02d.png',sep=''),type='png16m',res=300,
+    bitmap(paste(plotpath,'-rdist%02d.png',sep=''),type='png16m',res=res,
            height=plot.height,width=plot.width,units='in')
     dist.scatterplot(mcmcpath)
     dev.off( )
-    
-    bitmap(paste(plotpath,'-pilogl%02d.png',sep=''),type='png16m',res=300,
+    bitmap(paste(plotpath,'-pilogl%02d.png',sep=''),type='png16m',res=res,
            height=plot.height,width=plot.width,units='in')
     plot.logposterior(mcmcpath)
     dev.off( )

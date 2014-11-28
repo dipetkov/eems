@@ -67,6 +67,7 @@ int mod(const int a, const int b);
 int neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const int pos,
 		      const int nx, const int ny);
 
+bool isdistmat(const MatrixXd &A);
 double logdet(const MatrixXd &A);
 double mvgammaln(const double a, const int p);
 double wishpdfln(const MatrixXd &X, const MatrixXd &Sigma, const double df);

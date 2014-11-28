@@ -1,7 +1,7 @@
 
 .PHONY: all
 
-PLINKIO = /home/petkova/local
+PLINKIO = /usr/local/lib
 EXE = bed2diffs
 OBJ = bed2diffs.o data.o
 

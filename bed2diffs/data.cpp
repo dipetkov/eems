@@ -99,7 +99,7 @@ void Data::bed2diffs()
 	outdiffs << " " << 0;
       } else {
 	size_t ij = Index(i,j);
-	outdiffs << " " << diffs[ij]/pairs[ij];
+	outdiffs << std::fixed << std::setprecision(12) << " " << diffs[ij]/pairs[ij];
       }
     }
     outdiffs << std::endl;

@@ -5,16 +5,23 @@ function ll = pseudowishpdfln( X, Sigma, df)
 
 n = nrow(X);
 r = rank(X);
-U = chol(Sigma);
+q = n;
 if (r<n)
-  if (r~=df)
-    error('singwishpdfln:rank(X)','rank(X) != df.');
+  % If X is rank-deficient, df should be equal to the rank of X
+  if (df~=r)
+    error('pseudowishpdfln: rank(X)<nrow(X) but df!=rank(X)');
+  end
+  q = r;
+else
+  % If X is full-rank, then df should be at least equal to n-1   
+  if (df<n)
+    error('pseudowishpdfln: rank(X)=nrow(X) but df<nrow(X)')
   end
 end
+U = chol(Sigma);
 ldS = logdet(U,'inv');
 SiX = AinvB(U,X,'inv');
 ldX = pseudologdet(X);
-q = min(df,n);
 ll = - (n+1)*ldX ...
      - trace(SiX) ...
      - df*(ldS-ldX) ...

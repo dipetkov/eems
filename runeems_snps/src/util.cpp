@@ -89,6 +89,19 @@ vector<double> split(const string &line) {
   istringstream in(line);
   return vector<double>(istream_iterator<double>(in), istream_iterator<double>());
 }
+bool isdistmat(const MatrixXd &A) {
+  double a = A.minCoeff();
+  double b = A.diagonal().minCoeff();
+  double c = A.diagonal().maxCoeff();
+  double d = (A - A.transpose()).maxCoeff();
+  SelfAdjointEigenSolver<MatrixXd> x(A);
+  ArrayXd e = x.eigenvalues().array();
+  double eps = 1e-12;
+  int negative = (e < -eps).count();
+  int positive = (e > eps).count();
+  int zero = ((e > -eps)&&(e < eps)).count();
+  return ((a>=0)&&(b==0)&&(c==0)&&(d==0)&&(positive==1)&&(zero==0));
+}
 double logdet(const MatrixXd &A) {
   return (A.selfadjointView<Lower>().ldlt().vectorD().array().log().sum());
 }

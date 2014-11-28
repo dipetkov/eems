@@ -29,12 +29,11 @@ end
 if ~issymetric(Diffs)
    error('The dissimilarity matrix is not symmetric.')
 end
-if rank(Diffs)<nIndiv
-  error('The dissimilarity matrix is rank-deficient.')
+if ~isdistmat(Diffs)
+  error('The dissimilarity matrix is not a full-rank distance matrix.')
 end
 
 [oDemes,Jinvpt,Jindex] = samples_to_demes(Coord,Demes);
-
 n = length(Jinvpt);
 o = length(oDemes);
 
@@ -45,8 +44,10 @@ Sizes = Jpt'*ones(n,1);
 
 %% A basis for contrasts %%
 L = [-ones(n-1,1),eye(n-1)];
+LDLt = - L*Diffs*L';
 ldLLt = logdet(L*L');
-ldDviQ = ldLLt - logdet(-L*Diffs*L');
+ldLDLt = pseudologdet(LDLt);
+ldDviQ = ldLLt - ldLDLt;
 
 Data = struct('nIndiv',{nIndiv},...
               'nSites',{nSites},...

@@ -29,7 +29,7 @@
 
 \begin{document}
 
-EEMS is a program to analyze and visualize spatial population structure from geo-referenced genetic samples. EEMS uses the concept of \textit{effective migration} to model the relationship between genetics and geography, and it outputs an estimated effective migration surface (hence, EEMS) -- a visual representation of population structure that highlights potential regions of higher-than-average and lower-than-average historic gene flow.
+EEMS is a program to analyze and visualize spatial population structure from geo-referenced genetic samples. EEMS uses the concept of \textit{effective migration} to model the relationship between genetics and geography, and it outputs an \textit{e}stimated \textit{e}ffective \textit{m}igration \textit{s}urface (hence, EEMS) -- a visual representation of population structure that highlights potential regions of higher-than-average and lower-than-average historic gene flow.
 
 This EEMS implementation uses Eigen for linear algebra computations and Boost for random number generation and the habitat geometry. (The habitat is assumed to be a (possibly irregular) closed polygon without holes; see Section \ref{sec:habitat}.) The Eigen template library can be downloaded from \url{http://eigen.tuxfamily.org}, and the Boost libraries can be downloaded from \url{http://www.boost.org}. EEMS has been tested with Eigen 3.2.2 and Boost 1\_57.
 
@@ -123,16 +123,16 @@ Input habitat:
 \end{tabular}
 \caption{}
 \end{subfigure}
-\caption{The habitat is represented as a ring, i.e., a simple closed polygon without holes. (a) The ring should be \textit{closed}, i.e. the first vertex is also the last vertex. (b) The vertices should be listed \textit{counterclockwise}. (c) It is straightforward to specify habitats with complex irregular shape.}
+\caption{The habitat is represented as a ring, i.e., a simple closed polygon without holes. (a) The ring should be \textit{closed}, i.e., the first vertex is also the last vertex. (b) The vertices should be listed \textit{counterclockwise}. (c) It is straightforward to specify a habitat with complex irregular shape as a ring.}
 \label{fig:habitat-examples}
 \end{figure}
 \clearpage}
 
 \section{The population graph}
 
-The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, `nDemes`, and EEMS constructs a grid with about the same number of demes that fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries), and it might be helpful to iterate between refining the habitat specification and the number of demes `nDemes` to choose a satisfactory grid.
+The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, `nDemes`, and EEMS constructs a grid with about the same number of demes that fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries), and it might be helpful to iterate between refining the habitat specification and the number of demes `nDemes` to choose a satisfactory grid. As an example, Figure \ref{fig:grid-for-African-elephant} shows how to choose the habitat coordinates and construct a population graph for the African elephant dataset. Alternatively, there exists a convenient online tool to draw polygons with Google Maps API, available at \url{http://www.birdtheme.org/useful/v3tool.html}, that might be useful for outlining an irregularly shaped habitat.
 
-As an example, let's construct a graph for the African elephant dataset.
+The sample and habitat coordinates can be specified either latitude first or longitude first as long as the files \textit{datapath}.coord and \textit{datapath}.outer use the same convention. (However, the ordering of the coordinates must be specified when plotting the results; see Section \ref{sec:plotting-eems}.)
 
 \afterpage{
 \begin{figure}[!]
@@ -170,6 +170,7 @@ As an example, let's construct a graph for the African elephant dataset.
 \end{subfigure}
 
 \caption{This example shows how we can specify the habitat boundaries by first creating a rectangular grid and then picking a few vertices (in the rectangular grid) to outline the sampled habitat. (a) Samples are collected at known locations across a two-dimensional habitat. In this example, elephant samples are collected throughout Africa. (b) It is straightforward (using EEMS) to construct a triangular grid that spans a rectangular habitat because a rectangle is defined by only four vertices. However, we might want to exclude some regions from the ``habitat''; in the case of the African elephant, we might want to exclude the Atlantic and the Indian oceans. (c) We can choose a few vertices that approximately outline the habitat. (d) The resulting habitat has roughly the shape of Sub-Saharan Africa. (e) An irregularly shaped grid is generated automatically by EEMS given the irregular habitat outline (in red) and the deme density.}
+\label{fig:grid-for-African-elephant}
 \end{figure}
 \clearpage}
 
@@ -210,7 +211,7 @@ Additionally, there are several extra parameters that can be specified optionall
 \end{itemize}
 
 \newpage
-\section{Running EEMS -- an example}
+\section{Running the EEMS program -- an example}\label{sec:running-eems}
 
 This example shows how to run EEMS on a small simulated dataset (one of the ``barrier to migration'' datasets used for Figure 2 in the EEMS paper.)
 
@@ -224,7 +225,7 @@ datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
 mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1
 nIndiv = 300
 nSites = 3000
-nDemes = 200
+nDemes = 153
 diploid = false
 numMCMCIter = 20000
 numBurnIter = 10000
@@ -237,7 +238,7 @@ datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
 mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno2
 nIndiv = 300
 nSites = 3000
-nDemes = 200
+nDemes = 153
 diploid = false
 numMCMCIter = 20000
 numBurnIter = 10000
@@ -250,7 +251,7 @@ datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
 mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno3
 nIndiv = 300
 nSites = 3000
-nDemes = 200
+nDemes = 153
 diploid = false
 numMCMCIter = 20000
 numBurnIter = 10000
@@ -265,17 +266,47 @@ Then run EEMS (on the command line) on the simulated dataset, with three differe
 ./runeems_snps --params params-simno3.ini --seed 789
 \end{verbatim}
 
-Finally, plot the results (in an R console).
+\section{Plotting the EEMS results -- an example}\label{sec:plotting-eems}
+
+Finally, plot the results of the three EEMS runs (in an R console).
 
 \begin{verbatim}
 source('default.eems.plots.R')
 
+## mcmcpath is a list of three output directories; the results will be averaged
 mcmcpath <- 
       paste('barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno',1:3,sep='')
 plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
 
-## mcmcpath is a list of three output directories; the results are averaged                                                                                
-eemsplots(mcmcpath,plotpath,add.map=FALSE)
+## eems.plots takes three required arguments:
+##   mcmcpath: one or several output directories (for the same dataset)
+##   plotpath: filename of figures to generate
+##     The following figures are created by default:
+##     plotpath-mrates01.png: effective migration rates
+##     plotpath-qrates01.png: effective diversity rates
+##     plotpath-rist01/02.png: fitted vs observed distances
+##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
+## eems.plots take a variety of optional arguments:
+##   plot.width and plot.height: width and height of the graphics region (in inches)                                      
+##   res: resolution of png figures (generated with the bitmap function)                        
+##   add.map: add 'worldHires' map (using the mapdata package)?                                 
+##   add.grid: add triangular population grid?                                                  
+##   add.samples: add samples to their assigned location in the grid?                           
+##   add.outline: add the habitat ring (as declared in the .outer file)?                        
+##   col.map/col.grid/col.samples/col.outline: specify the colors                               
+##   lwd.max/lwd.grid/lwd.outline: specify the line width                                       
+##   pch.samples: specify the character                                                         
+##   cex.samples: specify the character size                                                    
+##   max.cex.samples: some demes might be assigned more samples than others.                    
+##     If max.cex.samples>0, then demes with more samples will also have bigger size.           
+##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
+
+longlat = TRUE                                              
+eems.plots(mcmcpath,plotpath,longlat,
+           add.map=FALSE,
+           add.grid=TRUE,
+           add.samples=TRUE,
+           add.outline=FALSE)
 \end{verbatim}
 
 \afterpage{
@@ -337,7 +368,7 @@ eemsplots(mcmcpath,plotpath,add.map=FALSE)
 \caption{}
 \end{subfigure}
 
-\caption{Observed vs fitted genetic dissimilarities. (a) Dissimilarities between demes: $D_{\alpha\beta}-(D_{\alpha\alpha}+D_{\beta\beta})/2$. (b) Dissimilarities within demes: $D_{\alpha\alpha}$.}
+\caption{Observed vs fitted genetic dissimilarities. The genetic differences are averaged so that in the scatterplot there is one point for each pair of sampled demes (with at least two samples): $D_{\alpha\beta}=(1/P_{\alpha\beta})\sum_{(i,j) \in P_{\alpha\beta}}D_{ij}$ where $D_{ij}$ is the average genetic dissimilarity between samples $i$ and $j$, and $P_{\alpha\beta}$ is the set of all pairs such that $\delta(i)=\alpha,\delta(j)=\beta$, i.e., sample $i$ is assigned to deme $\alpha$, sample $j$ is assigned to deme $\beta$. (a) Dissimilarities between demes: $D_{\alpha\beta}-(D_{\alpha\alpha}+D_{\beta\beta})/2$. (b) Dissimilarities within demes: $D_{\alpha\alpha}$. The between-demes and within-deme dissimilarities are plotted separately because the between-demes dissimilarities are modeled by the effective migration rates, while the within-deme dissimilarities are modeled by the effective diversity rates.}
 \end{figure}
 \clearpage}
 
