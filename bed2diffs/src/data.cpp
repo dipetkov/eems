@@ -31,14 +31,16 @@ void Data::getsize( )
 	    << "with " << nIndiv << " samples and " << nSites << " SNPs" << std::endl;
 }
 
-void Data::bed2diffs()
+void Data::bed2diffs_v1()
 {
   std::string diffsfile = datapath + ".diffs";
+  std::string countfile = datapath + ".count";
   std::string orderfile = datapath + ".order";
   std::ofstream outdiffs(diffsfile.c_str(), std::ios::out);
+  std::ofstream outcount(countfile.c_str(), std::ios::out);
   std::ofstream outorder(orderfile.c_str(), std::ios::out);
 
-  outdiffs.precision(6);
+  outdiffs.precision(12);
   outdiffs.setf(std::ios::fixed,std::ios::floatfield);
   
   size_t nPairs = nIndiv*(nIndiv-1)/2;
@@ -99,7 +101,104 @@ void Data::bed2diffs()
 	outdiffs << " " << 0;
       } else {
 	size_t ij = Index(i,j);
-	outdiffs << std::fixed << std::setprecision(12) << " " << diffs[ij]/pairs[ij];
+	outdiffs << " " << diffs[ij]/pairs[ij];
+	outcount << " " << pairs[ij];
+      }
+    }
+    outdiffs << std::endl;
+    outcount << std::endl;
+  }
+  
+  outdiffs.close( );
+  outcount.close( );
+  outorder.close( );
+  free( a );
+  free( b );
+  free( snps );
+  free( diffs );
+  free( pairs );
+}
+
+void Data::bed2diffs_v2()
+{
+  std::string diffsfile = datapath + ".diffs";
+  std::string orderfile = datapath + ".order";
+  std::ofstream outdiffs(diffsfile.c_str(), std::ios::out);
+  std::ofstream outorder(orderfile.c_str(), std::ios::out);
+
+  outdiffs.precision(12);
+  outdiffs.setf(std::ios::fixed,std::ios::floatfield);
+  
+  size_t nPairs = nIndiv*(nIndiv-1)/2;
+  size_t nSitesProcessed = 0;
+
+  // Read the genotypes in serial, compute the differences in parallel
+  snp_t *snps = (snp_t *) malloc( sizeof(snp_t)*nIndiv );
+  size_t *a = (size_t *) malloc( sizeof(size_t)*nPairs );
+  size_t *b = (size_t *) malloc( sizeof(size_t)*nPairs );
+  double *diffs = (double *) malloc( sizeof(double)*nPairs );
+  double *pairs = (double *) malloc( sizeof(double)*nPairs );
+
+  for (size_t i = 0 ; i<(nIndiv-1) ; i++ ) {
+    for (size_t j = i+1 ; j<nIndiv ; j++ ) {
+      size_t ij = Index(i,j);
+      diffs[ij] = 0.0;
+      pairs[ij] = 0.0;
+      a[ij] = i;
+      b[ij] = j;
+    }
+  }
+
+  while (pio_next_row( &plink_file, snps ) == PIO_OK) {
+
+    nSitesProcessed++;
+    
+    double mu = 0.0, NM = 0.0;
+    for (size_t i = 0 ; i<(nIndiv-1) ; i++ ) {
+      size_t zi = snps[i];
+      if (zi!=PLINK_NA) { 
+	mu += zi; NM += 1.0;
+      }
+    }
+    
+    mu /= NM;
+
+    #pragma omp parallel for
+    for (size_t ij = 0 ; ij < nPairs ; ij++ ) {
+      size_t zi = snps[a[ij]];
+      size_t zj = snps[b[ij]];
+      // In this case, missing genotypes are "imputed" as the mean genotype
+      if (zi==PLINK_NA) { zi = mu; }
+      if (zj==PLINK_NA) { zj = mu; }
+      diffs[ij] += (zi - zj)*(zi - zj);
+      pairs[ij] += 1.0;
+    }
+  }
+
+  std::cout << "Computed average pairwise differences across " << nSitesProcessed << " SNPs" << std::endl;
+
+  if (!outdiffs.is_open())
+    {
+      std::cerr << "[Data::bed2diffs] Error writing file " << diffsfile << std::endl;
+      exit(1);
+    }   
+  if (!outorder.is_open())
+    {
+      std::cerr << "[Data::bed2diffs] Error writing file " << orderfile << std::endl;
+      exit(1);
+    }   
+
+  for (size_t i = 0 ; i<nIndiv ; i++ ) {
+
+    struct pio_sample_t *sample = pio_get_sample( &plink_file, i );
+    outorder << sample->fid << " " << sample->iid << std::endl;
+
+    for (size_t j = 0 ; j<nIndiv ; j++ ) {
+      if (i==j) {
+	outdiffs << " " << 0;
+      } else {
+	size_t ij = Index(i,j);
+	outdiffs << " " << diffs[ij]/pairs[ij];
       }
     }
     outdiffs << std::endl;
@@ -113,6 +212,7 @@ void Data::bed2diffs()
   free( diffs );
   free( pairs );
 }
+
 size_t Data::Index(size_t i, size_t j) {
   size_t ij;
   /*

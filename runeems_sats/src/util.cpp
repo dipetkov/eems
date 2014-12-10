@@ -42,6 +42,7 @@ Params::Params(const string &params_file) {
   } catch (exception& e) {
     cerr << "[EEMS::Params] Error parsing input parameters in " << params_file << ": " << e.what() << endl; 
   }
+  instrm.close();
   ////////////////////////////
   // Required argument: datapath, mcmcpath, nIndiv, nSites, nDemes
   if (!((datapath.length()>0)&&(mcmcpath.length()>0))) {

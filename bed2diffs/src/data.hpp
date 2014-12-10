@@ -21,7 +21,8 @@ public:
   ~Data();
 
   void getsize();
-  void bed2diffs();
+  void bed2diffs_v1();
+  void bed2diffs_v2();
 
 protected:
   

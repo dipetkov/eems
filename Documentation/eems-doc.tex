@@ -37,16 +37,16 @@ This EEMS implementation uses Eigen for linear algebra computations and Boost fo
 
 There are three data input files plus a parameter input file. The data input files should be in the same directory, and the description below assumes that \textit{datapath} specifies their location.
 
-For SNP data, the input files are:
+For SNP data on $n$ individuals, the input files are:
 \begin{itemize}
   \item \textit{datapath}.diffs: the matrix of average pairwise genetic differences. (This matrix can be computed with {\tt bed2diffs} if the dataset is already in plink binary format.)
   \item \textit{datapath}.coord: the sample coordinates (two coordinates per sample, one sample per line)
   \item \textit{datapath}.outer: the habitat coordinates (as a sequence of vertices that outline a closed polygon; see Section \ref{sec:habitat} for details and some examples.)
 \end{itemize}
 
-For microsatellite data, the input files are:
+For microsatellite data on $n$ individuals at $L$ loci, the input files are:
 \begin{itemize}
-  \item \textit{datapath}.sites: the matrix of allele copies (one sample per line, $2L$ alleles per sample, where $L$ is the number of microsatellites; missing alleles can be specified by any negative number.)
+  \item \textit{datapath}.sites: the matrix of allele copies (This matrix is $n\times L $ for haploid markers and $n\times2L$ for diploid markers; missing alleles can be specified by any negative number.)
   \item \textit{datapath}.coord: as described above for SNP data.
   \item \textit{datapath}.outer: as described above for SNP data.
 \end{itemize}
@@ -274,8 +274,7 @@ Finally, plot the results of the three EEMS runs (in an R console).
 source('default.eems.plots.R')
 
 ## mcmcpath is a list of three output directories; the results will be averaged
-mcmcpath <- 
-      paste('barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno',1:3,sep='')
+mcmcpath <- paste('barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno',1:3,sep='')
 plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
 
 ## eems.plots takes three required arguments:

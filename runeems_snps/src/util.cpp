@@ -42,6 +42,7 @@ Params::Params(const string &params_file) {
   } catch (exception& e) {
     cerr << "[EEMS::Params] Error parsing input parameters in " << params_file << ": " << e.what() << endl; 
   }
+  instrm.close();
   ////////////////////////////
   // Required argument: datapath, mcmcpath, nIndiv, nSites, nDemes
   if (!((datapath.length()>0)&&(mcmcpath.length()>0))) {
@@ -89,17 +90,22 @@ vector<double> split(const string &line) {
   istringstream in(line);
   return vector<double>(istream_iterator<double>(in), istream_iterator<double>());
 }
+bool isposdef(const MatrixXd &A) {
+  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
+  double minval = eig.eigenvalues().minCoeff();
+  return (minval>0);
+}
 bool isdistmat(const MatrixXd &A) {
   double a = A.minCoeff();
   double b = A.diagonal().minCoeff();
   double c = A.diagonal().maxCoeff();
   double d = (A - A.transpose()).maxCoeff();
-  SelfAdjointEigenSolver<MatrixXd> x(A);
-  ArrayXd e = x.eigenvalues().array();
+  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
+  ArrayXd val = eig.eigenvalues().array();
   double eps = 1e-12;
-  int negative = (e < -eps).count();
-  int positive = (e > eps).count();
-  int zero = ((e > -eps)&&(e < eps)).count();
+  int negative = (val < -eps).count();
+  int positive = (val > eps).count();
+  int zero = ((val > -eps)&&(val < eps)).count();
   return ((a>=0)&&(b==0)&&(c==0)&&(d==0)&&(positive==1)&&(zero==0));
 }
 double logdet(const MatrixXd &A) {

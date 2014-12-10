@@ -58,11 +58,18 @@ void EEMS::rnorm_effects(const double HalfInterval, const double rateS2, VectorX
 // Diffs:
 void EEMS::initialize_diffs( ) {
   cerr << "[Diffs::initialize]" << endl;
-  MatrixXd Sites = MatrixXd::Zero(n,2*p);
+  int alleles_to_read = 0;
+  if (params.diploid) {
+    alleles_to_read = 2*p;
+  } else {
+    alleles_to_read = p;
+  }
+  MatrixXd Sites = MatrixXd::Zero(n,alleles_to_read);
   int read = readMatrixXd(params.datapath + ".sites",Sites);
-  if (read!=2*n*p) {
+  if (read!=n*alleles_to_read) {
     cerr << "  Error reading genotype data matrix " << params.datapath + ".sites" << endl
-	 << "  Expect a " << n << "x(2*" << p << ") matrix of allele copies" << endl; exit(1);
+	 << "  Expect a " << n << "x" << alleles_to_read << " matrix of allele copies" << endl;
+    exit(1);
   }
   cerr << "  Read genotype data from " << params.datapath + ".diffs" << endl;
   ///////////////////////////////////////
@@ -77,14 +84,19 @@ void EEMS::initialize_diffs( ) {
   nmin1.resize(p);
   ll_partdf = 0.0;
   for ( int i = 0 ; i < p ; i ++ ) {
-    VectorXd a1 = Sites.col(2*i);
-    VectorXd a2 = Sites.col(2*i+1);
-    if (((a1.array()<0) != (a2.array()<0)).maxCoeff()) {
-      cerr << "  Error processing genotypes: one allele is missing but the other is not." << endl;
-      exit(1);
+    VectorXd z = VectorXd::Zero(n);
+    if (params.diploid) {
+      VectorXd a1 = Sites.col(2*i);
+      VectorXd a2 = Sites.col(2*i+1);
+      if (((a1.array()<0) != (a2.array()<0)).maxCoeff()) {
+	cerr << "  Error processing genotypes: one allele is missing but the other is not." << endl;
+	exit(1);
+      }
+      z = 0.5 * a1 + 0.5 * a2;
+    } else {
+      z = Sites.col(i);
     }
-    int ni = (a1.array()>=0).count();
-    VectorXd z = 0.5 * a1 + 0.5 * a2;
+    int ni = (z.array()>=0).count();
     // Copy into a vector with the unobserved samples removed.
     int j = 0;
     VectorXd zi = VectorXd::Zero(ni);

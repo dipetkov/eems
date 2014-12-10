@@ -1,9 +1,9 @@
 
 .PHONY: all
 
-PLINKIO = /usr/local/lib
-EXE = bed2diffs
-OBJ = bed2diffs.o data.o
+PLINKIO = /usr/local
+EXE = bed2diffs_v1
+OBJ = bed2diffs_v1.o data.o
 
 CXXFLAGS = -I${PLINKIO}/include -O3 -Wall -Werror -fopenmp
 LDFLAGS = -L${PLINKIO}/lib -lplinkio
@@ -14,4 +14,4 @@ $(EXE): $(OBJ)
 $(OBJ): %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 clean:
-	rm -f $(OBJ) $(EXE)
+	rm -f $(OBJ) $(EXE) *~
