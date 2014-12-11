@@ -1,0 +1,37 @@
+[EEMS::Params] Random seed = 456
+
+Input parameters:
+               datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
+               mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno2
+                 nIndiv = 300
+                 nSites = 3000
+                 nDemes = 153
+            numMCMCIter = 20000
+            numBurnIter = 10000
+            numThinIter = 99
+              negBiSize = 10
+              negBiProb = 0.670000
+             mrateShape = 0.001000
+             qrateShape = 0.001000
+             s2locShape = 0.001000
+             qrateScale = 1.000000
+             mrateScale = 1.000000
+             s2locScale = 1.000000
+       mSeedsProposalS2 = 0.010000
+       qSeedsProposalS2 = 0.100000
+       mEffctProposalS2 = 0.100000
+       qEffctProposalS2 = 0.001000
+      mrateMuProposalS2 = 0.010000
+
+Acceptance proportions:
+	(58993/242893) = 24.29% for type 0
+	(29198/242893) = 12.02% for type 1
+	(1758/20000) = 8.79% for type 2
+	(6662/68194) = 9.77% for type 3
+	(2033/20000) = 10.17% for type 4
+	(13894/68194) = 20.37% for type 5
+	(145/20000) = 0.73% for type 6
+	(12870/20000) = 64.35% for type 7
+
+Final log prior = 26.98
+Final log llike = 187292.21

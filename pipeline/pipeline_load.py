@@ -2,20 +2,28 @@ import pandas as pd
 import numpy as np
 import wormtable as wormtable
 
-def load_location_file( location_file, location_dir="./", **keywords ):
+def load_location_file( location_file, **keywords ):
     """ this function loads the location data using lat, long and pop_id. 
         The approach here is that I'll draw them from a list of possible ids,
         but the resulting data frame will always have three cols named POP, LAT, LONG.
     """
-    location_data = pd.read_table( location_file, **keywords)
+    
+    if location_file.endswith("xlsx") or location_file.endswith("xls"):
+        location_data = pd.read_excel( location_file, **keywords)
+    else:
+        location_data = pd.read_table( location_file, **keywords)
+        
+
     header = location_data.columns.values
+    print header
     
     #possible ids for population, possibly add more depending on what people come up with
-    allowed_pop_names = [ 'ID', 'POP_ID', 'POP_NAME', 'POP_ORIG', 'POPULATION', 'ECOTYPE_ID' ] 
+    allowed_pop_names = [ 'ID', 'POP_ID', 'POP_NAME', 'POP_ORIG', 'POPULATION',
+            'ECOTYPE_ID', "verbose Population ID"] 
     
     #possible ids for latitude & longitude
-    allowed_lat_names = [ 'LAT', 'LATITUDE', 'Y' ]
-    allowed_long_names = [ 'LONG', 'LONGITUDE', 'X' ]    
+    allowed_lat_names = [ 'LAT', 'LATITUDE', 'Y', 'LAT-ITUDE']
+    allowed_long_names = [ 'LONG', 'LONGITUDE', 'X', 'LON-GI-TUDE' ]    
     
     def get_first_id( header, allowed_names):
         """private function that gets the first match from the possible list of matches"""
@@ -41,6 +49,7 @@ def load_sample_file( sample_file, sample_dir="./", **kwargs):
     """
     sample_data = pd.read_table( sample_file, **kwargs )
     header = sample_data.columns.values
+    print header
     
     #possible ids for population, possibly add more depending on what people come up with
     allowed_pop_names = [ 'POP_ID', 'POP_NAME', 'POP_ORIG', 'POPULATION', 'SIMPLE_MAJORITY', 'SAMPLE' ] 

@@ -96,7 +96,7 @@ def get_pw_dist ( wt_file, individuals=[]):
      
     tc, individuals = load_wt_file( wt_file, individuals=individuals )
     for i, row in enumerate( tc ):
-        if i % 10000 == 0: print i
+        if i % 1000 == 0: print i
 
         genotypes, counts = list_genotype2allele( row )
         tmp_dist_matrix = genetic_distance( genotypes )
@@ -108,3 +108,32 @@ def get_pw_dist ( wt_file, individuals=[]):
         
     return dist_matrix, (n_inds, np.max( n_snps_matrix ))
 
+def test ( wt_file, individuals=[]):
+    """ calculates the pairwise distance matrix of all genotypes in a wt
+    file for individuals individuals
+    
+    Parameters
+    ----------
+    wt_file : wormtable table
+        the data structure containing the genetic data, see load_wt_data
+    individuals : array_like, string
+        the ids of the individuals for which we calculate the pairwise distance
+    
+    Returns
+    -------
+    dist_matrix : array_like, float
+        the distance matrix calculated
+    n_inds_snps : (int, int)
+        the number of individuals and the max number of SNP comparisons
+    """
+    n_inds = len( individuals )
+    dist_matrix = np.zeros( (n_inds, n_inds), dtype="int")
+    n_snps_matrix = np.zeros_like( dist_matrix, dtype="int" )
+     
+    tc, individuals = load_wt_file( wt_file, individuals=individuals )
+    for i, row in enumerate( tc ):
+        if i % 1000 == 0: print i
+
+        genotypes, counts = list_genotype2allele( row )
+    
+        

@@ -1,0 +1,43 @@
+Input parameter values:
+             numMCMCIter:  4000
+             numBurnIter:  2000
+             numThinIter:  19
+      mEffctHalfInterval:  2.4771
+      qEffctHalfInterval:  0.1
+     mrateMuHalfInterval:  2
+     qrateMuHalfInterval:  1e-12
+        mSeedsProposalS2:  0.01
+        qSeedsProposalS2:  0.1
+        mEffctProposalS2:  0.1
+        qEffctProposalS2:  0.001
+       mrateMuProposalS2:  0.01
+       qrateMuProposalS2:  0.01
+              mrateShape:  0.001
+              qrateShape:  0.001
+              s2locShape:  0.001
+              qrateScale:  1
+              mrateScale:  1
+              s2locScale:  1
+               negBiSize:  10
+               negBiProb:  0.66667
+
+Processing dataset ./data/sat-barrier-nIndiv150-nSites16
+MCMC output saved to ./data/sat-barrier-nIndiv150-nSites16-g12x8-simno1
+The triangular grid is 12x8
+Initial log prior:       -39.43780
+Initial log likelihood:  -18835.55203
+Final log prior:         -18.29044
+Final log likelihood:    -18710.57202
+Acceptance proportions:
+	(43279/56597) = 76.47% for type 1
+	(33548/56597) = 59.28% for type 2
+	(41985/62205) = 67.49% for type 3
+		(20987/31080) = 67.53% for subtype 1
+		(20998/31125) = 67.46% for subtype 2
+	(39705/56076) = 70.81% for type 4
+	(2218/4000) = 55.45% for type 5
+	(41869/56076) = 74.66% for type 6
+	(30873/60578) = 50.96% for type 7
+		(15434/30175) = 51.15% for subtype 1
+		(15439/30403) = 50.78% for subtype 2
+	(4000/4000) = 100.00% for type 8
