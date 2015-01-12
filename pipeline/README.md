@@ -14,6 +14,19 @@ There are two ways to run this:
  - a python command line interface (pipeline_cli.py)
 
 
+###Running notebook:
+simply copy the notebook (to keep the original), and adjust the parameters in 
+the second input cell.
+
+###Running from cli:
+parameters can be set either directly on cli, or using arguments files. If read 
+from a file, they need to be prepended by an "@" symbol. For the example, you
+can run
+
+    python pipeline_cli.py @example/default.args @example/example.args
+
+which will read arguments from the files in `example/default.args` and 
+`example/example.args`. This hopefully facilitates reproduceability.
 
 ###Install:
 
