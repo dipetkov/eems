@@ -1,0 +1,1942 @@
+ind,pop,continent,country,latitude,longitude,sample_size,contributor,data_set,type,samples_size
+SA1004,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA063,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA010,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA064,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA073,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA1025,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA078,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA083,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA047,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA016,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+SA018,Khomani,Africa,South_Africa,-27.8,21.1,12,Brenna Henna,HOG,array,0
+Yuk_009,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_025,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_022,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_020,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_024,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_023,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_004,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_019,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_011,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Yuk_021,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ckrd8,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ckrd9,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ckrd13,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ckrd18,Yukagir_Tundra,CentralAsiaSiberia,Russia,68.6,153,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_40,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_16,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_15,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_18,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_08,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_25,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_17,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_06,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_38,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+MC_14,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00064,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00074,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00066,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00065,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00079,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00061,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00068,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00060,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00059,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00057,Chukchi,CentralAsiaSiberia,Russia,69.5,168.8,24,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk_25,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk_22,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk_15,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk_23,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00090,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00092,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00089,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00093,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00098,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00102,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+ADR00096,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk19,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nesk8,Eskimo_Naukan,CentralAsiaSiberia,Russia,66,169.7,20,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nov_005,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00514,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00513,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00509,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00512,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00504,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00507,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00511,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00510,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00508,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+ADR00515,Nganasan,CentralAsiaSiberia,Russia,71.1,96.1,14,Rem Sukernik / Elena B. Starikovskaya,HOG,array,0
+Sesk_47,Chukchi_Reindeer,CentralAsiaSiberia,Russia,64.4,173.9,1,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul5,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul31,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul65,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul6,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul33,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul71,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul10,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul43,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul72,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul44,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul74,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul19,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul24,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul59,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul56,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul55,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul16,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul69,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul1,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul36,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul25,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul52,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul70,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul51,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ul39,Ulchi,CentralAsiaSiberia,Russia,52.2,140.4,33,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba12,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba20,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba13,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba21,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba29,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba6,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba22,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba30,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba15,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba23,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba31,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba16,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba24,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba1,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba9,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba17,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba25,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba2,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba10,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba18,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba11,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Tuba19,Tubalar,CentralAsiaSiberia,Russia,51.1,87,31,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nel19,Yukagir_Forest,CentralAsiaSiberia,Russia,65.5,151,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nel13,Yukagir_Forest,CentralAsiaSiberia,Russia,65.5,151,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nel15,Yukagir_Forest,CentralAsiaSiberia,Russia,65.5,151,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nel16,Yukagir_Forest,CentralAsiaSiberia,Russia,65.5,151,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nel17,Yukagir_Forest,CentralAsiaSiberia,Russia,65.5,151,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk16,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk1,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk18,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk3,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk19,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk5,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk6,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk9,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk10,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Nlk14,Even,CentralAsiaSiberia,Russia,57.5,135.9,10,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Esk20,Eskimo_Chaplin,CentralAsiaSiberia,Russia,64.5,172.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Esk29,Eskimo_Chaplin,CentralAsiaSiberia,Russia,64.5,172.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Esk38,Eskimo_Chaplin,CentralAsiaSiberia,Russia,64.5,172.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Esk22,Eskimo_Chaplin,CentralAsiaSiberia,Russia,64.5,172.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor66,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor30,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor40,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor49,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor54,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor61,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor2,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor22,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor35,Koryak,CentralAsiaSiberia,Russia,58.1,159,13,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor72,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor57,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor60,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor62,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor76,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Kor78,Itelmen,CentralAsiaSiberia,Russia,57.2,156.9,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale9,Tlingit,CentralAsiaSiberia,Russia,54.7,164.5,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale14,Tlingit,CentralAsiaSiberia,Russia,54.7,164.5,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale16,Tlingit,CentralAsiaSiberia,Russia,54.7,164.5,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale32,Tlingit,CentralAsiaSiberia,Russia,54.7,164.5,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir77,Eskimo_Sireniki,CentralAsiaSiberia,Russia,64.4,173.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir14,Eskimo_Sireniki,CentralAsiaSiberia,Russia,64.4,173.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir26,Eskimo_Sireniki,CentralAsiaSiberia,Russia,64.4,173.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir61,Eskimo_Sireniki,CentralAsiaSiberia,Russia,64.4,173.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir43,Eskimo_Sireniki,CentralAsiaSiberia,Russia,64.4,173.9,5,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+HGDP00001,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00003,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00005,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00007,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00011,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00015,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00017,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00019,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00021,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00023,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00025,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00027,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00031,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00033,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00035,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00037,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00039,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00043,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00045,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00047,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00049,Brahui,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00052,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00054,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00056,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00058,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00062,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00064,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00066,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00068,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00072,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00074,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00078,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00080,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00082,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00086,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00088,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00090,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00092,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00094,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00096,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00098,Balochi,SouthAsia,Pakistan,30.5,66.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00099,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00103,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00106,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00109,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00110,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00115,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00116,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00118,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00120,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00121,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00122,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00124,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00125,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00127,Hazara,SouthAsia,Pakistan,33.5,70,22,Patterson et al. 2012,HOG,array,0
+HGDP00131,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00133,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00134,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00135,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00136,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00137,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00140,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00141,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00144,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00145,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00146,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00148,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00151,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00153,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00154,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00155,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00157,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00158,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00160,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00161,Makrani,SouthAsia,Pakistan,26,64,25,Patterson et al. 2012,HOG,array,0
+HGDP00167,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00169,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00171,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00179,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00181,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00183,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00185,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00187,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00189,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00191,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00192,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00195,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00197,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00201,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00205,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00206,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00208,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00210,Sindhi,SouthAsia,Pakistan,25.5,69,24,Patterson et al. 2012,HOG,array,0
+HGDP00213,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00216,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00218,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00222,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00224,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00226,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00228,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00230,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00232,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00241,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00243,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00244,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00247,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00248,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00254,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00258,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00259,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00262,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00264,Pathan,SouthAsia,Pakistan,33.5,70.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00267,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00277,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00281,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00285,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00286,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00288,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00290,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00298,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00302,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00307,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00311,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00313,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00315,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00319,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00323,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00328,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00330,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00333,Kalash,SouthAsia,Pakistan,36,71.5,19,Patterson et al. 2012,HOG,array,0
+HGDP00336,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00338,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00341,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00346,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00351,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00356,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00359,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00364,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00371,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00372,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00382,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00388,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00392,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00402,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00407,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00412,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00417,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00423,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00428,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00433,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00438,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00444,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00445,Burusho,SouthAsia,Pakistan,36.5,74,25,Patterson et al. 2012,HOG,array,0
+HGDP00449,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00462,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00463,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00467,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00474,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00476,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00478,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00982,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00984,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP01081,MbutiPygmy,Africa,Congo,1,29,14,Patterson et al. 2012,HOG,array,0
+HGDP00454,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00455,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00457,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00458,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00459,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00460,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00461,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00464,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00465,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00466,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00469,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00470,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00472,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00473,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00475,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00985,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00986,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP01086,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP01090,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP01094,BiakaPygmy,Africa,CentralAfricanRepublic,4,17,23,Patterson et al. 2012,HOG,array,0
+HGDP00511,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00512,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00513,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00514,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00515,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00516,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00517,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00518,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00519,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00522,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00523,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00524,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00525,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00526,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00527,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00528,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00529,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00531,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00533,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00534,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00535,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00536,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00537,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00538,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00539,French,WestEurasia,France,46,2,29,Patterson et al. 2012,HOG,array,0
+HGDP00540,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00541,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00543,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00545,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00546,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00547,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00548,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00549,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00550,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00552,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00553,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00554,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00555,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00556,Papuan,Oceania,PapuaNewGuinea,-4,143,18,Patterson et al. 2012,HOG,array,0
+HGDP00557,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00558,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00559,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00560,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00561,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00562,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00563,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00564,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00565,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00566,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00567,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00568,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00569,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00571,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00572,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00573,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00574,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00575,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00577,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00578,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00579,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00580,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00582,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00583,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00584,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00586,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00587,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00588,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00591,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00594,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00595,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00597,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00598,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00599,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00600,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00601,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00602,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00604,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00606,Druze,WestEurasia,Israel(Carmel),32,35,42,Patterson et al. 2012,HOG,array,0
+HGDP00607,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00608,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00610,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00612,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00616,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00618,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00623,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00624,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00630,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00631,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00636,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00641,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00643,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00648,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00649,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00650,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00651,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00653,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00701,BedouinB,WestEurasia,Israel(Negev),31,35,21,Patterson et al. 2012,HOG,array,0
+HGDP00609,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00611,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00613,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00614,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00615,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00619,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00620,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00622,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00625,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00626,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00628,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00629,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00632,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00634,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00635,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00637,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00638,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00639,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00640,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00642,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00644,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00645,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00646,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00647,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00654,BedouinA,WestEurasia,Israel(Negev),31,35,25,Patterson et al. 2012,HOG,array,0
+HGDP00655,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00656,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00660,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00661,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00662,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00663,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00664,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00787,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00788,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP01027,Bougainville,Oceania,PapuaNewGuinea,-6,155,12,Patterson et al. 2012,HOG,array,0
+HGDP00666,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00667,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00668,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00669,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00670,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00671,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00672,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00673,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00674,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01062,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01063,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01064,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01065,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01066,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01067,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01068,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01069,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01070,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01071,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01072,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01073,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01074,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01075,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01076,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01077,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01078,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP01079,Sardinian,WestEurasia,Italy(Sardinia),40,9,29,Patterson et al. 2012,HOG,array,0
+HGDP00675,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00676,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00677,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00679,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00680,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00683,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00684,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00685,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00686,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00687,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00688,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00689,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00690,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00691,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00694,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00696,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00697,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00698,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00699,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00700,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00722,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00724,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00725,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00726,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00727,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00729,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00730,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00731,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00732,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00733,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00734,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00735,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00736,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00737,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00739,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00740,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00741,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00745,Palestinian,WestEurasia,Israel(Central),32,35,45,Patterson et al. 2012,HOG,array,0
+HGDP00702,Piapoco,America,Colombia,3,-68,5,Patterson et al. 2012,HOG,array,0
+HGDP00704,Piapoco,America,Colombia,3,-68,5,Patterson et al. 2012,HOG,array,0
+HGDP00706,Piapoco,America,Colombia,3,-68,5,Patterson et al. 2012,HOG,array,0
+HGDP00970,Piapoco,America,Colombia,3,-68,5,Patterson et al. 2012,HOG,array,0
+HGDP00713,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00714,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00715,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00716,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00717,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00719,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00720,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00721,Cambodian,EastAsia,Cambodia,12,105,10,Patterson et al. 2012,HOG,array,0
+HGDP00747,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00748,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00749,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00750,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00751,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00752,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00753,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00754,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00755,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00756,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00757,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00758,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00759,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00760,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00761,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00762,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00763,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00764,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00765,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00766,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00767,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00768,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00769,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00771,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00772,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00773,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00790,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00791,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00828,Japanese,EastAsia,Japan,38,138,29,Patterson et al. 2012,HOG,array,0
+HGDP00774,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00775,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00776,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00777,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00779,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00780,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00781,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00782,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00783,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00784,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00785,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00786,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00811,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00812,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00813,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00814,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00815,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00817,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00818,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00819,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00820,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00821,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00822,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00971,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00972,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00973,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00974,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00975,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00976,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00977,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP01021,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP01023,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP01024,Han,EastAsia,China,32.3,114,35,Patterson et al. 2012,HOG,array,0
+HGDP00794,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00796,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00797,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00798,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00799,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00800,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00802,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00803,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00805,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00806,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00807,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00808,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00810,Orcadian,WestEurasia,OrkneyIslands,59,-3,13,Patterson et al. 2012,HOG,array,0
+HGDP00832,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00837,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00838,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00843,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00845,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00846,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00849,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00852,Surui,America,Brazil,-11,-62,8,Patterson et al. 2012,HOG,array,0
+HGDP00854,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00855,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00856,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00857,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00858,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00859,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00861,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00862,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00863,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00864,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00865,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00868,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00869,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00870,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00872,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00873,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00875,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00877,Mayan,America,Mexico,19,-91,21,Patterson et al. 2012,HOG,array,0
+HGDP00879,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00880,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00882,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00883,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00884,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00887,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00888,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00889,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00890,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00891,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00892,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00893,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00894,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00895,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00896,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00897,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00898,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00899,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00900,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00901,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00902,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00903,Russian,WestEurasia,Russia,61,40,23,Patterson et al. 2012,HOG,array,0
+HGDP00904,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00905,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00906,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00907,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00908,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00909,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00910,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00912,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00913,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00915,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00917,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01199,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01200,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01202,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01283,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01284,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP01286,Mandenka,Africa,Senegal,12,-12,22,Patterson et al. 2012,HOG,array,0
+HGDP00920,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00924,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00925,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00926,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00928,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00929,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00930,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00931,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00932,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00933,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00934,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00935,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00936,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00937,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00938,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00939,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00940,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00941,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00942,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00943,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00944,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18501,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18504,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18505,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18507,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18508,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18516,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18517,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18522,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18852,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18853,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18855,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18856,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18858,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18859,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18861,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18862,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18870,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA18871,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19093,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19098,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19099,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19101,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19102,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19116,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19119,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19127,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19128,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19130,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19131,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19137,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19138,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19141,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19143,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19144,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19159,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19160,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19171,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19193,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19201,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19203,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19204,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19206,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19207,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19209,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19210,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19222,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19223,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19238,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+NA19239,Yoruba,Africa,Nigeria,7.4,3.9,108,Coriell Cell Repositories,HOG,array,0
+HGDP00945,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00946,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00947,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00948,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00950,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00951,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00952,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00954,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00955,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00956,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00958,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00960,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00961,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00962,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00963,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00964,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00965,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00966,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00967,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00968,Yakut,CentralAsiaSiberia,Russia,63,129.5,25,Patterson et al. 2012,HOG,array,0
+HGDP00987,Ju_hoan_North,Africa,Namibia,-18.9,21.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00991,Ju_hoan_North,Africa,Namibia,-18.9,21.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00992,Ju_hoan_North,Africa,Namibia,-18.9,21.5,24,Patterson et al. 2012,HOG,array,0
+HGDP01032,Ju_hoan_North,Africa,Namibia,-18.9,21.5,24,Patterson et al. 2012,HOG,array,0
+HGDP01036,Ju_hoan_North,Africa,Namibia,-18.9,21.5,24,Patterson et al. 2012,HOG,array,0
+HGDP00993,Bantu_SA_Pedi,Africa,SouthAfrica,-29,30,1,Patterson et al. 2012,HOG,array,0
+HGDP00994,Bantu_SA_S_Sotho,Africa,Lesotho,-29,29,1,Patterson et al. 2012,HOG,array,0
+HGDP00995,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP00999,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01001,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01003,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01006,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01010,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01012,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01013,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01014,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01015,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01018,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01019,Karitiana,America,Brazil,-10,-63,14,Patterson et al. 2012,HOG,array,0
+HGDP01028,Bantu_SA_Herero,Africa,BotswanaOrNamibia,-22,19,2,Patterson et al. 2012,HOG,array,0
+HGDP01035,Bantu_SA_Herero,Africa,BotswanaOrNamibia,-22,19,2,Patterson et al. 2012,HOG,array,0
+HGDP01030,Bantu_SA_Tswana,Africa,BotswanaOrNamibia,-28,24,2,Patterson et al. 2012,HOG,array,0
+HGDP01034,Bantu_SA_Tswana,Africa,BotswanaOrNamibia,-28,24,2,Patterson et al. 2012,HOG,array,0
+HGDP01031,Bantu_SA_Ovambo,Africa,Angola,-19,18,1,Patterson et al. 2012,HOG,array,0
+HGDP01033,Bantu_SA_Zulu,Africa,SouthAfrica,-28,31,1,Patterson et al. 2012,HOG,array,0
+HGDP01037,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01041,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01043,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01044,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01047,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01050,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01051,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01053,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01055,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01056,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01057,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01058,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01059,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01060,Pima,America,Mexico,29,-108,14,Patterson et al. 2012,HOG,array,0
+HGDP01095,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01096,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01097,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01098,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01099,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01100,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01101,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01102,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01103,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01104,Tujia,EastAsia,China,29,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01147,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01151,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01152,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01153,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01155,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01156,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01157,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01171,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01172,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01173,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01174,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01177,Italian_Bergamo,WestEurasia,Italy(Bergamo),46,10,13,Patterson et al. 2012,HOG,array,0
+HGDP01161,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01162,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01163,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01164,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01166,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01167,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01168,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01169,Italian_Tuscan,WestEurasia,Italy(Tuscany),43,11,8,Patterson et al. 2012,HOG,array,0
+HGDP01179,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01180,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01181,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01182,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01183,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01184,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01185,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01186,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01187,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01188,Yi,EastAsia,China,28,103,10,Patterson et al. 2012,HOG,array,0
+HGDP01189,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01190,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01191,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01192,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01193,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01194,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01195,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01196,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01197,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01198,Miao,EastAsia,China,28,109,10,Patterson et al. 2012,HOG,array,0
+HGDP01203,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01204,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01205,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01206,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01207,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01208,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01209,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01211,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01212,Oroqen,EastAsia,China,50.4,126.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01213,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01214,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01215,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01216,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01217,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01218,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01220,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01221,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01222,Daur,EastAsia,China,48.5,124,9,Patterson et al. 2012,HOG,array,0
+HGDP01223,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01225,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01227,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01228,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01231,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01232,Mongola,CentralAsiaSiberia,China,45,111,11,Patterson et al. 2012,HOG,array,0
+HGDP01233,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01234,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01237,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01238,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01239,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01240,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01241,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01242,Hezhen,EastAsia,China,47.5,133.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01244,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01245,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01246,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01248,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01249,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01250,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01251,Xibo,EastAsia,China,43.5,81.5,9,Patterson et al. 2012,HOG,array,0
+HGDP01253,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01254,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01255,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01256,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01257,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01258,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01259,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01262,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01263,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01264,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01265,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01268,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01272,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01274,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01275,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01276,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01277,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01278,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01279,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01280,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01282,Mozabite,Africa,Algeria,32,3,27,Patterson et al. 2012,HOG,array,0
+HGDP01287,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01288,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01289,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01290,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01291,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01292,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01293,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01294,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01295,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01296,Han_NChina,EastAsia,China,32.3,114,10,Patterson et al. 2012,HOG,array,0
+HGDP01297,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01298,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01299,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01300,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01301,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01302,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01303,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01304,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01305,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01306,Uygur,EastAsia,China,44,81,10,Patterson et al. 2012,HOG,array,0
+HGDP01307,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01308,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01309,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01310,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01311,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01312,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01313,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01314,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01315,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01316,Dai,EastAsia,China,21,100,10,Patterson et al. 2012,HOG,array,0
+HGDP01317,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01318,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01319,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01320,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01321,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01322,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01323,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01326,Lahu,EastAsia,China,22,100,8,Patterson et al. 2012,HOG,array,0
+HGDP01327,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01328,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01329,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01330,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01331,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01332,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01333,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01334,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01335,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01336,She,EastAsia,China,27,119,10,Patterson et al. 2012,HOG,array,0
+HGDP01337,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01338,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01339,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01340,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01341,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01342,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01344,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01345,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01346,Naxi,EastAsia,China,26,100,9,Patterson et al. 2012,HOG,array,0
+HGDP01347,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01348,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01349,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01350,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01351,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01352,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01353,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01354,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01355,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01356,Tu,EastAsia,China,36,101,10,Patterson et al. 2012,HOG,array,0
+HGDP01357,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01358,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01359,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01360,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01362,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01363,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01364,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01365,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01366,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01367,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01368,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01370,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01371,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01373,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01374,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01375,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01377,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01378,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01379,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01380,Basque_French,WestEurasia,France,43,0,22,Patterson et al. 2012,HOG,array,0
+HGDP01381,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01382,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01383,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01385,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01386,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01387,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01396,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01397,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01398,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01399,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01400,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01401,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01402,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01403,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01404,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+NA13626,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+NA13619,Adygei,WestEurasia,Russia(Caucasus),44,39,25,Coriell Cell Repositories,HOG,array,0
+HGDP01405,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+HGDP01408,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+HGDP01414,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+HGDP01417,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+HGDP01418,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+HGDP01419,BantuKenya,Africa,Kenya,-3,37,11,Patterson et al. 2012,HOG,array,0
+Ayodo_21S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_23S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_69S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_90S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_43S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_81S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_52S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_61S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_41S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_40S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_34S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_35S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_5S,Somali,Africa,Kenya,5.6,48.3,13,George Ayodo,HOG,array,0
+Ayodo_47K,Kikuyu,Africa,Kenya,-0.4,36.9,4,George Ayodo,HOG,array,0
+Ayodo_67K,Kikuyu,Africa,Kenya,-0.4,36.9,4,George Ayodo,HOG,array,0
+Ayodo_61K,Kikuyu,Africa,Kenya,-0.4,36.9,4,George Ayodo,HOG,array,0
+Ayodo_83K,Kikuyu,Africa,Kenya,-0.4,36.9,4,George Ayodo,HOG,array,0
+mixe0029,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0030,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0015,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0035,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0018,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0026,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0027,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0028,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0007,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+mixe0009,Mixe,America,Mexico,17,96.6,10,William Klitz / Cheryl Winkler,HOG,array,0
+IHW9118,Australian_ECCAC,Oceania,Australia,-13,143,9,European Collection of Cell Cultures,HOG,array,0
+IHW9195,Australian_ECCAC,Oceania,Australia,-13,143,9,European Collection of Cell Cultures,HOG,array,0
+IHW9193,Australian_ECCAC,Oceania,Australia,-13,143,9,European Collection of Cell Cultures,HOG,array,0
+Ayodo_103M,Masai_Ayodo,Africa,Kenya,-1.1,35.9,3,George Ayodo,HOG,array,0
+Ayodo_101M,Masai_Ayodo,Africa,Kenya,-1.1,35.9,3,George Ayodo,HOG,array,0
+Bar08,Hadza_Henn,Africa,Tanzania,-3.6,35.1,8,Brenna Henna / Joanna Mountain,HOG,array,0
+Bar10,Hadza_Henn,Africa,Tanzania,-3.6,35.1,8,Brenna Henna / Joanna Mountain,HOG,array,0
+Bar13,Hadza_Henn,Africa,Tanzania,-3.6,35.1,8,Brenna Henna / Joanna Mountain,HOG,array,0
+End08,Hadza_Henn,Africa,Tanzania,-3.6,35.1,8,Brenna Henna / Joanna Mountain,HOG,array,0
+Bar04,Hadza_Henn,Africa,Tanzania,-3.6,35.1,8,Brenna Henna / Joanna Mountain,HOG,array,0
+AD_066,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_064,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_505,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_523,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_500,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_510,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_015,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_061,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_076,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_512,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_006,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+AD_511,AA_Denver,America,USA,39.7,-105,12,Rick Kittles,HOG,array,0
+SD60_297,Saami_WGA,WestEurasia,Finland,68.4,23.6,1,Svante Pääbo / Antti Sajantila / Klemetti Näkkäläjärvi,HOG,array,0
+BulgarianD6,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianA4,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianE2,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianB4,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianA1,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianB1,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianC1,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianF1,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianH2,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+BulgarianF2,Bulgarian,WestEurasia,Bulgaria,42.2,24.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Draga Toncheva / Sena Karachanak-Yankova / Mari Nelis*,HOG,array,0
+hungary3,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+hungary6,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+HungarianC5,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+hungary7,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+HungarianE5,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+HungarianH3,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+hungary15,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+hungary20,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+hungary2,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+HungarianD1,Hungarian_Metspalu,WestEurasia,Hungary,47.5,19.1,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Béla Melegh / Judit Bene,HOG,array,0
+LithuanianF1,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania3,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania10,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania9,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+LithuanianA1,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+LithuanianE2,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania1,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania8,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+lithuania2,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+LithuanianD1,Lithuanian,WestEurasia,Lithuania,54.9,23.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Vaidutis Kučinskas / Ingrida Uktveryte,HOG,array,0
+iran19,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran14,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran2,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran20,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran3,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran11,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran16,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+iran17,Iranian,WestEurasia,Iran,35.6,51.5,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria464,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria361,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria485,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria520,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria4,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria461,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria6,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+syria7,Syrian,WestEurasia,Syrian,35.1,36.9,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon5,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon6,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon7,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon8,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon1,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon2,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon3,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Lebanon4,Lebanese,WestEurasia,Lebanon,33.8,35.6,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan543,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan214,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan445,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan62,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan603,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan307,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan503,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan646,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Jordan384,Jordanian,WestEurasia,Jordan,32.1,35.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+SaudiA5,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+SaudiA6,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+SaudiA7,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+saudi1434,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+saudi1424,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+SaudiA9,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+SaudiA1,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+saudi1403,Saudi,WestEurasia,Saudi_Arabia,18.5,42.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemen2,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemen3,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemen5,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemen9,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemen10,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Yemenese1529,Yemen,WestEurasia,Yemen,14,44.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt7,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt9,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt10,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt3,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt11,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt1,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+Egypt12,Egyptian_Metspalu,Africa,Egypt,30.2,31.2,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu,HOG,array,0
+bal102,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal64,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal124,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal97,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal136,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal22,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal41,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal42,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal45,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+bal50,Balkar,WestEurasia,Russia,43.5,43.6,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg43,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg47,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg22,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg49,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg23,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg62,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg27,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg31,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg34,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+mg40,Georgian_Megrels,WestEurasia,Georgia,42.5,41.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia19,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia2,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia3,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia5,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia11,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia8,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia12,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia9,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia14,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+NorthOssetia17,North_Ossetian,WestEurasia,Russia,43,44.7,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch126,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch16,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch174,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch179,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch193,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch21,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch3,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch113,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+ch31,Chechen,WestEurasia,Russia,43.3,45.7,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh27,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh107,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh41,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh119,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh122,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh133,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh147,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh154,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+abh24,Abkhasian,WestEurasia,Georgia,43,41,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+armenia176,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia191,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia86,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia279,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia91,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia293,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia102,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia106,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia139,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+armenia162,Armenian,WestEurasia,Armenia,40.2,44.5,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Levon Yepiskoposyan / Hovhannes Sahakyan,HOG,array,0
+lez38,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez40,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez49,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez31,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez7,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez33,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez9,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez36,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+lez37,Lezgin,WestEurasia,Russia,42.1,48.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay42,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay35,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay34,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay24,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay25,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay33,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay44,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay45,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+nogay46,Nogai,WestEurasia,Russia,44.4,41.9,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks44,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks93,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks98,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks90,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks40,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks94,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks41,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kumyks97,Kumyk,WestEurasia,Russia,43.3,46.6,9,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk11,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk32,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk9,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk14,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk67,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk13,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk39,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk55,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk22,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+kalmyk44,Kalmyk,CentralAsiaSiberia,Russia,46.2,45.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+altai363p,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai380k,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai280p,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai431k,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai283p,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai419A,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+altai409k,Altaian,CentralAsiaSiberia,Russia,51.9,86,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Olga L. Posukh,HOG,array,0
+Tuvinians86,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians111,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians66,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians64,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians51,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians67,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians56,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians54,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians61,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Tuvinians85,Tuvinian,CentralAsiaSiberia,Russia,50.3,95.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Larissa Damba / Mikhail Voevoda / Marina Gubina,HOG,array,0
+Dolgan1708,Dolgan,CentralAsiaSiberia,Russia,73,115.4,4,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Sardana A. Fedorova / Fedor Platonov,HOG,array,0
+Dolgan3875,Dolgan,CentralAsiaSiberia,Russia,73,115.4,4,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Sardana A. Fedorova / Fedor Platonov,HOG,array,0
+Dolgan3857,Dolgan,CentralAsiaSiberia,Russia,73,115.4,4,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Sardana A. Fedorova / Fedor Platonov,HOG,array,0
+Selkup38,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup83,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup87,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup220,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup121,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup105,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup82,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup4,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup21,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+Selkup4a,Selkup,CentralAsiaSiberia,Russia,65.5,82.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Ludmila Osipova,HOG,array,0
+bel43s,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel30s,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel72c,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel93c,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel110c,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel8s,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+belarusian23vp,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel23s,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+belarusian47zp,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+bel82s,Belarusian,WestEurasia,Belarus,53.9,28,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Alena Kushniarevich,HOG,array,0
+UkrBel618,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrBel620,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrBel622,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrBel733,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrBel736,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrBel614,Ukrainian_East,WestEurasia,Ukraine,50.3,31.6,6,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov,HOG,array,0
+UkrLv240,Ukrainian_West,WestEurasia,Ukraine,49.9,24,3,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov / Olga Utevska,HOG,array,0
+UkrLv228,Ukrainian_West,WestEurasia,Ukraine,49.9,24,3,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov / Olga Utevska,HOG,array,0
+UkrLv237,Ukrainian_West,WestEurasia,Ukraine,49.9,24,3,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Mikhail Churnosov / Olga Utevska,HOG,array,0
+Est393,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est375,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est380,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est391,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est377,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est372,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est358,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est400,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est397,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Est394,Estonian,WestEurasia,Estonia,58.5,24.9,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Jüri Parik,HOG,array,0
+Mordovians27,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians28,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians30,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians4,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians31,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians17,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians1,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians22,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians32,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Mordovians5,Mordovian,WestEurasia,Russia,54.2,45.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash33,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash37,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash13,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash20,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash22,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash26,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash24,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash29,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash25,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+Chuvash31,Chuvash,WestEurasia,Russia,56.1,47.3,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb24,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb25,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb35,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb40,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb6,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb64,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb72,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb2,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb78,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+usb8,Uzbek,CentralAsiaSiberia,Uzbekistan,41.3,69.2,10,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Elza Khusnutdinova / Rita Khusainova / Sergey Litvinov,HOG,array,0
+tdj508_rushan,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj126_shugnan,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj868_rushan,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj252_ishkashim,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj979_shugnan,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj255_ishkashim,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj269_ishkashim,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+tdj305_shugnan,Tajik_Pomiri,CentralAsiaSiberia,Tajikistan,37.4,71.7,8,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska,HOG,array,0
+UZB178_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB180_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB101_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB102_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB105_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB111_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+UZB150_turkmen,Turkmen,CentralAsiaSiberia,Uzbekistan,42.5,59.6,7,Mait Metspalu / Richard Villems / Leila Laredj / Ene Metspalu / Oleg Balanovsky / Elena Balanovska / Shahlo Turdikulova,HOG,array,0
+NA13597,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13605,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13598,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13606,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13599,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13601,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13602,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13603,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13604,Atayal_Coriell,EastAsia,Taiwan,24.6,121.3,10,Coriell Cell Repositories,HOG,array,0
+NA13613,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13614,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13607,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13615,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13608,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13616,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13609,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13610,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13611,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA13612,Ami_Coriell,EastAsia,Taiwan,22.8,121.2,10,Coriell Cell Repositories,HOG,array,0
+NA15202,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15203,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15204,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15205,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15206,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15199,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15207,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15200,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15208,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15201,Hungarian_Coriell,WestEurasia,Hungary,47.5,19.1,10,Coriell Cell Repositories,HOG,array,0
+NA15725,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15733,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15726,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15727,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15728,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15729,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15730,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15731,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15724,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15732,Czech,WestEurasia,Czechoslovia(pre1989),50.1,14.4,10,Coriell Cell Repositories,HOG,array,0
+NA15762,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15755,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15763,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15756,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15764,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15757,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15765,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15758,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15766,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15759,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15760,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA15761,Icelandic,WestEurasia,Iceland,64.1,-21.9,12,Coriell Cell Repositories,HOG,array,0
+NA17373,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA17374,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA17375,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA17376,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA17377,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA17372,Greek_Coriell,WestEurasia,Greece,38,23.7,8,Coriell Cell Repositories,HOG,array,0
+NA11200,Quechua_Coriell,America,Peru,-13.5,-72,5,Coriell Cell Repositories,HOG,array,0
+NA11201,Quechua_Coriell,America,Peru,-13.5,-72,5,Coriell Cell Repositories,HOG,array,0
+NA11197,Quechua_Coriell,America,Peru,-13.5,-72,5,Coriell Cell Repositories,HOG,array,0
+NA11198,Quechua_Coriell,America,Peru,-13.5,-72,5,Coriell Cell Repositories,HOG,array,0
+NA11199,Quechua_Coriell,America,Peru,-13.5,-72,5,Coriell Cell Repositories,HOG,array,0
+NA21487,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21490,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21514,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21302,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21581,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21310,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21648,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21366,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21425,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+NA21477,Masai_Kinyawa_MKK,Africa,Kenya,-1.5,35.2,10,Coriell Cell Repositories,HOG,array,0
+ND19394,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+ND22219,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+NA00726,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+ND13299,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+ND14916,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+ND15143,Korean,EastAsia,Korea,37.6,127,6,Coriell Cell Repositories,HOG,array,0
+HG00103,Scottish_Argyll_Bute_GBR,WestEurasia,England,56,-3.9,4,Coriell Cell Repositories,HOG,array,0
+HG00104,Scottish_Argyll_Bute_GBR,WestEurasia,England,56,-3.9,4,Coriell Cell Repositories,HOG,array,0
+HG00105,Scottish_Argyll_Bute_GBR,WestEurasia,England,56,-3.9,4,Coriell Cell Repositories,HOG,array,0
+HG00106,Scottish_Argyll_Bute_GBR,WestEurasia,England,56,-3.9,4,Coriell Cell Repositories,HOG,array,0
+HG00128,English_Kent_GBR,WestEurasia,England,51.2,0.7,5,Coriell Cell Repositories,HOG,array,0
+HG00129,English_Kent_GBR,WestEurasia,England,51.2,0.7,5,Coriell Cell Repositories,HOG,array,0
+HG00130,English_Kent_GBR,WestEurasia,England,51.2,0.7,5,Coriell Cell Repositories,HOG,array,0
+HG00131,English_Kent_GBR,WestEurasia,England,51.2,0.7,5,Coriell Cell Repositories,HOG,array,0
+HG00126,English_Kent_GBR,WestEurasia,England,51.2,0.7,5,Coriell Cell Repositories,HOG,array,0
+HG00233,English_Cornwall_GBR,WestEurasia,England,50.3,-4.9,5,Coriell Cell Repositories,HOG,array,0
+HG00234,English_Cornwall_GBR,WestEurasia,England,50.3,-4.9,5,Coriell Cell Repositories,HOG,array,0
+HG00232,English_Cornwall_GBR,WestEurasia,England,50.3,-4.9,5,Coriell Cell Repositories,HOG,array,0
+HG00231,English_Cornwall_GBR,WestEurasia,England,50.3,-4.9,5,Coriell Cell Repositories,HOG,array,0
+HG00160,English_Cornwall_GBR,WestEurasia,England,50.3,-4.9,5,Coriell Cell Repositories,HOG,array,0
+HG01500,Spanish_Castilla_y_Leon_IBS,WestEurasia,Spain,41.4,-4.5,5,Coriell Cell Repositories,HOG,array,0
+HG01501,Spanish_Castilla_y_Leon_IBS,WestEurasia,Spain,41.4,-4.5,5,Coriell Cell Repositories,HOG,array,0
+HG01506,Spanish_Castilla_y_Leon_IBS,WestEurasia,Spain,41.4,-4.5,5,Coriell Cell Repositories,HOG,array,0
+HG01507,Spanish_Castilla_y_Leon_IBS,WestEurasia,Spain,41.4,-4.5,5,Coriell Cell Repositories,HOG,array,0
+HG01524,Spanish_Castilla_y_Leon_IBS,WestEurasia,Spain,41.4,-4.5,5,Coriell Cell Repositories,HOG,array,0
+HG01503,Spanish_Castilla_la_Mancha_IBS,WestEurasia,Spain,39.9,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01504,Spanish_Castilla_la_Mancha_IBS,WestEurasia,Spain,39.9,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01747,Spanish_Castilla_la_Mancha_IBS,WestEurasia,Spain,39.9,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01746,Spanish_Castilla_la_Mancha_IBS,WestEurasia,Spain,39.9,-4,5,Coriell Cell Repositories,HOG,array,0
+HG02238,Spanish_Castilla_la_Mancha_IBS,WestEurasia,Spain,39.9,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01509,Spanish_Extremadura_IBS,WestEurasia,Spain,39,-6,5,Coriell Cell Repositories,HOG,array,0
+HG01510,Spanish_Extremadura_IBS,WestEurasia,Spain,39,-6,5,Coriell Cell Repositories,HOG,array,0
+HG01527,Spanish_Extremadura_IBS,WestEurasia,Spain,39,-6,5,Coriell Cell Repositories,HOG,array,0
+HG01528,Spanish_Extremadura_IBS,WestEurasia,Spain,39,-6,5,Coriell Cell Repositories,HOG,array,0
+HG01530,Spanish_Extremadura_IBS,WestEurasia,Spain,39,-6,5,Coriell Cell Repositories,HOG,array,0
+HG01512,Spanish_Cantabria_IBS,WestEurasia,Spain,43.3,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01513,Spanish_Cantabria_IBS,WestEurasia,Spain,43.3,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01680,Spanish_Cantabria_IBS,WestEurasia,Spain,43.3,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01679,Spanish_Cantabria_IBS,WestEurasia,Spain,43.3,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01770,Spanish_Cantabria_IBS,WestEurasia,Spain,43.3,-4,5,Coriell Cell Repositories,HOG,array,0
+HG01515,Spanish_Pais_Vasco_IBS,WestEurasia,Spain,42.8,-2.7,5,Coriell Cell Repositories,HOG,array,0
+HG01516,Spanish_Pais_Vasco_IBS,WestEurasia,Spain,42.8,-2.7,5,Coriell Cell Repositories,HOG,array,0
+HG01518,Spanish_Pais_Vasco_IBS,WestEurasia,Spain,42.8,-2.7,5,Coriell Cell Repositories,HOG,array,0
+HG01700,Spanish_Pais_Vasco_IBS,WestEurasia,Spain,42.8,-2.7,5,Coriell Cell Repositories,HOG,array,0
+HG01702,Spanish_Pais_Vasco_IBS,WestEurasia,Spain,42.8,-2.7,5,Coriell Cell Repositories,HOG,array,0
+HG01536,Spanish_Cataluna_IBS,WestEurasia,Spain,41.8,1.5,5,Coriell Cell Repositories,HOG,array,0
+HG01537,Spanish_Cataluna_IBS,WestEurasia,Spain,41.8,1.5,5,Coriell Cell Repositories,HOG,array,0
+HG01761,Spanish_Cataluna_IBS,WestEurasia,Spain,41.8,1.5,5,Coriell Cell Repositories,HOG,array,0
+HG01762,Spanish_Cataluna_IBS,WestEurasia,Spain,41.8,1.5,5,Coriell Cell Repositories,HOG,array,0
+HG02220,Spanish_Cataluna_IBS,WestEurasia,Spain,41.8,1.5,5,Coriell Cell Repositories,HOG,array,0
+HG01605,Spanish_Valencia_IBS,WestEurasia,Spain,39.5,-0.4,5,Coriell Cell Repositories,HOG,array,0
+HG01606,Spanish_Valencia_IBS,WestEurasia,Spain,39.5,-0.4,5,Coriell Cell Repositories,HOG,array,0
+HG01607,Spanish_Valencia_IBS,WestEurasia,Spain,39.5,-0.4,5,Coriell Cell Repositories,HOG,array,0
+HG01608,Spanish_Valencia_IBS,WestEurasia,Spain,39.5,-0.4,5,Coriell Cell Repositories,HOG,array,0
+HG01773,Spanish_Valencia_IBS,WestEurasia,Spain,39.5,-0.4,5,Coriell Cell Repositories,HOG,array,0
+HG01613,Spanish_Baleares_IBS,WestEurasia,Spain,39.5,3,4,Coriell Cell Repositories,HOG,array,0
+HG01615,Spanish_Baleares_IBS,WestEurasia,Spain,39.5,3,4,Coriell Cell Repositories,HOG,array,0
+HG01625,Spanish_Baleares_IBS,WestEurasia,Spain,39.5,3,4,Coriell Cell Repositories,HOG,array,0
+HG01626,Spanish_Baleares_IBS,WestEurasia,Spain,39.5,3,4,Coriell Cell Repositories,HOG,array,0
+HG01617,Spanish_Murcia_IBS,WestEurasia,Spain,38,-1.1,5,Coriell Cell Repositories,HOG,array,0
+HG01618,Spanish_Murcia_IBS,WestEurasia,Spain,38,-1.1,5,Coriell Cell Repositories,HOG,array,0
+HG01699,Spanish_Murcia_IBS,WestEurasia,Spain,38,-1.1,5,Coriell Cell Repositories,HOG,array,0
+HG01697,Spanish_Murcia_IBS,WestEurasia,Spain,38,-1.1,5,Coriell Cell Repositories,HOG,array,0
+HG01619,Spanish_Andalucia_IBS,WestEurasia,Spain,37.4,-6,4,Coriell Cell Repositories,HOG,array,0
+HG01620,Spanish_Andalucia_IBS,WestEurasia,Spain,37.4,-6,4,Coriell Cell Repositories,HOG,array,0
+HG01623,Spanish_Andalucia_IBS,WestEurasia,Spain,37.4,-6,4,Coriell Cell Repositories,HOG,array,0
+HG01624,Spanish_Andalucia_IBS,WestEurasia,Spain,37.4,-6,4,Coriell Cell Repositories,HOG,array,0
+HG00171,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00174,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00190,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00266,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00183,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00173,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG00182,Finnish_FIN,WestEurasia,Finland,60.2,24.9,8,Coriell Cell Repositories,HOG,array,0
+HG01675,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01682,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01676,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01684,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01673,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01678,Spanish_Aragon_IBS,WestEurasia,Spain,41,-1,6,Coriell Cell Repositories,HOG,array,0
+HG01705,Spanish_Galicia_IBS,WestEurasia,Spain,42.5,-8.1,5,Coriell Cell Repositories,HOG,array,0
+HG01707,Spanish_Galicia_IBS,WestEurasia,Spain,42.5,-8.1,5,Coriell Cell Repositories,HOG,array,0
+HG01685,Spanish_Galicia_IBS,WestEurasia,Spain,42.5,-8.1,5,Coriell Cell Repositories,HOG,array,0
+HG01686,Spanish_Galicia_IBS,WestEurasia,Spain,42.5,-8.1,5,Coriell Cell Repositories,HOG,array,0
+HG01704,Spanish_Galicia_IBS,WestEurasia,Spain,42.5,-8.1,5,Coriell Cell Repositories,HOG,array,0
+HG01695,Spanish_Canarias_IBS,WestEurasia,Spain,28.1,-15.4,2,Coriell Cell Repositories,HOG,array,0
+HG01694,Spanish_Canarias_IBS,WestEurasia,Spain,28.1,-15.4,2,Coriell Cell Repositories,HOG,array,0
+HG01842,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01844,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01846,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01600,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01595,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01596,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01597,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG01598,Kinh_Vietnam_KHV,EastAsia,Vietnam,21,105.9,8,Coriell Cell Repositories,HOG,array,0
+HG02687,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02491,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02783,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02688,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02724,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02790,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02601,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+HG02600,Punjabi_Lahore_PJL,SouthAsia,Pakistan,31.5,74.3,8,Coriell Cell Repositories,HOG,array,0
+NA19027,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19044,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19020,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19023,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19024,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19017,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19019,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA19026,Luhya_Kenya_LWK,Africa,Kenya,1.3,36.8,8,Coriell Cell Repositories,HOG,array,0
+NA20847,GujaratiD_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20899,GujaratiD_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA21125,GujaratiD_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20911,GujaratiD_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA21123,GujaratiD_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20854,GujaratiB_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20882,GujaratiB_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20873,GujaratiB_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20885,GujaratiB_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20898,GujaratiB_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20881,GujaratiA_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20910,GujaratiA_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20858,GujaratiA_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20904,GujaratiA_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20862,GujaratiA_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20866,GujaratiC_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20883,GujaratiC_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA20903,GujaratiC_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA21116,GujaratiC_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+NA21097,GujaratiC_GIH,SouthAsia,India,23.2,72.7,5,Coriell Cell Repositories,HOG,array,0
+HG03007,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03006,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03793,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03589,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03009,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03585,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG03012,Bengali_Bangladesh_BEB,SouthAsia,Bangladesh,23.7,90.4,8,Coriell Cell Repositories,HOG,array,0
+HG02571,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG02574,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG02464,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG02573,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG02570,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG02465,Gambian_GWD,Africa,Gambia,13.4,16.7,6,Coriell Cell Repositories,HOG,array,0
+HG03085,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03078,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03097,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03057,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03052,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03076,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03072,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03069,Mende_Sierra_Leone_MSL,Africa,SierraLeone,8.5,-13.2,8,Coriell Cell Repositories,HOG,array,0
+HG03100,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG02943,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG02922,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG02974,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG03109,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG02923,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG03099,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+HG03108,Esan_Nigeria_ESN,Africa,Nigeria,6.5,6,8,Coriell Cell Repositories,HOG,array,0
+Ayodo_430C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_460C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_412C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_502C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_438C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_604C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_423C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+Ayodo_458C,Luo,Africa,Kenya,-0.1,34.3,9,George Ayodo,HOG,array,0
+CHI007,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+CHI034,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH002,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH006,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH007,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH008,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH009,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH010,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH011,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+DCH012,Thai,EastAsia,Thailand,13.8,100.5,10,European Collection of Cell Cultures,HOG,array,0
+Zapo0046,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0097,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0059,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0091,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0082,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0083,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0095,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0076,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0072,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Zapo0064,Zapotec,America,Mexico,17,-96.5,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0016,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0001,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0061,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0049,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0002,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0018,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0024,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0078,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0087,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+Mixa0093,Mixtec,America,Mexico,16.7,-97.2,10,William Klitz / Cheryl Winkler,HOG,array,0
+LibyanJew1438,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1601,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1104,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1462,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1263,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1611,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1605,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1639,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+LibyanJew1659,Libyan_Jew,Africa,Libya,32.9,13.2,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GOR063,Datog,Africa,Tanzania,-3.3,35.7,3,Brenna Henna / Joanna Mountain,HOG,array,0
+GOR067,Datog,Africa,Tanzania,-3.3,35.7,3,Brenna Henna / Joanna Mountain,HOG,array,0
+GOR049,Datog,Africa,Tanzania,-3.3,35.7,3,Brenna Henna / Joanna Mountain,HOG,array,0
+Malta4AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta8AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta7AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta17AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta2AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta16AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta15AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Malta12AM91,Maltese,WestEurasia,Malta,35.9,14.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Bolivian41,Bolivian_LaPaz,America,Bolivia,-16.5,-68.2,3,Antonio Salas,HOG,array,0
+Bolivian39,Bolivian_LaPaz,America,Bolivia,-16.5,-68.2,3,Antonio Salas,HOG,array,0
+Bolivian46,Bolivian_LaPaz,America,Bolivia,-16.5,-68.2,3,Antonio Salas,HOG,array,0
+Kusunda10,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda05,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda11,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda01,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda03,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda04,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda07,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda02,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda15,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Kusunda12,Kusunda,SouthAsia,Nepal,28.1,82.5,10,Aashish R. Jha / George van Driem / Irene Gallego Romero / Toomas Kivisild,HOG,array,0
+Tunisian200000,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20C1,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20F4,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20D4,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20A5,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20C4,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20D1,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+Tunisian20B4,Tunisian,Africa,Tunisia,36.8,10.2,8,David Comas,HOG,array,0
+CRO53,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO103,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO107,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO47,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO41,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO66,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO153,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO31,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO93,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+CRO48,Croatian,WestEurasia,Croatia,43.5,16.4,10,Cristian Capelli / George B. J. Busby / Igor Rudan / Tatijana Zemunik,HOG,array,0
+AshkenaziJew5779,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5782,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5783,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5704,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5728,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5790,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+AshkenaziJew5788,Ashkenazi_Jew,WestEurasia,Poland,52.2,21,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey4955,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey5877,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey4953,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey6077,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey5832,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey5075,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey4950,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+SephardiJewTurkey5033,Turkish_Jew,WestEurasia,Turkey,41,29,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+NOR119,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR124,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR106,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR101,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR146,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR108,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR126,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR107,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR109,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR148,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+NOR111,Norwegian,WestEurasia,Norway,60.4,5.4,11,Cristian Capelli / George B. J. Busby / Tor Hervig,HOG,array,0
+TunisianJew1421,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1763,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1507,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1544,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1170,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1531,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+TunisianJew1511,Tunisian_Jew,Africa,Tunisia,36.8,10.2,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+Sir50,Chukchi_Sir,CentralAsiaSiberia,Russia,64.4,173.9,2,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Sir41,Chukchi_Sir,CentralAsiaSiberia,Russia,64.4,173.9,2,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+TP08,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+TP05,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+TP06,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+TP07,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+TP04,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+TP25,Italian_WestSicilian,WestEurasia,Italy,38,12.5,6,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+GREEKGRALPOP18,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP13,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP15,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP5,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP9,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP4,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP17,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP16,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP11,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP10,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP3,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP8,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP12,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+GREEKGRALPOP14,Greek_Comas,WestEurasia,Greece,40.6,22.9,14,David Comas,HOG,array,0
+EthiopianJew1818,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew4690,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew1574,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew1804,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew1822,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew1570,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+EthiopianJew1831,Ethiopian_Jew,Africa,Ethiopia,9,38.7,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+BEL57,Italian_South,WestEurasia,Italy,39.4,15.5,1,Cristian Capelli / George B. J. Busby / Francesca Brisighelli,HOG,array,0
+Algerian43A22,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A21,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A34,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A13,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A24,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A32,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+Algerian43A23,Algerian,Africa,Algeria,36.8,3,7,David Comas,HOG,array,0
+BAS35,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS31,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS22,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS25,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS32,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS30,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS28,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS27,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+BAS33,Basque_Spanish,WestEurasia,Spain,43.1,-2.1,10,David Comas,HOG,array,0
+SR23,Italian_EastSicilian,WestEurasia,Italy,37.1,15.3,5,Cristian Capelli / George B. J. Busby / Francesco Cali / Valentino Romano,HOG,array,0
+SR60,Italian_EastSicilian,WestEurasia,Italy,37.1,15.3,5,Cristian Capelli / George B. J. Busby / Francesco Cali / Valentino Romano,HOG,array,0
+SR48R,Italian_EastSicilian,WestEurasia,Italy,37.1,15.3,5,Cristian Capelli / George B. J. Busby / Francesco Cali / Valentino Romano,HOG,array,0
+SR44,Italian_EastSicilian,WestEurasia,Italy,37.1,15.3,5,Cristian Capelli / George B. J. Busby / Francesco Cali / Valentino Romano,HOG,array,0
+SR64,Italian_EastSicilian,WestEurasia,Italy,37.1,15.3,5,Cristian Capelli / George B. J. Busby / Francesco Cali / Valentino Romano,HOG,array,0
+YemeniteJew4684,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4695,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4675,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4938,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4667,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4960,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew5433,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+YemeniteJew4937,Yemenite_Jew,WestEurasia,Yemen,15.4,44.2,8,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+Kayseri24392,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri24075,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri24266,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri24402,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri23967,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri23892,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri24032,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri23549,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri23271,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Kayseri24276,Turkish_Kayseri,WestEurasia,Turkey,38.7,35.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Egypt17AQ176,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt15AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt3AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt1AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt5AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt8AT113,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt12AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt9AQ177,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt9AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt7AQ172,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+Egypt22TD21,Egyptian_Comas,Africa,Egypt,31,31.2,14,David Comas / Pierre Zalloua,HOG,array,0
+IranianJew1409,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1132,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1159,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1513,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1556,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1557,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1143,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1832,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IranianJew1845,Iranian_Jew,WestEurasia,Iran,35.7,51.4,10,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+ALB191,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+ALB213,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+ALB202,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+ALB212,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+ALB220,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+ALB230,Albanian,WestEurasia,Albania,41.3,19.8,6,David Comas,HOG,array,0
+SouthFrench3326,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench3947,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench1323,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench3951,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench3068,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench1112,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+SouthFrench4018,French_South,WestEurasia,France,43.4,-0.6,7,David Comas,HOG,array,0
+Mansi48,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi76,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi94,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi43,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi79,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi91,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi84,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Mansi56,Mansi,CentralAsiaSiberia,Russia,62.5,63.3,8,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Bolivian62,Bolivian_Pando,America,Bolivia,-11.2,-67.2,3,Antonio Salas,HOG,array,0
+Bolivian72,Bolivian_Pando,America,Bolivia,-11.2,-67.2,3,Antonio Salas,HOG,array,0
+Bolivian71,Bolivian_Pando,America,Bolivia,-11.2,-67.2,3,Antonio Salas,HOG,array,0
+KuchinJew30052,Cochin_Jew,SouthAsia,India,10,76.3,5,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+KuchinJew20551,Cochin_Jew,SouthAsia,India,10,76.3,5,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+KuchinJew20622,Cochin_Jew,SouthAsia,India,10,76.3,5,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+KuchinJew20851,Cochin_Jew,SouthAsia,India,10,76.3,5,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+KuchinJew20320,Cochin_Jew,SouthAsia,India,10,76.3,5,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+Balikesir16675,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Balikesir16790,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Balikesir16887,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Balikesir16653,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Balikesir16837,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Balikesir17006,Turkish_Balikesir,WestEurasia,Turkey,39.4,27.5,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+IraqiJew4061,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IraqiJew4241,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IraqiJew1417,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IraqiJew1771,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IraqiJew4291,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+IraqiJew1430,Iraqi_Jew,WestEurasia,Iraq,33.3,44.4,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+CYP19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+CYP5,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Cyprus13AJ19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Cyprus24AJ19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+CYP2,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Cyprus2AJ19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Cyprus22AJ19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Cyprus21AJ19,Cypriot,WestEurasia,Cyprus,35.1,33.4,8,David Comas / Pierre Zalloua,HOG,array,0
+Turkish7BA57,Turkish,WestEurasia,Turkey,39.6,28.5,4,David Comas / Pierre Zalloua,HOG,array,0
+Turkish8BA62,Turkish,WestEurasia,Turkey,39.6,28.5,4,David Comas / Pierre Zalloua,HOG,array,0
+Turkish4BA57,Turkish,WestEurasia,Turkey,39.6,28.5,4,David Comas / Pierre Zalloua,HOG,array,0
+Turkish9BA57,Turkish,WestEurasia,Turkey,39.6,28.5,4,David Comas / Pierre Zalloua,HOG,array,0
+SAH27,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+SAH21,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+SAH24,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+SAH34,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+SAH18,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+SAH9,Saharawi,Africa,WesternSahara(Morocco),27.3,-8.9,7,David Comas,HOG,array,0
+MoroccanJew5126,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+MoroccanJew4634,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+MoroccanJew4789,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+MoroccanJew5168,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+MoroccanJew4692,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+MoroccanJew4683,Moroccan_Jew,Africa,Morocco,34,-6.8,7,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+Istanbul20010,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul19810,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul25095,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul25081,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul17778,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul15781,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul20040,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul19185,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul25098,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Istanbul19708,Turkish_Istanbul,WestEurasia,Turkey,41,29,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+GeorgianJew1607,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1671,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1577,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1971,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1594,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1654,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+GeorgianJew1883,Georgian_Jew,WestEurasia,Georgia,41.7,44.8,9,The National Laboratory for the Genetics of Israeli Populations ,HOG,array,0
+Adana23114,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23108,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23136,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23113,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23144,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23133,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23150,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23147,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23112,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Adana23117,Turkish_Adana,WestEurasia,Turkey,37,35.3,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21177,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21557,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21534,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21575,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21174,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21515,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21544,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21645,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Trabzon21173,Turkish_Trabzon,WestEurasia,Turkey,41,39.7,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18784,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18112,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18596,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18636,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18873,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18483,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Aydin18419,Turkish_Aydin,WestEurasia,Turkey,37.9,27.8,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28452,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28442,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28443,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28445,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28451,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28449,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28456,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28446,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bishkek28454,Kyrgyz,CentralAsiaSiberia,Kyrgyzstan,42.9,74.6,10,Robert W. Mahley / Ugur Hodoglugil,HOG,array,0
+Bolivian81,Bolivian_Cochabamba,America,Bolivia,-17.4,-66.2,1,Antonio Salas,HOG,array,0
+Ale33,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale20,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale35,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale37,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale34,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale22,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0
+Ale36,Aleut,CentralAsiaSiberia,Russia,53.6,160.8,7,Rem Sukernik / Stanislav Dryomov,HOG,array,0

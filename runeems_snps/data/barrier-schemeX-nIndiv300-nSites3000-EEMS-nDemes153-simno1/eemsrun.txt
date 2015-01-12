@@ -1,8 +1,8 @@
-[EEMS::Params] Random seed = 123
+[EEMS::Params] Random seed = 1418328803
 
 Input parameters:
-               datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
-               mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1
+               datapath = ../data/barrier-schemeX-nIndiv300-nSites3000
+               mcmcpath = ../data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1
                  nIndiv = 300
                  nSites = 3000
                  nDemes = 153
@@ -24,14 +24,14 @@ Input parameters:
       mrateMuProposalS2 = 0.010000
 
 Acceptance proportions:
-	(53324/229050) = 23.28% for type 0
-	(25828/229050) = 11.28% for type 1
-	(1374/20000) = 6.87% for type 2
-	(66694/247165) = 26.98% for type 3
-	(2120/20000) = 10.60% for type 4
-	(61557/247165) = 24.91% for type 5
-	(710/20000) = 3.55% for type 6
-	(12716/20000) = 63.58% for type 7
+	(19173/135007) = 14.20% for type 0
+	(11288/135007) = 8.36% for type 1
+	(630/20000) = 3.15% for type 2
+	(130127/423115) = 30.75% for type 3
+	(2082/20000) = 10.41% for type 4
+	(132760/423115) = 31.38% for type 5
+	(1550/20000) = 7.75% for type 6
+	(12764/20000) = 63.82% for type 7
 
-Final log prior = -7.94
-Final log llike = 187391.45
+Final log prior = 8.72
+Final log llike = 187379.74

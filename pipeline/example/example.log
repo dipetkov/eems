@@ -1,0 +1,19 @@
+PLINK v1.90b1g 64-bit (10 Jun 2014)
+7 arguments: --bfile /data/eems-project/human_origins//vdata --chr 22 --make-bed --out example
+Hostname: t540p
+Working directory: /data/eems-project/eems/pipeline/example
+Start time: Mon Jan 12 11:05:52 2015
+
+Random number seed: 1421082352
+7673 MB RAM detected; reserving 3836 MB for main workspace.
+8281 variants loaded from .bim file.
+1963 people (1249 males, 714 females) loaded from .fam.
+1963 phenotype values loaded from .fam.
+Using 1 thread (no multithreaded calculations invoked).
+Calculating allele frequencies... done.
+Total genotyping rate is 0.993858.
+8281 variants and 1963 people pass filters and QC.
+Among remaining phenotypes, 0 are cases and 1963 are controls.
+--make-bed to example.bed + example.bim + example.fam ... done.
+
+End time: Mon Jan 12 11:05:52 2015
