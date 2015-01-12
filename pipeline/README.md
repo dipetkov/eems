@@ -14,6 +14,17 @@ There are two ways to run this:
  - a python command line interface (pipeline_cli.py)
 
 
+The main input files are:
+ - loc:
+    a file that assigns each population a physical location
+ - sample:
+    assign each individual a population
+ - bed:
+    a bed/bim/fam file combination that contains data for all individuals
+ - polygon:
+    a boundary polygon for the area to analyze. Only individuals inside the 
+    polygon are considered for the analysis.
+
 ###Running notebook:
 simply copy the notebook (to keep the original), and adjust the parameters in 
 the second input cell.

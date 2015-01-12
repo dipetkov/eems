@@ -1,8 +1,8 @@
 --polygon
-example.polygon
+./example/example.polygon
 --input_folder
-./example/input
+./example_out/input
 --output_folder
-./example/output
+./example_out/output
 --proj
 example
