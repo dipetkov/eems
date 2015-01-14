@@ -6,7 +6,7 @@
 static void show_usage( ) {
   std::cerr << "Usage: bed2diffs_v2 --bfile PlinkData\n"
 	    << "Options:\n"
-	    << "  --nthreads K\tSet number of OpenMP threads"
+	    << "  --nthreads K\tSet the number of OpenMP threads"
 	    << std::endl;
 }
 
@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
   // End command line parsing
    
   omp_set_num_threads(nthreads);
-  std::cout << "Set number of OpenMP threads to " << nthreads << std::endl
+  std::cout << "Set the number of OpenMP threads to " << nthreads << std::endl
 	    << std::endl
 	    << "Compute the average genetic differences according to: " << std::endl
 	    << "  Dij = (1/|Mtot|) sum_{m in Mtot} (z*_{im} - z*_{jm})^2" << std::endl

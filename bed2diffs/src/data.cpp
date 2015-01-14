@@ -80,14 +80,9 @@ void Data::bed2diffs_v1()
 
   std::cout << "Computed average pairwise differences across " << nSitesProcessed << " SNPs" << std::endl;
 
-  if (!outdiffs.is_open())
+  if (!outdiffs.is_open() || !outorder.is_open())
     {
-      std::cerr << "[Data::bed2diffs] Error writing file " << diffsfile << std::endl;
-      exit(1);
-    }   
-  if (!outorder.is_open())
-    {
-      std::cerr << "[Data::bed2diffs] Error writing file " << orderfile << std::endl;
+      std::cerr << "[Data::bed2diffs] Error writing output files" << std::endl;
       exit(1);
     }   
 
@@ -177,14 +172,9 @@ void Data::bed2diffs_v2()
 
   std::cout << "Computed average pairwise differences across " << nSitesProcessed << " SNPs" << std::endl;
 
-  if (!outdiffs.is_open())
+  if (!outdiffs.is_open() || !outorder.is_open())
     {
-      std::cerr << "[Data::bed2diffs] Error writing file " << diffsfile << std::endl;
-      exit(1);
-    }   
-  if (!outorder.is_open())
-    {
-      std::cerr << "[Data::bed2diffs] Error writing file " << orderfile << std::endl;
+      std::cerr << "[Data::bed2diffs] Error writing output files" << std::endl;
       exit(1);
     }   
 

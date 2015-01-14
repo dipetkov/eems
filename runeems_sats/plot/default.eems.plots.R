@@ -20,10 +20,8 @@ numlevels <- length(eems.colors)
 x <- 1-1:numlevels/(numlevels+1)
 var.colors <- rgb(cbind(x,x,x))
 var.levels <- seq(from=0,to=1,length.out=numlevels)
-map.color <- "gray60" ## the color of the map over a blue/orange effective rates contour
-grid.color <- "gray80" ## the color of the grid over a blue/orange effective rates contour
-map.color2 <- "white" ## the color of the map over a black/white variance contour
-grid.color2 <- "white" ## the color of the grid over a black/white variance contour
+map.color <- "gray60" ## the color of the geographic map
+grid.color <- "gray80" ## the color of the population grid
 ###########################################################################################
 ###########################################################################################
 ## modification by Ian Taylor of the filled.contour function
@@ -275,12 +273,11 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
     sizes <- as.numeric(sizes)
     eems.levels <- center.mrates(Zmmu)
 
-    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),c(1),respect=FALSE)
+    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),1,respect=FALSE)
 
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zmmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
-                     main='Effective migration rates m : posterior mean',
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
@@ -307,6 +304,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
                                               cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
+    title(main='Effective migration rates m : posterior mean',line=0.5)
     par(plt = c(0.03,0.45,0.03,0.92),cex.axis=1.7,las=1)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
@@ -320,11 +318,10 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zmvar,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
-                     main='Effective migration rates m : posterior variance',
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2,
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=col.map,lwd=lwd.map,
                                            xlim=dimns$xrange,ylim=dimns$yrange)
                                    }
                                    if (add.outline) {
@@ -337,7 +334,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=grid.color2,lwd=lwd.grid)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=col.grid,lwd=lwd.grid)
                                            }
                                        } }
                                    }
@@ -347,6 +344,7 @@ mcmc.mrates0 <- function(mcmcpath,dimns,Zmmu,Zmvar,longlat,
                                               cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
+    title(main='Effective migration rates m : posterior variance',line=0.5)
 }
 mcmc.mrates <- function(mcmcpath,dimns,longlat,
                         add.map=FALSE,col.map=map.color,lwd.map=1,
@@ -481,16 +479,15 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
     sizes <- as.numeric(sizes)
     eems.levels <- center.qrates(Zqmu)
 
-    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),c(1),respect=FALSE)
+    layout(matrix(c(1,2),1,2,byrow=TRUE),c(1,1/4*(dimns$yspan/dimns$xspan)),1,respect=FALSE)
 
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zqmu,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
-                     main='Effective diversity rates q : posterior mean',
                      col=eems.colors,levels=eems.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color,
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=col.map,lwd=lwd.map,
                                            xlim=dimns$xrange,ylim=dimns$yrange)
                                    }
                                    if (add.outline) {
@@ -513,6 +510,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
                                               cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
+    title(main='Effective diversity rates q : posterior mean',line=0.5)
     par(plt = c(0.03,0.45,0.03,0.92),cex.axis=1.7,las=1)
     myfilled.legend(dimns$xmrks,dimns$ymrks,Zmrks,asp=1,
                     xlim=dimns$xrange,ylim=dimns$yrange,
@@ -526,11 +524,10 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
     par(plt = c(0.03,0.97,0.03,0.92),las=1,font.main=1,cex.main=1.5,xpd=TRUE)
     myfilled.contour(dimns$xmrks,dimns$ymrks,Zqvar,asp=1,
                      xlim=dimns$xrange,ylim=dimns$yrange,
-                     main='Effective diversity rates q : posterior variance',
                      col=var.colors,levels=var.levels,frame.plot=FALSE,
                      plot.axes = { xlab = ''; ylab = '';
                                    if (add.map) {
-                                       map(database="worldHires",fill=FALSE,add=TRUE,col=map.color2,
+                                       map(database="worldHires",fill=FALSE,add=TRUE,col=col.map,lwd=lwd.map,
                                            xlim=dimns$xrange,ylim=dimns$yrange)
                                    }
                                    if (add.outline) {
@@ -543,7 +540,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
                                        for (i in 1:nn) {
                                            b <- edges[a,i]
                                            if (b %in% nodes) {
-                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=grid.color2,lwd=lwd.grid)
+                                               lines(coord[c(a,b),1],coord[c(a,b),2],col=col.grid,lwd=lwd.grid)
                                            }
                                        } }
                                    }
@@ -553,6 +550,7 @@ mcmc.qrates0 <- function(mcmcpath,dimns,Zqmu,Zqvar,longlat,
                                               cex=cex.samples+max.cex.samples*sizes/max(sizes))
                                    }
                                })
+    title(main='Effective diversity rates q : posterior variance',line=0.5)
 }
 mcmc.qrates <- function(mcmcpath,dimns,longlat,
                         add.map=FALSE,col.map=map.color,lwd.map=1,
@@ -653,7 +651,7 @@ mcmc.mrates.voronoi <- function(mcmcpath,dimns,longlat) {
     }
     return(list(colors=eems.colors,levels=eems.levels))    
 }
-mcmc.qrates.voronoi <- function(mcmcpath,dimns) {
+mcmc.qrates.voronoi <- function(mcmcpath,dimns,longlat) {
     print('Plotting qrates Voronoi tessellation')
     print(mcmcpath)
     qrates <- scan(paste(mcmcpath,'/mcmcqrates.txt',sep=''),what=numeric())
@@ -836,17 +834,17 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
 ##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
 ## eems.plots take a variety of optional arguments:
 ##   plot.width and plot.height: width and height of the graphics region (in inches)
-##   res: resolution of png figures (generated with the bitmap function)                        
-##   add.map: add 'worldHires' map (using the mapdata package)?                                 
-##   add.grid: add triangular population grid?                                                  
-##   add.samples: add samples to their assigned location in the grid?                           
-##   add.outline: add the habitat ring (as declared in the .outer file)?                        
-##   col.map/col.grid/col.samples/col.outline: specify the colors                               
-##   lwd.max/lwd.grid/lwd.outline: specify the line width                                       
-##   pch.samples: specify the character                                                         
-##   cex.samples: specify the character size                                                    
-##   max.cex.samples: some demes might be assigned more samples than others.                    
-##     If max.cex.samples>0, then demes with more samples will also have bigger size.           
+##   res: resolution of png figures (generated with the bitmap function)
+##   add.map: add 'worldHires' map (using the mapdata package)?
+##   add.grid: add triangular population grid?
+##   add.samples: add samples to their assigned location in the grid?
+##   add.outline: add the habitat ring (as declared in the .outer file)?
+##   col.map/col.grid/col.samples/col.outline: specify the colors
+##   lwd.max/lwd.grid/lwd.outline: specify the line width
+##   pch.samples: specify the character
+##   cex.samples: specify the character size
+##   max.cex.samples: some demes might be assigned more samples than others.
+##     If max.cex.samples>0, then demes with more samples will also have bigger size.
 ##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
 ####################################################################################
 eems.plots <- function(mcmcpath,plotpath,longlat,
@@ -872,16 +870,17 @@ eems.plots <- function(mcmcpath,plotpath,longlat,
     if (nsimnos==0) { return(0) }
     
     dimns <- read.dimns(mcmcpath[1],longlat)
-
     if ((plot.height<=0)||(plot.width<=0)) {
-        plot.height <- 5
-        plot.width <- 6.25*(dimns$xspan/dimns$yspan)
+        plot.height <- 1.1*dimns$yspan
+        plot.width <- 1.25*dimns$xspan
     }
 
     bitmap(paste(plotpath,'-mrates%02d.png',sep=''),type='png16m',res=res,
            height=plot.height,width=plot.width,units='in')
     mcmc.mrates(mcmcpath,dimns,longlat,
                 add.grid=add.grid,add.map=add.map,
+                col.grid=col.grid,col.map=col.map,
+                lwd.grid=lwd.grid,lwd.map=lwd.map,
                 add.samples=add.samples,col.samples=col.samples,
                 pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
                 add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
@@ -891,6 +890,8 @@ eems.plots <- function(mcmcpath,plotpath,longlat,
            height=plot.height,width=plot.width,units='in')
     mcmc.qrates(mcmcpath,dimns,longlat,
                 add.grid=add.grid,add.map=add.map,
+                col.grid=col.grid,col.map=col.map,
+                lwd.grid=lwd.grid,lwd.map=lwd.map,
                 add.samples=add.samples,col.samples=col.samples,
                 pch.samples=pch.samples,cex.samples=cex.samples,max.cex.samples=max.cex.samples,
                 add.outline=add.outline,col.outline=col.outline,lwd.outline=lwd.outline)
