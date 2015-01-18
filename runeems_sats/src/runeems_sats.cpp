@@ -79,9 +79,9 @@ int main(int argc, char** argv)
 	eems.birthdeath_mVoronoi(proposal,mcmc);
       }
 
-      mcmc.addToTotalMoves( );
-      if (eems.accept_proposal(proposal)) { mcmc.addToOkayMoves( ); }
-      if (params.testing)           { eems.check_ll_computation( ); }
+      mcmc.add_to_total_moves( );
+      if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves( ); }
+      if (params.testing)              { eems.check_ll_computation( ); }
       mcmc.change_update(eems.num_qtiles(),eems.num_mtiles());
     }
 
@@ -103,7 +103,8 @@ int main(int argc, char** argv)
        << "[RunMCMC] Final log prior = " << eems.eval_prior( ) << endl
        << "          Final log llike = " << eems.eval_likelihood( ) << endl;
 
-  eems.output_results(mcmc);
+  bool done = eems.output_results(mcmc);
+  if (!done) { cerr << "[RunMCMC] Error saving results to " << eems.mcmcpath() << endl; }
 
   return 0;
 }

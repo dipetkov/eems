@@ -8,7 +8,7 @@
 
 typedef boost::adjacency_list <boost::vecS,boost::vecS,boost::undirectedS> BoostGraph;
 
-
+// Triangular graph, possibly irregularly shaped. The shape is determined by the habitat outline.
 
 class Graph {
 public:

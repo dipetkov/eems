@@ -38,7 +38,32 @@ void MCMC::output_proportions(ostream &out) const {
     double a = okayMoves.at(i);
     double A = totalMoves.at(i);
     out << setprecision(2)
-	<< "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for type " << i << endl;
+	<< "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for ";
+    switch (i) {
+    case 0:
+      out << "type 0 (qEffcts)" << endl;
+      break;
+    case 1:
+      out << "type 1 (qVoronoi)" << endl;
+      break;
+    case 2:
+      out << "type 2 (qBirthDeath)" << endl;
+      break;
+    case 3:
+      out << "type 3 (mEffcts)" << endl;
+      break;
+    case 4:
+      out << "type 4 (mrateMu)" << endl;
+      break;
+    case 5:
+      out << "type 5 (mVoronoi)" << endl;
+      break;
+    case 6:
+      out << "type 6 (mBirthDeath)" << endl;
+      break;
+    default:
+      out << "type 7 (df)" << endl;
+    }
   }
 }
 void MCMC::end_iteration( ) {
@@ -70,14 +95,17 @@ void MCMC::change_update(const int qtiles, const int mtiles) {
     mTile++;
     if (mTile==mtiles) { currType++; mTile = 0; }
     break;
+  case 6:
+    currType++;
+    break;
   default:
     currType = 0;
     iterDone = true;
   }
 }
-void MCMC::addToOkayMoves( ) {
+void MCMC::add_to_okay_moves( ) {
   okayMoves[currType]++;
 }
-void MCMC::addToTotalMoves( ) {
+void MCMC::add_to_total_moves( ) {
   totalMoves[currType]++;
 }

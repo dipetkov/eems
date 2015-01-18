@@ -37,6 +37,7 @@ EEMS::EEMS(const Params &params,const long seed) {
 EEMS::~EEMS( ) { }
 ///////////////////////////////////////////
 // Randraw:
+double EEMS::runif( ) { return (draw.runif( )); }
 void EEMS::runif_habitat(MatrixXd &Seeds) {
   for (int i = 0 ; i < Seeds.rows() ; i++ ) {
     bool in = false;
@@ -64,9 +65,8 @@ void EEMS::initialize_diffs( ) {
   } else {
     alleles_to_read = p;
   }
-  MatrixXd Sites = MatrixXd::Zero(n,alleles_to_read);
-  int read = readMatrixXd(params.datapath + ".sites",Sites);
-  if (read!=n*alleles_to_read) {
+  MatrixXd Sites = readMatrixXd(params.datapath + ".sites");
+  if ((Sites.rows()!=n)||(Sites.cols()!=alleles_to_read)) {
     cerr << "  Error reading genotype data matrix " << params.datapath + ".sites" << endl
 	 << "  Expect a " << n << "x" << alleles_to_read << " matrix of allele copies" << endl;
     exit(1);
@@ -206,18 +206,7 @@ void EEMS::initialize(const MCMC& mcmc) {
 int EEMS::num_qtiles( ) const { return (qtiles); }
 int EEMS::num_mtiles( ) const { return (mtiles); }
 double EEMS::eval_prior( ) {
-  // The parameters should always be in range
-  bool inrange = true;
-  for ( int i = 0 ; i < qtiles ; i++ ) {
-    if (!habitat.in_point(qSeeds(i,0),qSeeds(i,1))) { inrange = false; }
-  }
-  for ( int i = 0 ; i < mtiles ; i++ ) {
-    if (!habitat.in_point(mSeeds(i,0),mSeeds(i,1))) { inrange = false; }
-  }
-  if (qEffcts.cwiseAbs().minCoeff()>params.qEffctHalfInterval) { inrange = false; }
-  if (mEffcts.cwiseAbs().minCoeff()>params.mEffctHalfInterval) { inrange = false; }
-  if (abs(mrateMu)>params.mrateMuHalfInterval) { inrange = false; }
-  if (!inrange) { return (-Inf); }
+  // The parameters should be in range by construction
   double qrateS22 = 2.0*qrateS2;
   double mrateS22 = 2.0*mrateS2;
   nowpi  = lgamma(params.negBiSize+mtiles) - lgamma(mtiles+1.0) + mtiles*log(params.negBiProb);
@@ -231,20 +220,10 @@ double EEMS::eval_prior( ) {
   return (nowpi);
 }
 double EEMS::test_prior( ) const {
-  // The parameters should always be in range
-  double logpi; bool inrange = true;
-  for ( int i = 0 ; i < qtiles ; i++ ) {
-    if (!habitat.in_point(qSeeds(i,0),qSeeds(i,1))) { inrange = false; }
-  }
-  for ( int i = 0 ; i < mtiles ; i++ ) {
-    if (!habitat.in_point(mSeeds(i,0),mSeeds(i,1))) { inrange = false; }
-  }
-  if (qEffcts.cwiseAbs().minCoeff()>params.qEffctHalfInterval) { inrange = false; }
-  if (mEffcts.cwiseAbs().minCoeff()>params.mEffctHalfInterval) { inrange = false; }
-  if (abs(mrateMu)>params.mrateMuHalfInterval) { inrange = false; }
-  if (!inrange) { return (-Inf); }
+  // The parameters should be in range by construction
   double qrateS22 = 2.0*qrateS2;
   double mrateS22 = 2.0*mrateS2;
+  double logpi;
   logpi  = lgamma(params.negBiSize+mtiles) - lgamma(mtiles+1.0) + mtiles*log(params.negBiProb);
   logpi += lgamma(params.negBiSize+qtiles) - lgamma(qtiles+1.0) + qtiles*log(params.negBiProb);
   logpi -= (params.mrateShape/2.0+1.0)*log(mrateS22) + (params.mrateScale/2.0)/mrateS22;
@@ -662,7 +641,7 @@ bool EEMS::save_iteration(const int iter) {
   return true;
 }
 bool EEMS::output_results(const MCMC &mcmc) const {
-  ofstream out; bool err;
+  ofstream out; bool done;
   MatrixXd oDemes = MatrixXd::Zero(o,3);
   oDemes << graph.get_the_obsrv_demes(),c_allSites;
   out.open((params.mcmcpath + "/rdistoDemes.txt").c_str(),ofstream::out);
@@ -703,12 +682,12 @@ bool EEMS::output_results(const MCMC &mcmc) const {
   if (!out.is_open()) { return false; }
   out << fixed << setprecision(6) << mcmcpilogl << endl;
   out.close( );
-  err = dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates); if (err) { return false; }
-  err = dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord); if (err) { return false; }
-  err = dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord); if (err) { return false; }
-  err = dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates); if (err) { return false; }
-  err = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (err) { return false; }
-  err = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (err) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates); if (!done) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord); if (!done) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord); if (!done) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates); if (!done) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (!done) { return false; }
+  done = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (!done) { return false; }
   out.open((params.mcmcpath + "/eemsrun.txt").c_str(),ofstream::out);
   if (!out.is_open( )) { return false; }
   out << "[EEMS::Params] Random seed = "
@@ -739,3 +718,5 @@ void EEMS::check_ll_computation( ) const {
     exit(1);
   }
 }
+string EEMS::datapath( ) const { return params.datapath; }
+string EEMS::mcmcpath( ) const { return params.mcmcpath; }

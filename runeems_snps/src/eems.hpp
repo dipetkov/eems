@@ -80,6 +80,9 @@ public:
   void check_ll_computation() const;
   int num_qtiles( ) const;
   int num_mtiles( ) const;
+  string datapath() const;
+  string mcmcpath() const;
+  double runif( );
   
 private:
 
