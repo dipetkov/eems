@@ -20,6 +20,7 @@ using namespace Eigen;
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/detail/config_file.hpp>
+#include <boost/algorithm/string.hpp>
 namespace po = boost::program_options;
 
 
@@ -57,10 +58,9 @@ public:
   bool testing;
 };
 
-void set_eems_params(const string &input_args, Params &params);
 void get_boost_version(ostream& out);
 void get_eigen_version(ostream& out);
-vector<double> split(const string &line);
+VectorXd split(const string &line);
 
 int mod(const int a, const int b);
 int neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const int pos,
@@ -75,7 +75,7 @@ MatrixXd distEucSq(const MatrixXd &X, const MatrixXd &Y);
 MatrixXd resistance_distance(const MatrixXd& M, const int o);
 MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd& M, const VectorXd& q);
 
-int readMatrixXd(const string &filename, MatrixXd &m);
+MatrixXd readMatrixXd(const string &filename);
 double trace_AxB(const MatrixXd &A, const MatrixXd &B);
 
 bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array);

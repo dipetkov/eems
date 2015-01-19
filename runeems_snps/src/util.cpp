@@ -31,7 +31,7 @@ Params::Params(const string &params_file) {
   ////////////////////////////
   // Constants:
   testing = false;
-  mEffctHalfInterval = 2.4771;
+  mEffctHalfInterval = 2.4771; // log10(300)
   qEffctHalfInterval = 0.1;
   mrateMuHalfInterval = 2.0;
   ifstream instrm(params_file.c_str());
@@ -85,10 +85,6 @@ void get_boost_version(ostream& out) {
 }
 void get_eigen_version(ostream& out) {
   out << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION;
-}
-vector<double> split(const string &line) {
-  istringstream in(line);
-  return vector<double>(istream_iterator<double>(in), istream_iterator<double>());
 }
 bool isposdef(const MatrixXd &A) {
   SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
@@ -151,28 +147,46 @@ MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const Ve
   Delta.diagonal() -= Jq;
   return (Delta);
 }
-// Return the number of elements (doubles) successfully read
-int readMatrixXd(const string &filename, MatrixXd &m ) {
-  int rows = m.rows();
-  int cols = m.cols(); double x;
-  ifstream instrm(filename.c_str(), ios::in);
-  if(!instrm.is_open()) { return(0); }
-  for ( int r = 0 ; r < rows ; r++ ) {
-  for ( int c = 0 ; c < cols ; c++ ) {
-    if (instrm.good()) { instrm >> m(r,c); }
-    if (instrm.bad()||instrm.fail()) { return (r*cols + c); }
-  } }
-  // Check that there are no more doubles stored in the file
-  if (!instrm.eof()) {
-    instrm >> x;
-    if (!instrm.eof()||!instrm.fail()) { return (rows*cols + 1); }
+VectorXd split(const string &line) {
+  istringstream in(line);
+  vector<double> numbers;
+  double number;
+  while (!in.eof()) {
+    in >> number;
+    if (!in.fail()) { numbers.push_back(number); } else { break; }
   }
-  instrm.close();
-  return (rows*cols);
+  if (in.fail()||in.bad()) { return (VectorXd::Zero(0)); }
+  // Since we don't know how many numbers there are,
+  // first we store the data in a std::vector of doubles,
+  // and then typecast it to Eigen::VectorXd
+  return (VectorXd::Map(&numbers[0],numbers.size()));
+}
+// Read a matrix, with unknown dimensions, from a text file
+// Return an empty matrix (0 rows, 0 columns) if there is an error
+MatrixXd readMatrixXd(const string &filename) {
+  ifstream instrm(filename.c_str(), ios::in);
+  if (!instrm.is_open( )) { return (MatrixXd::Zero(0,0)); }
+  string line; getline(instrm,line);
+  boost::algorithm::trim(line);
+  // Split the first line into numbers
+  VectorXd row = split(line);
+  // This tells us the number of columns
+  int cols = row.size();
+  if (!cols) { return (MatrixXd::Zero(0,0)); }
+  MatrixXd mat(1,cols); mat.row(0) = row;
+  while (getline(instrm,line)) {
+    boost::algorithm::trim(line);
+    row = split(line);
+    if (row.size()==cols) {
+      // Resize the matrix to add each row (done once at the start of EEMS, so okay)
+      insertRow(mat,row);
+    } else {
+      return (MatrixXd::Zero(0,0));
+    }
+  }
+  return(mat);
 }
 double trace_AxB(const MatrixXd &A, const MatrixXd &B) {
-  //MatrixXd T = A.triangularView<StrictlyLower>();
-  //return (2.0 * T.cwiseProduct(B).sum() + (A.diagonal().array() * B.diagonal().array()).sum());
   return (A.cwiseProduct(B).sum());
 }
 int mod(const int a, const int b) { return (a % b); }
@@ -206,10 +220,9 @@ int neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const int po
 // If there are two draws and the first has two tiles and the second -- three tiles,
 // then sizes = c(2,3) and array = c(m_{1t_1},m_{1t_2},m_{2t_1},m_{2t_2},m_{2t_3})
 bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array) {
-  ofstream out;
-  if (array.size()!=sizes.sum()) { return true; }
-  out.open(filename.c_str(),ofstream::out);
-  if (!out.is_open()) { return true; }
+  if (array.size()!=sizes.sum()) { return false; }
+  ofstream out(filename.c_str(),ofstream::out);
+  if (!out.is_open()) { return false; }
   vector<double>::const_iterator it = array.begin();
   for ( int i = 0 ; i < sizes.size() ; i++ ) {
     for ( int j = 0 ; j < sizes(i) ; j++ ) {
@@ -218,7 +231,7 @@ bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double>
     out << endl;
   }
   out.close( );
-  return false;
+  return true;
 }
 void removeElem(VectorXd &vec, const int elemToRemove)
 {

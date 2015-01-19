@@ -62,8 +62,15 @@ This file specified the following *required* input arguments: the path to the in
 Finally, the EEMS results can be plotted with the R script `default.eems.plots.R` available in `runeems_snps/plot/`.
 
 ```
-source('default.eems.plots.R')mcmcpath <- './data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1'plotpath <- './plot/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1'eemsplots(mcmcpath,plotpath,add.map=FALSE)
+source('default.eems.plots.R')
+
+mcmcpath <- './data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1'
+plotpath <- './plot/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1'
+
+eemsplots(mcmcpath,plotpath,add.map=FALSE)
 ```
+
+This generates several figures automatically (to encourage looking at all the figures). There are examples in `EEMS-doc.pdf`, with captions that explain each figure.
 
 ## The MATLAB/Octave implementation
 

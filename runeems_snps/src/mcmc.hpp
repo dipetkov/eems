@@ -21,8 +21,8 @@ public:
 
   void start_iteration( );
   void end_iteration( );
-  void addToOkayMoves( );
-  void addToTotalMoves( );
+  void add_to_okay_moves( );
+  void add_to_total_moves( );
   int num_iters_to_save( ) const;
   int to_save_iteration( ) const;
 

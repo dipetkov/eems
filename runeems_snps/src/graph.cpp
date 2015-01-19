@@ -6,6 +6,7 @@ Graph::~Graph( ) { }
 void Graph::initialize(const string &datapath, const Habitat &habitat,
 		       const int nDemesSuggested, const int nIndiv)
 {
+  cerr << "[Graph::initialize]" << endl;
   double xspan = habitat.get_xspan();
   double yspan = habitat.get_yspan();
   double area = habitat.get_area();
@@ -21,7 +22,7 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
   VectorXi newIndex = -1 * VectorXi::Ones(xDemes*yDemes);
   int nDemes1 = 0; int d = 0;
   int nEdges1 = 0; int e = 0;
-  int r1 = -1, r2 = -1, c1 = -1, c2 = -1;
+  int r1 = -1, r2 = -1, c1 = -1, c2 = -1, r;
   // Suggest a regular triangular grid with xDemes in the x (longitude) direction and
   // yDemes in the y (latitude) direction, but only include demes that fall inside the habitat
   // (which might not be rectangular in shape)
@@ -73,8 +74,7 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
   } }
   nDemes = Demes1.rows();
   nEdges = Pairs1.rows();
-  cerr << "[Graph::initialize]" << endl
-       << "  Created a population grid with " << nDemes << " demes and " << nEdges << " edges" << endl;
+  cerr << "  Created a population grid with " << nDemes << " demes and " << nEdges << " edges" << endl;
   /////////////////////////////////////////////
   // Will assign new indices to the demes, so that:
   //    the observed demes have indices from 1 to oDemes and 
@@ -82,19 +82,15 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
   // This will make it easier to exploit the Schur decomposition trick to get the resistances
   // between observed demes
   newIndex = -1 * VectorXi::Ones(nDemes);
-  i2alpha = -1 * VectorXi::Ones(nIndiv); // the deme to which each sampled individual is assigned
-  Coord = -1 * MatrixXd::Ones(nIndiv,2); // the coordinates of the sampled individuals
+  i2alpha = -1 * VectorXi::Ones(nIndiv); // the deme to which each sample is assigned (to be determined)
+  Coord = readMatrixXd(datapath + ".coord"); // the coordinates of the sampled individuals
+  if (Coord.rows()==0||Coord.cols()!=2||Coord.rows()!=nIndiv) {
+    cerr << "  Error reading sample coordinates from " << datapath + ".coord" << endl
+	 << "  Expect a list of " << nIndiv << " points, with two coordinates per line" << endl; exit(1);
+  }
+  cerr << "  Read sample coordinates from " << datapath + ".coord" << endl;
   oDemes = 0;
-  bool err = false; int r; double x;
-  string infile = datapath + ".coord";
-  ifstream instrm(infile.c_str(), ios::in);
-  if(!instrm.is_open( ))
-    { cerr << "  Error opening sample coordinates " << infile << endl; exit(1); }
-  for ( int i = 0 ; (i<nIndiv)&&(!err) ; i++ ) {
-    for ( int c = 0 ; (c < 2)&&(!err) ; c++ ) {
-      if (instrm.good()) { instrm >> Coord(i,c); }
-      if (instrm.bad()||instrm.fail()) { err = true; break; }
-    }
+  for ( int i=0 ; i<nIndiv ; i++ ) {
     // Assign the sample to the closest deme -- should we be using great circle distances instead?
     distEucSq(Demes1,Coord.row(i)).col(0).minCoeff( &r );
     if (newIndex(r) == -1) {
@@ -102,19 +98,11 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
     }
     i2alpha(i) = newIndex(r);
   }
-  // Check that there are no more doubles stored in the file
-  if (!instrm.eof()) { instrm >> x; if (!instrm.eof()||!instrm.fail()) { err = true; } }
-  instrm.close( );
-  if (err) {
-    cerr << "  Error reading sample coordinates " << infile << endl
-	 << "  Expect a list of " << nIndiv << " points, with two coordinates per line" << endl; exit(1);
-  }
-  cerr << "  Read sample coordinates from " << infile << endl;
-  // Count the number of samples are taked from each observed deme
+  // Count the number of samples are taken from each observed deme
   Counts = VectorXi::Zero(oDemes);
   for ( int i = 0 ; i < nIndiv ; ++i ) { Counts(i2alpha(i))++; }
   cerr << "  There are " << oDemes << " observed demes (out of " << nDemes << " demes)" << endl;
-  // So far, have assigned new indices to the observed demes. Now assign indices to the rest.
+  // So far, have assigned new indices to the observed demes. Now assign indices to the unobserved demes.
   r = oDemes; // unobserved demes have indices from oDemes to nDemes-1
   for ( int j = 0 ; j < nDemes ; j++ ) { if (newIndex(j)<0) { newIndex(j) = r++; } }  
   // At this point, i2alpha and Counts use the new deme indices
@@ -127,7 +115,7 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
   // Make sure the resulting graph is connected
   BoostGraph testG;
   for ( int i = 0 ; i < nEdges ; i++ ) {
-    add_edge(Pairs(i,0),Pairs(i,1),testG);
+    add_edge((int)Pairs(i,0),(int)Pairs(i,1),testG);
   }
   vector<int> component(num_vertices(testG));
   int num = connected_components(testG,&component[0]);

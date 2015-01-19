@@ -33,6 +33,8 @@ There are two versions, `bed2diffs_v1` and `bed2diffs_v2`. If there is missing d
 * version 1: The average difference between samples i and j is computed across SNPs where both i and j are called. This version will also output the matrix of counts (number of SNPs) where both i and j are called.
 * version 2: The average difference between samples i and j is computed across all SNPs, and missing genotypes at a given SNP are "imputed" as the average genotype at that SNP.
 
-We used `bed2diffs_v1` to compute matrices of differences for the EEMS paper. However, this version is not guaranteed to produce a matrix that is (mathematically) an Euclidean distance matrix, esp. if genotypes are not missing at random.
+We used `bed2diffs_v1` to compute matrices of differences for the EEMS paper. However, this version is not guaranteed to produce a matrix that is (mathematically) an Euclidean distance matrix, especially, if genotypes are not missing at random.
 
-The alternative `bed2diffs_v2` always produces an Euclidean distance matrix. However, imputing missing genotypes as the observed averages might not be reasonable if genotypes are not missing at random.
+The alternative `bed2diffs_v2` always produces an Euclidean distance matrix, as a consequence of imputing missing genotypes with the observed verage genotype. However, this imputation might not be reasonable if genotypes are not missing at random.
+
+Therefore, the data should be cleaned up beforehand, to remove SNPs with high missingness, as it usually done before any analysis of population structure.
