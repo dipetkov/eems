@@ -270,7 +270,7 @@ def create_sample_file(meta_data, outname, order_file=None):
                                        right_on='IND')
 
     meta_data.to_csv(out, sep=" ", header=False, index=False,
-                     columns=('LAT', 'LONG'))
+                     columns=('LONG', 'LAT'))
 
 
 def create_polygon_file(polygon, outname):

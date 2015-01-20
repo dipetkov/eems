@@ -155,16 +155,71 @@ class Parameters(utils.parameters.Parameters):
     @staticmethod
     def create_parser_map(parser):
         parser.add_argument('--polygon',
-                            default="/data/eems-project/human_origins/america.polygon",
+                            default=None,
                             help="""A file with the polygon describing the region to
-                            run eeems on.
+                            run eems on.
                             """)
         parser.add_argument('--wrap', '--wrap_america',
                             default=True,
-                            help="""Should all corinates be wrapped s.t. the
+                            help="""Should all coordinates be wrapped s.t. the
                             americas
                             appear in the east?
                             """)
+        parser.add_argument('--region',
+                            nargs="*",
+                            default=None,
+                            action='append',
+                            help="""A set of continents, regions or countries
+                            that should be included in the analysis. Default:
+                            None
+                            """)
+        parser.add_argument('--hull', '--convex-hull', '--convex_hull',
+                            default=False,
+                            action='store_true',
+                            help="""should a convex hull around the samples
+                            be computed? If yes, an intersection of the
+                            samples and their continent is used.
+                            """)
+        parser.add_argument('--envelope',
+                            default=False,
+                            action='store_true',
+                            help="""should an envelop (bounding box) around
+                            the samples be computed? If yes, the inference
+                            area is restricted to that bounding box.
+                            """)
+        parser.add_argument('--region-buffer', '--region_buffer',
+                            default=1,
+                            type=float,
+                            help="""how much space should there be between 
+                            borders/oceans and the boundary of the eems surface.
+                            Currently, this is given in lat/longitude units
+                            for simplicity (default 1)
+                            """)
+        parser.add_argument('--sample-buffer', '--sample_buffer',
+                            default=.5,
+                            type=float,
+                            help="""how much space should there be between the
+                            samples and the boundary of the eems surface.
+                            Currently, this is given in lat/longitude units
+                            for simplicity (default 1)
+                            """)
+        parser.add_argument('--map-projection',
+                            default=None,
+                            help="""should the coordinates of samples be
+                            changed according to some map-projection? See
+                            plt_toolkits.Basemap for a list of all
+                            possible projections.
+                            """)
+
+        s = 'maps/ne_10m_admin_0_map_subunits.shp'
+        parser.add_argument('--map',
+                            default=os.path.join(os.path.dirname(__file__), s),
+                            help="""what map file should be loaded. Expects a
+                            shapefile *.shp/*.shx combo of different countries.
+                            The default is %s, which was downloaded from
+                            http://www.naturalearthdata.com/downloads/
+                            """ % s)
+
 
     @staticmethod
     def create_parser_files(parser):
@@ -298,7 +353,11 @@ class Parameters(utils.parameters.Parameters):
         parser_files = parser.add_argument_group('input files')
         Parameters.create_parser_files(parser_files)
 
-        parser_map = parser.add_argument_group('map options')
+        parser_map = parser.add_argument_group('map options',
+                       """ These options control in what space the eems
+                        algorithm is run. There are four basic options,
+                        if all are set we use the intersection.
+                       """)
         Parameters.create_parser_map(parser_map)
 
         parser_folders = parser.add_argument_group('input/output folders')
@@ -334,6 +393,10 @@ class Parameters(utils.parameters.Parameters):
         """
         processes some args in p
         """
+        if p.region is not None:
+            if type(p.region[0]) is list:
+                p.region = [item for sublist in p.region 
+                            for item in sublist]
         p.eems_args = dict()
         p.eems_args['diploid'] = p.diploid.lower()
         p.eems_args['numMCMCIter'] = p.numMCMCIter
