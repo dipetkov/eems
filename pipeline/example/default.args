@@ -1,0 +1,15 @@
+--loc
+human_origins_loc.csv
+--sample
+human_origins.csv
+--bed
+./example/example
+--n-burn
+10001
+--n-mcmc
+20000
+--dry
+--nDemes
+300
+--data-folder
+./example

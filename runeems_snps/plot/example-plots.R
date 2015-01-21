@@ -30,9 +30,11 @@ plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
 ##     If max.cex.samples>0, then demes with more samples will also have bigger size.
 ##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
 
-longlat = TRUE
+longlat = FALSE
+mcmcpath='/data/eems-project/human_origins/output/'
+plotpath='/data/eems-project/human_origins/input/eems_proj'
 eems.plots(mcmcpath,plotpath,longlat,
-           add.map=FALSE,
+           add.map=TRUE,
            add.grid=TRUE,
            add.samples=TRUE,
            add.outline=TRUE)

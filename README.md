@@ -3,6 +3,12 @@ This repository contains an implementation of the EEMS method for analyzing and 
 
 ## The C++ implementation
 
+* `bed2diffs` contains a small program that reads genotypes in Plink binary format and computes the matrix of average pairwise differences, to pass to EEMS
+* `examples` shows how to run EEMS using data simulated with `ms`
+* `mscripts` contains the source code for MATLAB/OCTAVE
+* `rscripts` contains scripts to visualize EEMS results
+* `pipeline` contains a pipeline with the goal to combine all scripts
+
 Please consider reading the paper, `EEMS-article.pdf`, and the documentation, `eems-doc.pdf`, first.
 
 There are two programs: `runeems_snps` for SNP data and `runeems_sats` for microsatellite data. (The data input format and the EEMS model are somewhat different for SNPs and microsatellites, hence the two versions.) The source code can be found in `runeems_snps/src` and `runeems_sats/src`, respectively.

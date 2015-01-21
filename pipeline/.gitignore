@@ -1,0 +1,10 @@
+test*
+*pyc
+.ipynb_checkpoints
+*swo
+.R*
+*.o
+*.bim
+*.bed
+*.fam
+example_out/

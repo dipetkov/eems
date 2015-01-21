@@ -795,3 +795,22 @@ eemsplots <- function(mcmcpath,plotpath,add.map=FALSE) {
     plot.logposterior(mcmcpath)
     dev.off( )
 }
+
+
+ellipsis_args <- function(...) return( as.list(substitute(list(...)))[-1L])
+
+generic_plotter <- function( plotter, plotter_args, target="screen", width=4,
+                            height=4, close=TRUE , ...){
+    require( tools )
+
+    ext = file_ext( target )
+
+    if( ext != "" ){
+        do.call( ext, list("file"=target, width=width, height=height) )
+        do.call( plotter, plotter_args)
+        if ( close ) dev.off()
+    } else {
+        do.call( plotter, plotter_args )
+    }
+
+}

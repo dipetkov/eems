@@ -1,0 +1,3 @@
+[submodule "pipeline/utils"]
+	path = pipeline/utils
+	url = https://github.com/BenjaminPeter/utils
