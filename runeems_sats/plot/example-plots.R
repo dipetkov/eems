@@ -17,7 +17,6 @@ plotpath <- 'sat-barrier-nIndiv150-nSites16-EEMS-nDemes200-simno1_3'
 ##     plotpath-rist01/02.png: fitted vs observed distances
 ##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
 ## eems.plots take a variety of optional arguments:
-##   res: resolution of png figures (generated with the bitmap function)
 ##   add.map: add 'worldHires' map (using the mapdata package)?
 ##   add.grid: add triangular population grid?
 ##   add.samples: add samples to their assigned location in the grid?

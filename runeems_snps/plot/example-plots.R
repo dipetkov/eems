@@ -17,7 +17,6 @@ plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
 ##     plotpath-rist01/02.png: fitted vs observed distances
 ##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
 ## eems.plots take a variety of optional arguments:
-##   res: resolution of png figures (generated with the bitmap function)
 ##   add.map: add 'worldHires' map (using the mapdata package)?
 ##   add.grid: add triangular population grid?
 ##   add.samples: add samples to their assigned location in the grid?
@@ -30,9 +29,7 @@ plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
 ##     If max.cex.samples>0, then demes with more samples will also have bigger size.
 ##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
 
-longlat = FALSE
-mcmcpath='/data/eems-project/human_origins/output/'
-plotpath='/data/eems-project/human_origins/input/eems_proj'
+longlat = TRUE
 eems.plots(mcmcpath,plotpath,longlat,
            add.map=TRUE,
            add.grid=TRUE,
