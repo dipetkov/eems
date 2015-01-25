@@ -97,8 +97,11 @@ read.dimns <- function(mcmcpath,longlat,nxmrks=NULL,nymrks=NULL) {
     xmrks <- seq(xmin,xmax,length=nxmrks)
     ymrks <- seq(ymin,ymax,length=nymrks)
     marks <- cbind(rep(xmrks,times=nymrks),rep(ymrks,each=nxmrks))
+    ## Experimenting with the pixmap package to create pixel maps of estimated rates
+    marks.pixmap.order <- cbind(rep(xmrks,each=nymrks),rep(rev(ymrks),times=nxmrks))
     return(list(nxmrks=nxmrks,xmrks=xmrks,xrange=c(xmin,xmax),xspan=(xmax-xmin),
-                nymrks=nymrks,ymrks=ymrks,yrange=c(ymin,ymax),yspan=(ymax-ymin),marks=marks))
+                nymrks=nymrks,ymrks=ymrks,yrange=c(ymin,ymax),yspan=(ymax-ymin),
+                marks=marks,marks.pixmap.order=marks.pixmap.order))
 }
 read.edges <- function(mcmcpath) {
     edges <- read.table(paste(mcmcpath,'/edges.txt',sep=''),colClasses=numeric())
@@ -309,7 +312,8 @@ average.eems.contours <- function(mcmcpath,dimns,longlat,plot.params,is.mrates) 
 }
 ## If there are multiple runs, pick the first one and create at most max.niter Voronoi diagrams
 ## This function is mainly for testing purposes, so no need to create a plot for each iteration
-voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.niter=10) {
+voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.niter=10,
+                            plot.pixels=FALSE) {
     mcmcpath <- mcmcpath[1]
     print('Plotting Voronoi tessellation of estimated effective rates')
     print(mcmcpath)
@@ -342,6 +346,7 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.nit
         indices <- which(now.rates>eems.levels[L])
         now.rates[indices] <- 0.999*eems.levels[L]
         now.seeds <- cbind(now.xseed,now.yseed)
+        now.colors <- character( )
         par(font.main=1,col="white",xpd=TRUE)
         plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
              xlim=dimns$xrange,ylim=dimns$yrange,
@@ -349,6 +354,7 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.nit
         if (now.tiles==1) {
             ## There is only one tile
             tile.color <- eems.colors[round(L/2)]
+            now.colors <- c(now.colors,tile.color)
             polygon(dimns$xrange,dimns$yrange,col=tile.color,border=FALSE)
         } else {
             ## Plot each tile in turn (as a polygon)
@@ -356,12 +362,29 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.nit
             tilelist <- tile.list(Voronoi)
             for (c in 1:now.tiles) {
                 tile.color <- eems.colors[ max((1:L)[eems.levels<now.rates[c]]) ]
+                now.colors <- c(now.colors,tile.color)
                 polygon(tilelist[[c]]$x,tilelist[[c]]$y,col=tile.color,border=FALSE)
             }
             filled.countour.axes(mcmcpath,longlat,plot.params)
         }
         points(now.seeds,pch=4,col="red")
         count <- count + now.tiles
+        if (plot.pixels) {
+            library(pixmap)
+            zvals <- compute.contour.vals(dimns,now.seeds,now.rates)
+            distances <- rdist(dimns$marks.pixmap.order,now.seeds)
+            closest <- apply(distances,1,which.min)
+
+            plot(dimns$marks.pixmap.order[,1],dimns$marks.pixmap.order[,2],
+                 pch=15,col=now.colors[closest],
+                 xlab="xmrks",ylab="ymrks",main="zmrks as a pixel map")
+            
+            ## There is a series of warnings from the pixmap library, which I can't suppress.
+            ## 'In rep(cellres, length = 2) : 'x' is NULL so the result will be NULL'
+            now.pixmap <- pixmapIndexed(1:(dimns$nxmrks*dimns$nymrks),nrow=dimns$nymrks,
+                                        col=now.colors[closest])
+            plot(now.pixmap,xlab="xmrks",ylab="ymrks",main="zmrks as a pixel map")
+        }
     }
     return(list(colors=eems.colors,levels=eems.levels))    
 }
@@ -556,13 +579,13 @@ eems.plots <- function(mcmcpath,plotpath,longlat,plot.width=0,plot.height=0,out.
                   plot.height=plot.height,plot.width=plot.width)
     average.eems.contours(mcmcpath,dimns,longlat,plot.params,is.mrates=TRUE)
     dev.off( )
-    
+
     ## Plot fillet contour of estimated effective diversity rates
     save.graphics(paste(plotpath,'-qrates',sep=''),out.png=out.png,
                   plot.height=plot.height,plot.width=plot.width)
     average.eems.contours(mcmcpath,dimns,longlat,plot.params,is.mrates=FALSE)
     dev.off( )
-
+    
     ## Plot Voronoi tessellations drawn from the posterior distributions on
     ## the migration and diversity rate parameters
     if (plot.voronoi) {
@@ -589,5 +612,5 @@ eems.plots <- function(mcmcpath,plotpath,longlat,plot.width=0,plot.height=0,out.
                   plot.height=plot.height,plot.width=plot.width)
     plot.logposterior(mcmcpath)
     dev.off( )
-    
+
 }

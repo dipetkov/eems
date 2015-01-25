@@ -6,109 +6,138 @@
 
 int main(int argc, char** argv)
 {
-
-  long seed = 1L;
-  string params_file;
-
-  po::options_description options("Options");
-  po::variables_map vm;
-  options.add_options()
-    ("help", "Produce this help message")
-    ("seed",po::value<long>(&seed)->default_value(time(NULL)), "Set the random seed")
-    ("params",po::value<string>(),"Specify input parameter file") ;
-
-  po::store(po::parse_command_line(argc, argv, options), vm);
-  po::notify(vm);
-  
-  if(vm.count("help")) {
-    cerr << options << endl;
-    return EXIT_FAILURE;
-  }
-  if(vm.count("params")) {
-    params_file = vm["params"].as<string>();
-  } else {
-    cerr << "[EEMS::Params] Please provide a params file with the following information:" << endl
-	 << "               datapath, mcmcpath, nIndiv, nSites, nDemes" << endl;
-    return EXIT_FAILURE;
-  }
-  
-  cerr << "[EEMS::Params] Random seed = " << seed << endl;
-  
-  Params params(params_file);
-  EEMS eems(params,seed);
-  MCMC mcmc(params);
-
-  eems.initialize(mcmc);
-  cerr << fixed << setprecision(2)
-       << "[RunMCMC] Initial log prior = " << eems.eval_prior( ) << endl
-       << "          Initial log llike = " << eems.eval_likelihood( ) << endl;
-
-  Proposal proposal;
-
-  while (!mcmc.finished) {
-
-    if (!mod(mcmc.currIter,100)) {
-      cerr << "Iteration " << mcmc.currIter << "..." << endl;
-    }
-
-    mcmc.start_iteration( );
-    eems.update_s2loc( );
-
-    while (!mcmc.iterDone) {
-
-      switch (mcmc.currType) {
-      case 0:
-	eems.propose_qEffcts(proposal,mcmc);
-	break;
-      case 1:
-	eems.move_qVoronoi(proposal,mcmc);
-	break;
-      case 2:
-	eems.birthdeath_qVoronoi(proposal,mcmc);
-	break;
-      case 3:
-	eems.propose_mEffcts(proposal,mcmc);
-	break;
-      case 4:
-	eems.propose_mrateMu(proposal);
-	break;
-      case 5:
-	eems.move_mVoronoi(proposal,mcmc);
-	break;
-      case 6:
-	eems.birthdeath_mVoronoi(proposal,mcmc);
-	break;
-      default:
-	eems.propose_df(proposal);
-      }
-
-      mcmc.add_to_total_moves( );
-      if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves( ); }
-      if (params.testing)              { eems.check_ll_computation( ); }
-      mcmc.change_update(eems.num_qtiles(),eems.num_mtiles());
-    }
-
-    eems.update_df_support(mcmc);
-    eems.update_hyperparams( );
+  try {
     
-    // Check whether to save the current parameter state
-    int iter = mcmc.to_save_iteration( );
-    if (iter>=0) {
-      cerr << "Ending iteration " << mcmc.currIter << " with acceptance proportions:" << endl;    
-      mcmc.output_proportions(cerr);
-      eems.report_iteration(mcmc.currIter);
-      eems.save_iteration(iter);
+    long seed_from_command_line = 1L;
+    string params_file; bool error;
+    
+    po::options_description options("EEMS options from command line");
+    po::variables_map vm;
+    options.add_options()
+      ("help", "Produce this help message")
+      ("seed", po::value<long>(&seed_from_command_line)->default_value(time(NULL)), "Set the random seed")
+      ("params", po::value<string>(&params_file)->required(), "Specify input parameter file") ;
+    
+    po::store(po::parse_command_line(argc, argv, options), vm);
+    po::notify(vm);
+    
+    if(vm.count("help")) {
+      cerr << options << endl; return(EXIT_FAILURE);
     }
 
-    mcmc.end_iteration( );
-  }
+    Params params(params_file,seed_from_command_line);
+    error = params.check_input_params( );
+    if (error) {
+      cerr << "[RunEEMS] Error parametrizing EEMS." << endl;
+      return(EXIT_FAILURE);      
+    }
+    
+    EEMS eems(params);
+    MCMC mcmc(params);
 
-  cerr << fixed << setprecision(2)
-       << "[RunMCMC] Final log prior = " << eems.eval_prior( ) << endl
-       << "          Final log llike = " << eems.eval_likelihood( ) << endl;
+    boost::filesystem::path dir(eems.prevpath().c_str());
+    if (exists(dir)) {
+      cerr << "Loading final EEMS state from " << eems.prevpath() << endl << endl;
+      eems.load_final_state();
+    } else {
+      cerr << "Randomly initializing EEMS state" << endl << endl;
+      eems.initialize_state();
+    }
 
-  bool done = eems.output_results(mcmc);
-  if (!done) { cerr << "[RunMCMC] Error saving results to " << eems.mcmcpath() << endl; }
+    error = eems.start_eems(mcmc);
+    if (error) {
+      cerr << "[RunEEMS] Error starting EEMS." << endl;
+      return(EXIT_FAILURE);
+    }
+    
+    cerr << "Input parameters: " << endl << params << endl
+	 << "Initial log prior: " << eems.prior( ) << endl
+	 << "Initial log llike: " << eems.likelihood( ) << endl << endl;
+    
+    Proposal proposal;
+    
+    while (!mcmc.finished) {
+      
+      if (!(mcmc.currIter%100)) {
+	cerr << "Iteration " << mcmc.currIter << "..." << endl;
+      }
+      
+      mcmc.start_iteration( );
+      eems.update_sigma2( );
 
-  return 0;
+      while (!mcmc.iterDone) {
+
+	// There are 5 'steps' as EEMS cycles through 5 types of proposals:
+	// birth/death, move a tile, update the rate of  a tile, update the
+	// mean migration rate, update the degrees of freedom
+	double u = eems.runif( );
+	switch (mcmc.currStep) {
+	case 0:
+	  // Make a birth or death proposal, with equal probability
+	  // Choose to make a birth/death proposal in the Voronoi
+	  // tessellation of the diversity rates with probability
+	  // params.qVoronoiPr (which is 0.05 by default). Otherwise,
+	  // make a birth/death proposal in the Voronoi tessellation
+	  // of the migration rates
+	  if (u < params.qVoronoiPr) {
+	    eems.birthdeath_qVoronoi(proposal);
+	  } else {
+	    eems.birthdeath_mVoronoi(proposal);
+	  }
+	  break;
+	case 1:
+	  // Propose to move an existing tile within the habitat
+	  if (u < params.qVoronoiPr) {
+	    eems.move_qVoronoi(proposal);
+	  } else {
+	    eems.move_mVoronoi(proposal);
+	  }
+	  break;
+	case 2:
+	  // Propose to update the rate parameter of an existing tile
+	  if (u < params.qVoronoiPr) {
+	    eems.propose_qEffcts(proposal);
+	  } else {
+	    eems.propose_mEffcts(proposal);
+	  }
+	  break;
+	case 3:
+	  // Propose to update the overall (log10) migration rate
+	  eems.propose_mrateMu(proposal);
+	  break;
+	default:
+	  // Propose to update the degrees of freedom
+	  eems.propose_df(proposal,mcmc);
+	}
+	
+	mcmc.add_to_total_moves(proposal.type);
+	if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves(proposal.type); }
+	if (params.testing) { eems.check_ll_computation( ); }
+	mcmc.change_update( );
+      }
+      
+      eems.update_hyperparams( );
+      
+      // Check whether to save the current parameter state,
+      // as the thinned out iterations are not saved
+      int iter = mcmc.to_save_iteration( );
+      if (iter>=0) {
+	eems.print_iteration(mcmc);
+	eems.save_iteration(mcmc);
+      }      
+      mcmc.end_iteration( );
+    }
+    
+    error = eems.output_results(mcmc);
+    if (error) { cerr << "[RunMCMC] Error saving eems results to " << eems.mcmcpath() << endl; }
+    
+    cerr << "Final log prior: " << eems.prior( ) << endl
+	 << "Final log llike: " << eems.likelihood( ) << endl;
+    
+  } catch(exception& e) {
+    cerr << e.what() << endl;
+    return(EXIT_FAILURE);
+  }    
+  
+  return(0);
 }

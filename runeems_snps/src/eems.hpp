@@ -6,8 +6,6 @@
 #include "graph.hpp"
 #include "habitat.hpp"
 
-#include <boost/filesystem.hpp>
-
 
 struct Proposal {
   int type;
@@ -16,6 +14,7 @@ struct Proposal {
   int newqtiles;
   int newmtiles;
   double newdf;
+  double ratioln;
   double newqEffct;
   double newmEffct;
   double newqSeedx;
@@ -40,10 +39,12 @@ struct Proposal {
 class EEMS {
 public:
 
-  EEMS(const Params &params, const long seed);
+  EEMS(const Params &params);
   ~EEMS( );
 
-  void initialize(const MCMC &mcmc);
+  void initialize_state( );
+  void load_final_state( );
+  bool start_eems(const MCMC &mcmc);
   double eval_prior( );
   double test_prior( ) const;
   double eval_likelihood( );
@@ -59,31 +60,31 @@ public:
   double eval_birthdeath_mVoronoi(Proposal &proposal) const;
 
   // Gibbs updates:
-  void update_s2loc( );
+  void update_sigma2( );
   void update_hyperparams( );
   // Random-walk Metropolis-Hastings proposals:
-  void propose_df(Proposal &proposal);
-  void propose_qEffcts(Proposal &proposal, const MCMC &mcmc);
-  void propose_mEffcts(Proposal &proposal, const MCMC &mcmc);
+  void propose_df(Proposal &proposal,const MCMC &mcmc);
+  void propose_qEffcts(Proposal &proposal);
+  void propose_mEffcts(Proposal &proposal);
   void propose_mrateMu(Proposal &proposal);
-  void move_qVoronoi(Proposal &proposal, const MCMC &mcmc);
-  void move_mVoronoi(Proposal &proposal, const MCMC &mcmc);
-  void birthdeath_qVoronoi(Proposal &proposal, const MCMC &mcmc);
-  void birthdeath_mVoronoi(Proposal &proposal, const MCMC &mcmc);
+  void move_qVoronoi(Proposal &proposal);
+  void move_mVoronoi(Proposal &proposal);
+  void birthdeath_qVoronoi(Proposal &proposal);
+  void birthdeath_mVoronoi(Proposal &proposal);
   bool accept_proposal(Proposal &proposal);
-  void update_df_support(const MCMC &mcmc);
-  ///////////////////////////////////////////
 
-  bool save_iteration(const int iter);
-  void report_iteration(const int iter) const;
+  void print_iteration(const MCMC &mcmc) const;
+  void save_iteration(const MCMC &mcmc);
   bool output_results(const MCMC &mcmc) const;
+  bool output_current_state() const;
   void check_ll_computation() const;
-  int num_qtiles( ) const;
-  int num_mtiles( ) const;
   string datapath() const;
   string mcmcpath() const;
-  double runif( );
-  
+  string prevpath() const;
+  double likelihood() const;
+  double prior() const;
+  double runif();
+
 private:
 
   Draw draw; // Random number generator
@@ -94,8 +95,8 @@ private:
   int mtiles, qtiles;
   MatrixXd mSeeds; VectorXd mEffcts;
   MatrixXd qSeeds; VectorXd qEffcts;
-  double qrateS2,mrateS2, mrateMu;
-  double s2loc, nowpi, nowll, df;
+  double qrateS2, mrateS2, mrateMu;
+  double sigma2, nowpi, nowll, df;
 
   // Diffs:
   int o; // observed demes
@@ -114,9 +115,9 @@ private:
   double ldLLt; // logdet(L*L')
   double ldDiQ;  // logdet(inv(Diffs)*Q)
   double ldLDLt;  // logdet(-L*Diffs*L')
-  double ndiv2, logn; int nmin1;
+  double n_2, logn; int nmin1; // n/2, log(n), n-1
   void initialize_diffs();
-  void runif_habitat(MatrixXd &Seeds);
+  void randpoint_in_habitat(MatrixXd &Seeds);
   void rnorm_effects(const double HalfInterval, const double rateS2, VectorXd &Effcts);
   
   ///////////////////////////////////////////
@@ -129,7 +130,6 @@ private:
 
   // Variables to store the results in :
   // Fixed size:
-  int niters;
   MatrixXd mcmcmhyper;
   MatrixXd mcmcqhyper;
   MatrixXd mcmcthetas;
@@ -144,7 +144,7 @@ private:
   vector<double> mcmcwCoord;
   vector<double> mcmczCoord;
   
-  double EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &q, const double s2loc, const double df,
+  double EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &q, const double sigma2, const double df,
 			double &trDinvQxD, double &ll_partdf) const;
   
 };

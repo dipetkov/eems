@@ -6,19 +6,17 @@ MCMC::MCMC(const Params &params) {
   numBurnIter = params.numBurnIter;
   numThinIter = params.numThinIter;
   currIter = 0;
-  currType = 0;
+  currStep = 0;
   numTypes = 8;
   iterDone = false;
   finished = false;
-  qTile = 0;
-  mTile = 0;
   okayMoves = vector<double>(numTypes,0);
   totalMoves = vector<double>(numTypes,0);
 }
 MCMC::~MCMC( ) { }
 void MCMC::start_iteration() {
   currIter++;
-  currType = 0;
+  currStep = 0;
   iterDone = false;
 }
 int MCMC::num_iters_to_save( ) const {
@@ -33,12 +31,11 @@ int MCMC::to_save_iteration( ) const {
   } 
   return (-1);
 }
-void MCMC::output_proportions(ostream &out) const {
-  for ( int i = 0 ; i < numTypes ; i++ ) {
-    double a = okayMoves.at(i);
-    double A = totalMoves.at(i);
-    out << setprecision(2)
-	<< "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for ";
+ostream& operator<<(ostream& out, const MCMC& mcmc) {
+  for ( int i = 0 ; i <=6 ; i++ ) {
+    double a = mcmc.okayMoves.at(i);
+    double A = mcmc.totalMoves.at(i);
+    out << setprecision(2) << "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for ";
     switch (i) {
     case 0:
       out << "type 0 (qEffcts)" << endl;
@@ -65,47 +62,26 @@ void MCMC::output_proportions(ostream &out) const {
       out << "type 7 (df)" << endl;
     }
   }
+  return out;
 }
 void MCMC::end_iteration( ) {
   if (currIter==numMCMCIter) {
     finished = true;
   }
 }
-void MCMC::change_update(const int qtiles, const int mtiles) {
-  switch (currType) {
-  case 0:
-    qTile++;
-    if (qTile==qtiles) { currType++; qTile = 0; }
-    break;
-  case 1:
-    qTile++;
-    if (qTile==qtiles) { currType++; qTile = 0; }
-    break;
-  case 2:
-    currType++;
-    break;
-  case 3:
-    mTile++;
-    if (mTile==mtiles) { currType++; mTile = 0; }
-    break;
+void MCMC::change_update( ) {
+  switch (currStep) {
   case 4:
-    currType++;
-    break;
-  case 5:
-    mTile++;
-    if (mTile==mtiles) { currType++; mTile = 0; }
-    break;
-  case 6:
-    currType++;
+    currStep = 0;
+    iterDone = true;
     break;
   default:
-    currType = 0;
-    iterDone = true;
+    currStep++;
   }
 }
-void MCMC::add_to_okay_moves( ) {
-  okayMoves[currType]++;
+void MCMC::add_to_okay_moves(const int type) {
+  okayMoves[type]++;
 }
-void MCMC::add_to_total_moves( ) {
-  totalMoves[currType]++;
+void MCMC::add_to_total_moves(const int type) {
+  totalMoves[type]++;
 }

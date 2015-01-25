@@ -1,44 +1,34 @@
 
 #include "eems.hpp"
 
-EEMS::EEMS(const Params &params,const long seed) {
+EEMS::EEMS(const Params &params) {
   this->params = params;
-  draw.initialize(seed);
-  cerr << "[runEEMS] Using Boost version: ";
-  get_boost_version(cerr);
-  cerr << ", and Eigen version: ";
-  get_eigen_version(cerr);
-  cerr << endl << "          EEMS was tested with Boost 1_57 and Eigen 3.2.2" << endl << endl;
-  if (!numeric_limits<double>::has_infinity) {
-    cerr << "[runEEMS] numeric_limits<double>::has_infinity : no" << endl;
-    exit(1);
-  }
-  boost::filesystem::path dir(params.mcmcpath.c_str());
-  if (!boost::filesystem::create_directory(dir)) {
-    cerr << "[runEEMS] Failed to create output directory " << params.mcmcpath << endl;
-  }
-  habitat.initialize(params.datapath);
-  habitat.dlmwrite(params.mcmcpath);
-  graph.initialize(params.datapath,habitat,params.nDemes,params.nIndiv);
-  graph.dlmwrite(params.mcmcpath);
+  draw.initialize(params.seed);
+  habitat.generate_outer(params.datapath);
+  habitat.dlmwrite_outer(params.mcmcpath);
+  graph.generate_grid(params.datapath,habitat,params.nDemes,params.nIndiv);
+  graph.dlmwrite_grid(params.mcmcpath);
   o = graph.get_num_obsrv_demes();
   d = graph.get_num_total_demes();
   n = params.nIndiv;
   p = params.nSites;
   initialize_diffs();
   if (params.diploid) {
-    Binvconst = 1.0;
-    qconst = 2.0;
+    Binvconst = 1.0; qconst = 2.0;
   } else {
-    Binvconst = 4.0;
-    qconst = 1.0;
+    Binvconst = 4.0; qconst = 1.0;
   }
 }
 EEMS::~EEMS( ) { }
-///////////////////////////////////////////
-// Randraw:
-double EEMS::runif( ) { return (draw.runif( )); }
-void EEMS::runif_habitat(MatrixXd &Seeds) {
+string EEMS::datapath( ) const { return params.datapath; }
+string EEMS::mcmcpath( ) const { return params.mcmcpath; }
+string EEMS::prevpath( ) const { return params.prevpath; }
+double EEMS::likelihood() const { return nowll; }
+double EEMS::prior() const { return nowpi; }
+double EEMS::runif() { return(draw.runif()); }
+// Draw points randomly inside the habitat: the habitat is two-dimensional, so
+// a point is represented as a row in a matrix with two columns
+void EEMS::randpoint_in_habitat(MatrixXd &Seeds) {
   for (int i = 0 ; i < Seeds.rows() ; i++ ) {
     bool in = false;
     double x,y;
@@ -53,13 +43,12 @@ void EEMS::runif_habitat(MatrixXd &Seeds) {
 }
 void EEMS::rnorm_effects(const double HalfInterval, const double rateS2, VectorXd &Effcts) {
   for (int i = 0 ; i < Effcts.rows() ; i++ ) {
-    Effcts(i) = draw.rtnorm(0.0,rateS2,-1.0*HalfInterval,HalfInterval);
+    Effcts(i) = draw.rtrnorm(0.0,rateS2,HalfInterval);
   }
 }
-// Diffs:
 void EEMS::initialize_diffs( ) {
   cerr << "[Diffs::initialize]" << endl;
-  ndiv2 = (double)n/2.0; nmin1 = n-1; logn = log(n);
+  n_2 = (double)n/2.0; nmin1 = n-1; logn = log(n);
   J = MatrixXd::Zero(n,o);
   cvec = VectorXd::Zero(o);
   cinv = VectorXd::Zero(o);
@@ -72,17 +61,14 @@ void EEMS::initialize_diffs( ) {
   Diffs = readMatrixXd(params.datapath + ".diffs");
   if ((Diffs.rows()!=n)||(Diffs.cols()!=n)) {
     cerr << "  Error reading dissimilarities matrix " << params.datapath + ".diffs" << endl
-	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);
+	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);      
   }
-  cerr << "  Read dissimilarities matrix from " << params.datapath + ".diffs" << endl;
-  ///////////////////////////////////////////
+  cerr << "  Loaded dissimilarities matrix from " << params.datapath + ".diffs" << endl;
   if (!isdistmat(Diffs)) {
     cerr << "  The dissimilarity matrix is not a full-rank distance matrix" << endl; exit(1);
   }
-  ///////////////////////////////////////////
-  MatrixXd L0 = -1.0*MatrixXd::Ones(nmin1,1);
-  MatrixXd L1 = MatrixXd::Identity(nmin1,nmin1);
-  L = MatrixXd::Zero(nmin1,n); L << L0, L1;
+  L = MatrixXd::Constant(nmin1,n,-1.0);
+  L.topRightCorner(nmin1,nmin1).setIdentity();
   JtDhatJ = MatrixXd::Zero(o,o);
   JtDobsJ = J.transpose()*Diffs*J;
   ldLLt = logdet(L*L.transpose());
@@ -90,36 +76,76 @@ void EEMS::initialize_diffs( ) {
   ldDiQ = ldLLt - ldLDLt;
   cerr << "[Diffs::initialize] Done." << endl << endl;
 }
-void EEMS::initialize(const MCMC& mcmc) {
-  cerr << "[EEMS::initialize]" << endl;
+void EEMS::initialize_state( ) {
+  cerr << "[EEMS::initialize_state]" << endl;
   df = n;
-  params.dfProposalS2 = sqrt(p);
-  params.dflob = n - 1.0;
-  params.dfmin = n - 1.0;
-  params.dfmax = n + 1.0;
-  params.dfupb = p;
   // Initialize the two Voronoi tessellations
-  s2loc = draw.rinvgam(3.0,1.0);
-  qtiles = draw.rnegbin(10,0.66667);
-  mtiles = draw.rnegbin(10,0.66667);
-  cerr << "  EEMS started with " << qtiles << " qtiles and " << mtiles << " mtiles" << endl;
+  sigma2 = draw.rinvgam(3.0,1.0);
+  qtiles = draw.rnegbin(2*o,0.5); // o is the number of observed demes
+  mtiles = draw.rnegbin(2*o,0.5);
+  cerr << "  EEMS starts with " << qtiles << " qtiles and " << mtiles << " mtiles" << endl;
   // Draw the Voronoi centers Coord uniformly within the habitat
-  qSeeds = MatrixXd::Zero(qtiles,2); runif_habitat(qSeeds);
-  mSeeds = MatrixXd::Zero(mtiles,2); runif_habitat(mSeeds);
+  qSeeds = MatrixXd::Zero(qtiles,2); randpoint_in_habitat(qSeeds);
+  mSeeds = MatrixXd::Zero(mtiles,2); randpoint_in_habitat(mSeeds);
   mrateS2 = draw.rinvgam(0.5,0.5);
   qrateS2 = draw.rinvgam(0.5,0.5);
   // Assign migration rates to the Voronoi tiles
   mrateMu = params.mrateMuHalfInterval*(2.0*draw.runif() - 1.0);
+  // Assign rates to the Voronoi tiles
+  qEffcts = VectorXd::Zero(qtiles); rnorm_effects(params.qEffctHalfInterval,qrateS2,qEffcts);
+  mEffcts = VectorXd::Zero(mtiles); rnorm_effects(params.mEffctHalfInterval,mrateS2,mEffcts);
+  cerr << "[EEMS::initialize_state] Done." << endl << endl;
+}
+void EEMS::load_final_state( ) {
+  cerr << "[EEMS::load_final_state]" << endl;  
+  MatrixXd tempi; bool error = false;
+  tempi = readMatrixXd(params.prevpath + "/lastqtiles.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=1)) { error = true; }
+  qtiles = tempi(0,0);
+  tempi = readMatrixXd(params.prevpath + "/lastmtiles.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=1)) { error = true; }
+  mtiles = tempi(0,0);
+  cerr << "  EEMS starts with " << qtiles << " qtiles and " << mtiles << " mtiles" << endl;
+  tempi = readMatrixXd(params.prevpath + "/lastthetas.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=2)) { error = true; }
+  sigma2 = tempi(0,0);
+  df = tempi(0,1);
+  tempi = readMatrixXd(params.prevpath + "/lastdfpars.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=2)) { error = true; }
+  params.dfmin = tempi(0,0);
+  params.dfmax = tempi(0,1);
+  tempi = readMatrixXd(params.prevpath + "/lastqhyper.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=1)) { error = true; }
+  qrateS2 = tempi(0,0);
+  tempi = readMatrixXd(params.prevpath + "/lastmhyper.txt");
+  if ((tempi.rows()!=1) || (tempi.cols()!=2)) { error = true; }
+  mrateMu = tempi(0,0);
+  mrateS2 = tempi(0,1);
+  tempi = readMatrixXd(params.prevpath + "/lastqeffct.txt");
+  if ((tempi.rows()!=qtiles) || (tempi.cols()!=1)) { error = true; }
+  qEffcts = tempi.col(0);
+  tempi = readMatrixXd(params.prevpath + "/lastmeffct.txt");
+  if ((tempi.rows()!=mtiles) || (tempi.cols()!=1)) { error = true; }
+  mEffcts = tempi.col(0);
+  qSeeds = readMatrixXd(params.prevpath + "/lastqseeds.txt");
+  if ((qSeeds.rows()!=qtiles) || (qSeeds.cols()!=2)) { error = true; }
+  mSeeds = readMatrixXd(params.prevpath + "/lastmseeds.txt");
+  if ((mSeeds.rows()!=mtiles) || (mSeeds.cols()!=2)) { error = true; }
+  if (error) {
+    cerr << "  Error loading MCMC state from " << params.prevpath << endl; exit(1);
+  }
+  cerr << "[EEMS::load_final_state] Done." << endl << endl;
+}
+bool EEMS::start_eems(const MCMC &mcmc) {
+  bool error = false;
   // The deviation of move proposals is scaled by the habitat range
   params.mSeedsProposalS2x = params.mSeedsProposalS2 * habitat.get_xspan();
   params.mSeedsProposalS2y = params.mSeedsProposalS2 * habitat.get_yspan();
   params.qSeedsProposalS2x = params.qSeedsProposalS2 * habitat.get_xspan();
   params.qSeedsProposalS2y = params.qSeedsProposalS2 * habitat.get_yspan();
-  // Assign rates to the Voronoi tiles
-  qEffcts = VectorXd::Zero(qtiles); rnorm_effects(params.qEffctHalfInterval,qrateS2,qEffcts);
-  mEffcts = VectorXd::Zero(mtiles); rnorm_effects(params.mEffctHalfInterval,mrateS2,mEffcts);
-  // MCMC draws are stored in memory, rather than saved to disk, so it is important to thin
-  niters = mcmc.num_iters_to_save();
+  // MCMC draws are stored in memory, rather than saved to disk,
+  // so it is important to thin
+  int niters = mcmc.num_iters_to_save();
   mcmcmhyper = MatrixXd::Zero(niters,2);
   mcmcqhyper = MatrixXd::Zero(niters,2);
   mcmcthetas = MatrixXd::Zero(niters,2);
@@ -132,76 +158,50 @@ void EEMS::initialize(const MCMC& mcmc) {
   mcmcyCoord.clear();
   mcmcwCoord.clear();
   mcmczCoord.clear();
-  cerr << "[EEMS::initialize] Done." << endl << endl;
-}
-int EEMS::num_qtiles( ) const { return (qtiles); }
-int EEMS::num_mtiles( ) const { return (mtiles); }
+  this->eval_prior();
+  this->eval_likelihood();
+  if ((nowpi==-Inf) || (nowpi==Inf) || (nowll==-Inf) || (nowll==Inf)) { error = true; }
+  return(error);
+}  
 double EEMS::eval_prior( ) {
-  // The parameters should be in range by construction
-  double qrateS22 = 2.0*qrateS2;
-  double mrateS22 = 2.0*mrateS2;
-  nowpi = - log(df);
-  nowpi += lgamma(params.negBiSize+mtiles) - lgamma(mtiles+1.0) + mtiles*log(params.negBiProb);
-  nowpi += lgamma(params.negBiSize+qtiles) - lgamma(qtiles+1.0) + qtiles*log(params.negBiProb);
-  nowpi -= (params.mrateShape/2.0+1.0)*log(mrateS22) + (params.mrateScale/2.0)/mrateS22;
-  nowpi -= (params.qrateShape/2.0+1.0)*log(qrateS22) + (params.qrateScale/2.0)/qrateS22;
-  nowpi -= (mtiles/2.0)*log(pi*mrateS22) + mEffcts.squaredNorm()/mrateS22;
-  nowpi -= (qtiles/2.0)*log(pi*qrateS22) + qEffcts.squaredNorm()/qrateS22;
-  nowpi -= (params.s2locShape/2.0+1.0)*log(s2loc) + (params.s2locScale/2.0)/s2loc;
+  // The parameters should always be in range
+  bool inrange = true;
+  for ( int i = 0 ; i < qtiles ; i++ ) {
+    if (!habitat.in_point(qSeeds(i,0),qSeeds(i,1))) { inrange = false; }
+  }
+  for ( int i = 0 ; i < mtiles ; i++ ) {
+    if (!habitat.in_point(mSeeds(i,0),mSeeds(i,1))) { inrange = false; }
+  }
+  if (qEffcts.cwiseAbs().minCoeff()>params.qEffctHalfInterval) { inrange = false; }
+  if (mEffcts.cwiseAbs().minCoeff()>params.mEffctHalfInterval) { inrange = false; }
+  if (abs(mrateMu)>params.mrateMuHalfInterval) { inrange = false; }
+  if ((df<params.dfmin) || (df>params.dfmax)) { inrange = false; }
+  if (!inrange) { return (-Inf); }
+  nowpi = - log(df)
+    + lgamma(params.negBiSize+mtiles) - lgamma(mtiles+1.0) + mtiles*log(params.negBiProb)
+    + lgamma(params.negBiSize+qtiles) - lgamma(qtiles+1.0) + qtiles*log(params.negBiProb)
+    - (params.mrateShape_2+1.0)*log(mrateS2) - params.mrateScale_2/mrateS2
+    - (params.qrateShape_2+1.0)*log(qrateS2) - params.qrateScale_2/qrateS2
+    - (mtiles/2.0)*log(mrateS2) - mEffcts.squaredNorm()/(2.0*mrateS2)
+    - (qtiles/2.0)*log(qrateS2) - qEffcts.squaredNorm()/(2.0*qrateS2)
+    - (params.sigmaShape_2+1.0)*log(sigma2) - params.sigmaScale_2/sigma2;
   return (nowpi);
 }
-double EEMS::test_prior( ) const {
-  // The parameters should be in range by construction
-  double qrateS22 = 2.0*qrateS2;
-  double mrateS22 = 2.0*mrateS2;
-  double logpi = - log(df);
-  logpi += lgamma(params.negBiSize+mtiles) - lgamma(mtiles+1.0) + mtiles*log(params.negBiProb);
-  logpi += lgamma(params.negBiSize+qtiles) - lgamma(qtiles+1.0) + qtiles*log(params.negBiProb);
-  logpi -= (params.mrateShape/2.0+1.0)*log(mrateS22) + (params.mrateScale/2.0)/mrateS22;
-  logpi -= (params.qrateShape/2.0+1.0)*log(qrateS22) + (params.qrateScale/2.0)/qrateS22;
-  logpi -= (mtiles/2.0)*log(pi*mrateS22) + mEffcts.squaredNorm()/mrateS22;
-  logpi -= (qtiles/2.0)*log(pi*qrateS22) + qEffcts.squaredNorm()/qrateS22;
-  logpi -= (params.s2locShape/2.0+1.0)*log(s2loc) + (params.s2locScale/2.0)/s2loc;
-  return (logpi);
-}
 double EEMS::eval_likelihood( ) {
-  graph.pdist2(mSeeds,nowmColors);
-  graph.pdist2(qSeeds,nowqColors);
+  graph.index_closest_to_deme(mSeeds,nowmColors);
+  graph.index_closest_to_deme(qSeeds,nowqColors);
   calc_q(nowqColors,qEffcts,nowq);
   calc_Binv(nowmColors,mEffcts,mrateMu,nowBinv);
   double trDinvQxD, ll_partdf;
-  nowll = EEMS_wishpdfln(nowBinv,nowq,s2loc,df,trDinvQxD,ll_partdf);
+  nowll = EEMS_wishpdfln(nowBinv,nowq,sigma2,df,trDinvQxD,ll_partdf);
   nowtrDinvQxD = trDinvQxD;
   nowll_partdf = ll_partdf;
   return (nowll);
 }
-double EEMS::test_likelihood( ) const {
-  VectorXi mColors, qColors;
-  graph.pdist2(mSeeds,mColors);
-  graph.pdist2(qSeeds,qColors);
-  VectorXd q = VectorXd::Zero(d);
-  for ( int alpha = 0 ; alpha < d ; alpha++ ) {
-    double log10m = qEffcts(qColors(alpha)); // qrateMu = 0.0
-    q(alpha) = pow(10.0,log10m);
-  }
-  MatrixXd M = MatrixXd::Zero(d,d);
-  int alpha, beta;
-  for ( int edge = 0 ; edge < graph.get_num_edges() ; edge++ ) {
-    graph.get_edge(edge,alpha,beta);
-    double log10m1 = mEffcts(mColors(alpha)) + mrateMu;
-    double log10m2 = mEffcts(mColors(beta)) + mrateMu;
-    M(alpha,beta) = 0.5 * pow(10.0,log10m1) + 0.5 * pow(10.0,log10m2);
-  }
-  MatrixXd Delta = expected_dissimilarities(J, (M + M.transpose()) * Binvconst, q * qconst);
-  double logll = wishpdfln(-L*Diffs*L.transpose(),
-			   -L*Delta*L.transpose()*s2loc/df,df);
-  return (logll);
-}
 void EEMS::calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const {
   if (q0.size()!=o) { q0.resize(o); }
   for ( int alpha = 0 ; alpha < o ; alpha++ ) {
-    double log10m = qEffcts0(qColors0(alpha));
-    q0(alpha) = pow(10.0,log10m);
+    q0(alpha) = pow(10.0,qEffcts0(qColors0(alpha)));
   }
   q0 *= qconst;
 }
@@ -230,115 +230,135 @@ void EEMS::calc_Binv(const VectorXi &mColors0, const VectorXd &mEffcts0, const d
   }
   Binv0 *= Binvconst;
 }
-double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &q, const double s2loc, const double df,
+/*
+  This function implements the computations described in the Section S1.3 in the Supplementary Information,
+  "Computing the Wishart log likelihood l(k, m, q, sigma2)", and I have tried to used similar notation
+  For example, MatrixXd X = lu.solve(T) is equation (S20)
+  since lu is the decomposition of (B*C - W) and T is B * inv(W)
+  Returns wishpdfln( -L*D*L' ; - (sigma2/df) * L*Delta(m,q)*L' , df )
+ */
+double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &w, const double sigma2, const double df,
 			    double &trDinvQxD, double &ll_partdf) const {
-  double df2 = 0.5 * df;
+  double df_2 = 0.5 * df;
   MatrixXd T = Binv.selfadjointView<Lower>().ldlt().solve(MatrixXd::Identity(o,o));
-  T *= cvec.asDiagonal(); T -= q.asDiagonal(); // Now T = B*C - W
+  T *= cvec.asDiagonal(); T -= w.asDiagonal();             // Now T = B*C - W
   PartialPivLU<MatrixXd> lu(T);
-  VectorXd qinv = pow(q.array(),-1.0);
-  T.noalias() = T*qinv.asDiagonal()*cinv.asDiagonal();
-  T += cinv.asDiagonal();                   // Now T = B*Winv
+  VectorXd winv = pow(w.array(),-1.0);
+  T.noalias() = T*winv.asDiagonal()*cinv.asDiagonal();
+  T += cinv.asDiagonal();                                  // Now T = B*inv(W)
   MatrixXd X = lu.solve(T);
-  VectorXd Xc_qinv = X*cvec - qinv;
-  double oDinvo = cvec.dot(Xc_qinv);
-  double oDiDDi = Xc_qinv.transpose()*JtDobsJ*Xc_qinv;
-  trDinvQxD = trace_AxB(X,JtDobsJ) - oDiDDi/oDinvo;
-  ll_partdf = logn - log(abs(oDinvo))
-    + cmin1.dot(qinv.array().log().matrix())
-    - lu.matrixLU().diagonal().array().abs().log().sum()
-    - trDinvQxD/s2loc - nmin1*log(s2loc) - ldDiQ;
-  return (df2 * ll_partdf + nmin1*df2*log(df2) - mvgammaln(df2,nmin1) - ndiv2*ldLDLt);
+  VectorXd Xc_winv = X*cvec - winv;
+  double oDinvo = cvec.dot(Xc_winv);                       // oDinvo = 1'*inv(Delta)*1
+  double oDiDDi = Xc_winv.transpose()*JtDobsJ*Xc_winv;     // oDiDDi = 1'*inv(Delta)*D*inv(D)*1
+  trDinvQxD = trace_AxB(X,JtDobsJ) - oDiDDi/oDinvo;        // trDinvQxD = tr(inv(Delta)*Q*D)
+  double ldetDinvQ = logn - log(abs(oDinvo))               // ldetDinvQ = logDet(-inv(Delta)*Q)
+    + cmin1.dot(winv.array().log().matrix())               // log(det(W_n) * det(inv(W_o)))
+    - lu.matrixLU().diagonal().array().abs().log().sum();  // log(abs(det(B*C - W)))
+  ll_partdf = ldetDinvQ - trDinvQxD/sigma2 - nmin1*log(sigma2) - ldDiQ;
+  return (df_2*ll_partdf + nmin1*df_2*log(df_2) - mvgammaln(df_2,nmin1) - n_2*ldLDLt);
 }
 double EEMS::eval_proposal_qEffcts(Proposal &proposal) const {
   VectorXd newqEffcts = qEffcts;
   newqEffcts(proposal.qTile) = proposal.newqEffct;
   calc_q(nowqColors,newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_proposal_qSeeds(Proposal &proposal) const {
   MatrixXd newqSeeds = qSeeds;
   newqSeeds(proposal.qTile,0) = proposal.newqSeedx;
   newqSeeds(proposal.qTile,1) = proposal.newqSeedy;
-  graph.pdist2(newqSeeds,proposal.newqColors);
+  graph.index_closest_to_deme(newqSeeds,proposal.newqColors);
   calc_q(proposal.newqColors,qEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_birthdeath_qVoronoi(Proposal &proposal) const {
-  graph.pdist2(proposal.newqSeeds,proposal.newqColors);
+  graph.index_closest_to_deme(proposal.newqSeeds,proposal.newqColors);
   calc_q(proposal.newqColors,proposal.newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_proposal_mEffcts(Proposal &proposal) const {
   VectorXd newmEffcts = mEffcts;
   newmEffcts(proposal.mTile) = proposal.newmEffct;
   calc_Binv(nowmColors,newmEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_proposal_mrateMu(Proposal &proposal) const {
   calc_Binv(nowmColors,mEffcts,proposal.newmrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_proposal_mSeeds(Proposal &proposal) const {
   MatrixXd newmSeeds = mSeeds;
   newmSeeds(proposal.mTile,0) = proposal.newmSeedx;
   newmSeeds(proposal.mTile,1) = proposal.newmSeedy;
-  graph.pdist2(newmSeeds,proposal.newmColors);
+  graph.index_closest_to_deme(newmSeeds,proposal.newmColors);
   calc_Binv(proposal.newmColors,mEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 double EEMS::eval_birthdeath_mVoronoi(Proposal &proposal) const {
-  graph.pdist2(proposal.newmSeeds,proposal.newmColors);
+  graph.index_closest_to_deme(proposal.newmSeeds,proposal.newmColors);
   calc_Binv(proposal.newmColors,proposal.newmEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,s2loc,df,proposal.newtrDinvQxD,proposal.newll_partdf));
+  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtrDinvQxD,proposal.newll_partdf));
 }
 ///////////////////////////////////////////
-// Proposals:
-void EEMS::update_s2loc( ) {
-  double df2 = 0.5 * df;
-  nowll_partdf += nowtrDinvQxD/s2loc + nmin1*log(s2loc);
-  nowpi += (params.s2locShape/2.0+1.0)*log(s2loc) + (params.s2locScale/2.0)/s2loc;
-  s2loc = draw.rinvgam( 0.5 * ( params.s2locShape + df*nmin1 ),
-			0.5 * ( params.s2locScale + df*nowtrDinvQxD ) );
-  nowll_partdf -= nowtrDinvQxD/s2loc + nmin1*log(s2loc);
-  nowpi -= (params.s2locShape/2.0+1.0)*log(s2loc) + (params.s2locScale/2.0)/s2loc;
-  nowll = df2 * nowll_partdf + nmin1*df2*log(df2) - mvgammaln(df2,nmin1) - ndiv2*ldLDLt;
+void EEMS::update_sigma2( ) {
+  double df_2 = 0.5 * df;
+  nowll_partdf += nowtrDinvQxD/sigma2 + nmin1*log(sigma2);
+  nowpi += (params.sigmaShape_2+1.0)*log(sigma2) + (params.sigmaScale_2)/sigma2;
+  sigma2 = draw.rinvgam( params.sigmaShape_2 + df_2*nmin1,
+			 params.sigmaScale_2 + df_2*nowtrDinvQxD );
+  nowll_partdf -= nowtrDinvQxD/sigma2 + nmin1*log(sigma2);
+  nowpi -= (params.sigmaShape_2+1.0)*log(sigma2) + (params.sigmaScale_2)/sigma2;
+  nowll = df_2 * nowll_partdf + nmin1*df_2*log(df_2) - mvgammaln(df_2,nmin1) - n_2*ldLDLt;
 }
-void EEMS::propose_df(Proposal &proposal) {
-  double newdf = draw.rnorm(df,params.dfProposalS2);
-  double newdf2 = 0.5 * newdf;
+void EEMS::propose_df(Proposal &proposal,const MCMC &mcmc) {
   proposal.type = 7;
-  proposal.newdf = newdf;
-  if ( (newdf>params.dfmin) && (newdf<params.dfmax) ) {
-    proposal.newpi = nowpi + log(df) - log(newdf);
-    proposal.newll = newdf2 * nowll_partdf + nmin1*newdf2*log(newdf2) - mvgammaln(newdf2,nmin1) - ndiv2*ldLDLt;
-  } else {
-    proposal.newpi = -Inf;
-    proposal.newll = -Inf;
+  proposal.newtrDinvQxD = nowtrDinvQxD;
+  proposal.newll_partdf = nowll_partdf;
+  proposal.newpi = -Inf;
+  proposal.newll = -Inf;
+  // EEMS is initialized with df = nIndiv
+  // Keep df = nIndiv for the first mcmc.numBurnIter/2 iterations
+  // This should make it easier to move in the parameter space
+  // since the likelihood is proportional to 0.5 * pdf * ll_partdf
+  if (mcmc.currIter > (mcmc.numBurnIter/2)) {
+    double newdf = draw.rnorm(df,params.dfProposalS2);
+    double newdf_2 = 0.5 * newdf;
+    if ( (newdf>params.dfmin) && (newdf<params.dfmax) ) {
+      proposal.newdf = newdf;
+      proposal.newpi = nowpi + log(df) - log(newdf);
+      proposal.newll =
+	newdf_2*nowll_partdf + nmin1*newdf_2*log(newdf_2) - mvgammaln(newdf_2,nmin1) - n_2*ldLDLt;
+    }
   }
 }
-void EEMS::propose_qEffcts(Proposal &proposal, const MCMC &mcmc) {
-  double curqEffct = qEffcts(mcmc.qTile);
+void EEMS::propose_qEffcts(Proposal &proposal) {
+  // Choose a tile at random to update
+  proposal.qTile = draw.runif_int(0,qtiles-1);
+  double curqEffct = qEffcts(proposal.qTile);
   double newqEffct = draw.rnorm(curqEffct,params.qEffctProposalS2);
   proposal.type = 0;
-  proposal.qTile = mcmc.qTile;
   proposal.newqEffct = newqEffct;
+  // The prior distribution on the tile effects is truncated normal
+  // So first check whether the proposed value is in range
+  // Then update the prior and evaluate the new likelihood
+  //  + (curqEffct*curqEffct) / (2.0*qrateS2) : old prior component associated with this tile
+  //  - (newqEffct*newqEffct) / (2.0*qrateS2) : new prior component associated with this tile
   if ( abs(newqEffct) < params.qEffctHalfInterval ) {
-    proposal.newpi = nowpi - (newqEffct * newqEffct - curqEffct * curqEffct) / (2.0 * qrateS2);
+    proposal.newpi = nowpi + (curqEffct*curqEffct - newqEffct*newqEffct) / (2.0*qrateS2);
     proposal.newll = eval_proposal_qEffcts(proposal);
   } else {
     proposal.newpi = -Inf;
     proposal.newll = -Inf;
   }
 }
-void EEMS::propose_mEffcts(Proposal &proposal, const MCMC &mcmc) {
-  double curmEffct = mEffcts(mcmc.mTile);
+void EEMS::propose_mEffcts(Proposal &proposal) {
+  proposal.mTile = draw.runif_int(0,mtiles-1);
+  double curmEffct = mEffcts(proposal.mTile);
   double newmEffct = draw.rnorm(curmEffct,params.mEffctProposalS2);
   proposal.type = 3;
-  proposal.mTile = mcmc.mTile;
   proposal.newmEffct = newmEffct;
   if ( abs(newmEffct) < params.mEffctHalfInterval ) {
-    proposal.newpi = nowpi - (newmEffct * newmEffct - curmEffct * curmEffct) / (2.0 * mrateS2);
+    proposal.newpi = nowpi + (curmEffct*curmEffct - newmEffct*newmEffct) / (2.0*mrateS2);
     proposal.newll = eval_proposal_mEffcts(proposal);
   } else {
     proposal.newpi = -Inf;
@@ -346,9 +366,13 @@ void EEMS::propose_mEffcts(Proposal &proposal, const MCMC &mcmc) {
   }
 }
 void EEMS::propose_mrateMu(Proposal &proposal) {
+  // Make a random-walk Metropolis-Hastings proposal
   double newmrateMu = draw.rnorm(mrateMu,params.mrateMuProposalS2);
   proposal.type = 4;
   proposal.newmrateMu = newmrateMu;
+  // If the proposed value is in range, the prior probability does not change
+  // as the prior distribution on mrateMu is uniform
+  // Otherwise, setting the prior and the likelihood to -Inf forces a rejection
   if ( abs(newmrateMu) < params.mrateMuHalfInterval ) {
     proposal.newpi = nowpi;
     proposal.newll = eval_proposal_mrateMu(proposal);
@@ -357,11 +381,13 @@ void EEMS::propose_mrateMu(Proposal &proposal) {
     proposal.newll = -Inf;
   }
 }
-void EEMS::move_qVoronoi(Proposal &proposal, const MCMC &mcmc) {
-  double newqSeedx = draw.rnorm(qSeeds(mcmc.qTile,0),params.qSeedsProposalS2x);
-  double newqSeedy = draw.rnorm(qSeeds(mcmc.qTile,1),params.qSeedsProposalS2y);
+void EEMS::move_qVoronoi(Proposal &proposal) {
+  // Choose a tile at random to move
+  proposal.qTile = draw.runif_int(0,qtiles-1);
+  // A move is a jitter about the current (x,y) location of the tile center (seed)
+  double newqSeedx = draw.rnorm(qSeeds(proposal.qTile,0),params.qSeedsProposalS2x);
+  double newqSeedy = draw.rnorm(qSeeds(proposal.qTile,1),params.qSeedsProposalS2y);
   proposal.type = 1;
-  proposal.qTile = mcmc.qTile;
   proposal.newqSeedx = newqSeedx;
   proposal.newqSeedy = newqSeedy;
   if (habitat.in_point(newqSeedx,newqSeedy)) {
@@ -372,11 +398,11 @@ void EEMS::move_qVoronoi(Proposal &proposal, const MCMC &mcmc) {
     proposal.newll = -Inf;
   }
 }
-void EEMS::move_mVoronoi(Proposal &proposal, const MCMC &mcmc) {
-  double newmSeedx = draw.rnorm(mSeeds(mcmc.mTile,0),params.mSeedsProposalS2x);
-  double newmSeedy = draw.rnorm(mSeeds(mcmc.mTile,1),params.mSeedsProposalS2y);
+void EEMS::move_mVoronoi(Proposal &proposal) {
+  proposal.mTile = draw.runif_int(0,mtiles-1);
+  double newmSeedx = draw.rnorm(mSeeds(proposal.mTile,0),params.mSeedsProposalS2x);
+  double newmSeedy = draw.rnorm(mSeeds(proposal.mTile,1),params.mSeedsProposalS2y);
   proposal.type = 5;
-  proposal.mTile = mcmc.mTile;
   proposal.newmSeedx = newmSeedx;
   proposal.newmSeedy = newmSeedy;
   if (habitat.in_point(newmSeedx,newmSeedy)) {
@@ -387,95 +413,109 @@ void EEMS::move_mVoronoi(Proposal &proposal, const MCMC &mcmc) {
     proposal.newll = -Inf;
   }
 }
-void EEMS::birthdeath_qVoronoi(Proposal &proposal, const MCMC &mcmc) {
-  int newqtiles = qtiles;
+void EEMS::birthdeath_qVoronoi(Proposal &proposal) {
+  int newqtiles = qtiles,r;
   double u = draw.runif();
   double pBirth = 0.5;
   double pDeath = 0.5;
+  boost::math::normal pnorm(0.0,sqrt(qrateS2));
   proposal.newqEffcts = qEffcts;
   proposal.newqSeeds = qSeeds;
-  // Since there must be at least one tile, rule out a death proposal
-  if (qtiles==1) { u = 0.0; }
-  if (u < 0.5) {
-    // Propose birth
-    newqtiles++;
+  // If there is exactly one tile, rule out a death proposal
+  if ((qtiles==1) || (u<0.5)) { // Propose birth
     if (qtiles==1) { pBirth = 1.0; }
+    newqtiles++;
     MatrixXd newqSeed = MatrixXd::Zero(1,2);
-    VectorXd newqEffct = VectorXd::Zero(1);
-    runif_habitat(newqSeed);
-    rnorm_effects(params.qEffctHalfInterval,qrateS2,newqEffct);
+    randpoint_in_habitat(newqSeed);
+    pairwise_distance(qSeeds,newqSeed).col(0).minCoeff(&r);
+    // The new tile is assigned a rate by perturbing the current rate at the new seed    
+    double nowqEffct = qEffcts(r);
+    double newqEffct = draw.rtrnorm(nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval);
     insertRow(proposal.newqSeeds,newqSeed.row(0));
-    insertElem(proposal.newqEffcts,newqEffct(0));
-    proposal.newpi = nowpi + log(pDeath/pBirth) + log((qtiles+params.negBiSize)/(newqtiles/params.negBiProb));
-  } else {
-    // Propose death
-    newqtiles--;
+    insertElem(proposal.newqEffcts,newqEffct);
+    // Compute log(proposal ratio) and log(prior ratio)
+    proposal.ratioln = log(pDeath/pBirth)
+      - dtrnormln(newqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval)
+      - log(cdf(pnorm,params.qEffctHalfInterval) - cdf(pnorm,-params.qEffctHalfInterval));
+    proposal.newpi = nowpi + log((qtiles+params.negBiSize)/(newqtiles/params.negBiProb))
+      - 0.5 * log(qrateS2) - 0.5 * newqEffct*newqEffct/qrateS2;
+  } else {                      // Propose death
     if (qtiles==2) { pBirth = 1.0; }
+    newqtiles--;
     int qtileToRemove = draw.runif_int(0,newqtiles);
+    MatrixXd oldqSeed = qSeeds.row(qtileToRemove);
     removeRow(proposal.newqSeeds,qtileToRemove);
     removeElem(proposal.newqEffcts,qtileToRemove);
-    proposal.newpi = nowpi + log(pBirth/pDeath) + log((qtiles/params.negBiProb)/(newqtiles+params.negBiSize));
+    pairwise_distance(proposal.newqSeeds,oldqSeed).col(0).minCoeff(&r);
+    double nowqEffct = proposal.newqEffcts(r);
+    double oldqEffct = qEffcts(qtileToRemove);
+    // Compute log(prior ratio) and log(proposal ratio)
+    proposal.ratioln = log(pBirth/pDeath)
+      + dtrnormln(oldqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval)
+      + log(cdf(pnorm,params.qEffctHalfInterval) - cdf(pnorm,-params.qEffctHalfInterval));
+    proposal.newpi = nowpi + log((qtiles/params.negBiProb)/(newqtiles+params.negBiSize))
+      + 0.5 * log(qrateS2) + 0.5 * oldqEffct*oldqEffct/qrateS2;
   }
   proposal.type = 2;
   proposal.newqtiles = newqtiles;
   proposal.newll = eval_birthdeath_qVoronoi(proposal);
 }
-void EEMS::birthdeath_mVoronoi(Proposal &proposal, const MCMC &mcmc) {
-  int newmtiles = mtiles;
+void EEMS::birthdeath_mVoronoi(Proposal &proposal) {
+  int newmtiles = mtiles,r;
   double u = draw.runif();
   double pBirth = 0.5;
   double pDeath = 0.5;
+  boost::math::normal pnorm(0.0,sqrt(mrateS2));
   proposal.newmEffcts = mEffcts;
   proposal.newmSeeds = mSeeds;
-  // Since there must be at least one tile, rule out a death proposal
-  if (mtiles==1) { u = 0.0; }
-  if (u < 0.5) {
-    // Propose birth
-    newmtiles++;
+  if ((mtiles==1) || (u<0.5)) { // Propose birth
     if (mtiles==1) { pBirth = 1.0; }
+    newmtiles++;
     MatrixXd newmSeed = MatrixXd::Zero(1,2);
-    VectorXd newmEffct = VectorXd::Zero(1);
-    runif_habitat(newmSeed);
-    rnorm_effects(params.mEffctHalfInterval,mrateS2,newmEffct);
+    randpoint_in_habitat(newmSeed);
+    pairwise_distance(mSeeds,newmSeed).col(0).minCoeff(&r);
+    double nowmEffct = mEffcts(r);
+    double newmEffct = draw.rtrnorm(nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval);
     insertRow(proposal.newmSeeds,newmSeed.row(0));
-    insertElem(proposal.newmEffcts,newmEffct(0));
-    proposal.newpi = nowpi + log(pDeath/pBirth) + log((mtiles+params.negBiSize)/(newmtiles/params.negBiProb));
-  } else {
-    // Propose death
-    newmtiles--;
+    insertElem(proposal.newmEffcts,newmEffct);
+    proposal.ratioln = log(pDeath/pBirth)
+      - dtrnormln(newmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval)
+      - log(cdf(pnorm,params.mEffctHalfInterval) - cdf(pnorm,-params.mEffctHalfInterval));
+    proposal.newpi = nowpi + log((mtiles+params.negBiSize)/(newmtiles/params.negBiProb))
+      - 0.5 * log(mrateS2) - 0.5 * newmEffct*newmEffct/mrateS2;
+  } else {                      // Propose death
     if (mtiles==2) { pBirth = 1.0; }
+    newmtiles--;
     int mtileToRemove = draw.runif_int(0,newmtiles);
+    MatrixXd oldmSeed = mSeeds.row(mtileToRemove);
     removeRow(proposal.newmSeeds,mtileToRemove);
     removeElem(proposal.newmEffcts,mtileToRemove);
-    proposal.newpi = nowpi + log(pBirth/pDeath) + log((mtiles/params.negBiProb)/(newmtiles+params.negBiSize));
+    pairwise_distance(proposal.newmSeeds,oldmSeed).col(0).minCoeff(&r);
+    double nowmEffct = proposal.newmEffcts(r);
+    double oldmEffct = mEffcts(mtileToRemove);
+    proposal.ratioln = log(pBirth/pDeath)
+      + dtrnormln(oldmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval)      
+      + log(cdf(pnorm,params.mEffctHalfInterval) - cdf(pnorm,-params.mEffctHalfInterval));
+    proposal.newpi = nowpi + log((mtiles/params.negBiProb)/(newmtiles+params.negBiSize))
+      + 0.5 * log(mrateS2) + 0.5 * oldmEffct*oldmEffct/mrateS2;
   }
   proposal.type = 6;
   proposal.newmtiles = newmtiles;
   proposal.newll = eval_birthdeath_mVoronoi(proposal);
 }
-void EEMS::update_df_support(const MCMC &mcmc) {
-  if (mcmc.currIter > (mcmc.numBurnIter/3)) {
-    params.dfmax = params.dfupb;
-    params.dfmin = params.dflob;
-  }
-}
 void EEMS::update_hyperparams( ) {
-  double qrateS22 = 2.0*qrateS2;
-  double mrateS22 = 2.0*mrateS2;
   double SSq = qEffcts.squaredNorm();
   double SSm = mEffcts.squaredNorm();
-  nowpi += (params.mrateShape/2.0+1.0)*log(mrateS22) + (params.mrateScale/2.0)/mrateS22;
-  nowpi += (params.qrateShape/2.0+1.0)*log(qrateS22) + (params.qrateScale/2.0)/qrateS22;
-  nowpi += (mtiles/2.0)*log(pi*mrateS22) + SSm/mrateS22;
-  nowpi += (qtiles/2.0)*log(pi*qrateS22) + SSq/qrateS22;
-  qrateS2 = draw.rinvgam(0.5 * (params.qrateShape + qtiles), 0.5 * (params.qrateScale + SSq));
-  mrateS2 = draw.rinvgam(0.5 * (params.mrateShape + mtiles), 0.5 * (params.mrateScale + SSm));
-  qrateS22 = 2.0*qrateS2;
-  mrateS22 = 2.0*mrateS2;
-  nowpi -= (params.mrateShape/2.0+1.0)*log(mrateS22) + (params.mrateScale/2.0)/mrateS22;
-  nowpi -= (params.qrateShape/2.0+1.0)*log(qrateS22) + (params.qrateScale/2.0)/qrateS22;
-  nowpi -= (mtiles/2.0)*log(pi*mrateS22) + SSm/mrateS22;
-  nowpi -= (qtiles/2.0)*log(pi*qrateS22) + SSq/qrateS22;
+  nowpi += (params.mrateShape_2+1.0)*log(mrateS2) + (params.mrateScale_2)/mrateS2
+    +      (params.qrateShape_2+1.0)*log(qrateS2) + (params.qrateScale_2)/qrateS2
+    + (mtiles/2.0)*log(mrateS2) + SSm/(2.0*mrateS2)
+    + (qtiles/2.0)*log(qrateS2) + SSq/(2.0*qrateS2);
+  qrateS2 = draw.rinvgam(params.qrateShape_2 + 0.5 * qtiles, params.qrateScale_2 + 0.5 * SSq);
+  mrateS2 = draw.rinvgam(params.mrateShape_2 + 0.5 * mtiles, params.mrateScale_2 + 0.5 * SSm);
+  nowpi -= (params.mrateShape_2+1.0)*log(mrateS2) + (params.mrateScale_2)/mrateS2
+    +      (params.qrateShape_2+1.0)*log(qrateS2) + (params.qrateScale_2)/qrateS2
+    + (mtiles/2.0)*log(mrateS2) + SSm/(2.0*mrateS2)
+    + (qtiles/2.0)*log(qrateS2) + SSq/(2.0*qrateS2);
 }
 bool EEMS::accept_proposal(Proposal &proposal) {
   double u = draw.runif( );
@@ -486,20 +526,20 @@ bool EEMS::accept_proposal(Proposal &proposal) {
     proposal.newll = nowll;
     return false;
   }
-  double alpha = min(0.0,(proposal.newpi-nowpi) + (proposal.newll-nowll));
-  int qTile, mTile;
-  if ( log(u) < alpha ) {
-    // Update parameters:
+  double ratioln = proposal.newpi - nowpi + proposal.newll - nowll;
+  // If the proposal is either birth or death, add the log(proposal ratio)
+  if (proposal.type==2 || proposal.type==6) {
+    ratioln += proposal.ratioln;
+  }
+  if ( log(u) < min(0.0,ratioln) ) {
     switch (proposal.type) {
     case 0:
-      qTile = proposal.qTile;
-      qEffcts(qTile) = proposal.newqEffct;
+      qEffcts(proposal.qTile) = proposal.newqEffct;
       nowq = proposal.newq;
       break;
     case 1:
-      qTile = proposal.qTile;
-      qSeeds(qTile,0) = proposal.newqSeedx;
-      qSeeds(qTile,1) = proposal.newqSeedy;
+      qSeeds(proposal.qTile,0) = proposal.newqSeedx;
+      qSeeds(proposal.qTile,1) = proposal.newqSeedy;
       nowq = proposal.newq;
       nowqColors = proposal.newqColors;
       break;
@@ -511,8 +551,7 @@ bool EEMS::accept_proposal(Proposal &proposal) {
       nowqColors = proposal.newqColors;
       break;
     case 3:
-      mTile = proposal.mTile;
-      mEffcts(mTile) = proposal.newmEffct;
+      mEffcts(proposal.mTile) = proposal.newmEffct;
       nowBinv = proposal.newBinv;
       break;
     case 4:
@@ -520,9 +559,8 @@ bool EEMS::accept_proposal(Proposal &proposal) {
       nowBinv = proposal.newBinv;
       break;
     case 5:
-      mTile = proposal.mTile;
-      mSeeds(mTile,0) = proposal.newmSeedx;
-      mSeeds(mTile,1) = proposal.newmSeedy;
+      mSeeds(proposal.mTile,0) = proposal.newmSeedx;
+      mSeeds(proposal.mTile,1) = proposal.newmSeedy;
       nowBinv = proposal.newBinv;
       nowmColors = proposal.newmColors;
       break;
@@ -538,24 +576,28 @@ bool EEMS::accept_proposal(Proposal &proposal) {
     }
     nowpi = proposal.newpi;
     nowll = proposal.newll;
-    if (proposal.type!=7) { // 7 means a df proposal
-      nowtrDinvQxD = proposal.newtrDinvQxD;
-      nowll_partdf = proposal.newll_partdf;
-    }
-    if (proposal.type==2||proposal.type==6) {
-      nowpi = eval_prior();
-    }
+    nowtrDinvQxD = proposal.newtrDinvQxD;
+    nowll_partdf = proposal.newll_partdf;
     return true;
+  } else {
+    proposal.newpi = nowpi;
+    proposal.newll = nowll;
+    return false;
   }
-  proposal.newpi = nowpi;
-  proposal.newll = nowll;
-  return false;
 }
 ///////////////////////////////////////////
-// Save results:
-bool EEMS::save_iteration(const int iter) {
-  if ((iter<0)||(iter>=niters)) { return false; }
-  mcmcthetas(iter,0) = s2loc;
+void EEMS::print_iteration(const MCMC &mcmc) const {
+  cerr << " Ending iteration " << mcmc.currIter
+       << " with acceptance proportions:" << endl << mcmc
+       << " and effective degrees of freedom = " << df << endl
+       << "         number of qVoronoi tiles = " << qtiles << endl
+       << "         number of mVoronoi tiles = " << mtiles << endl
+       << "          Log prior = " << nowpi << endl
+       << "          Log llike = " << nowll << endl;
+}
+void EEMS::save_iteration(const MCMC &mcmc) {
+  int iter = mcmc.to_save_iteration( );
+  mcmcthetas(iter,0) = sigma2;
   mcmcthetas(iter,1) = df;
   mcmcqhyper(iter,0) = 0.0;
   mcmcqhyper(iter,1) = qrateS2;
@@ -589,11 +631,58 @@ bool EEMS::save_iteration(const int iter) {
   B -= 0.5 * h.transpose().replicate(o,1);
   B += 0.5 * nowq.replicate(1,o);
   B += 0.5 * nowq.transpose().replicate(o,1);
-  JtDhatJ += s2loc * B;
-  return true;
+  JtDhatJ += sigma2 * B;
+}
+bool EEMS::output_current_state( ) const {
+  ofstream out; bool error = false;
+  out.open((params.mcmcpath + "/lastqtiles.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << qtiles << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastmtiles.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << mtiles << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastthetas.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << sigma2 << " " << df << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastdfpars.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << params.dfmin << " " << params.dfmax << endl;
+  out.close( );  
+  out.open((params.mcmcpath + "/lastqhyper.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << qrateS2 << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastmhyper.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << mrateMu << " " << mrateS2 << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastpilogl.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << nowpi << " " << nowll << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastmeffct.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << mEffcts << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastmseeds.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << mSeeds << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastqeffct.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << qEffcts << endl;
+  out.close( );
+  out.open((params.mcmcpath + "/lastqseeds.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { error = true; return(error); }
+  out << fixed << setprecision(6) << qSeeds << endl;
+  out.close( );
+  return(error);
 }
 bool EEMS::output_results(const MCMC &mcmc) const {
-  ofstream out; bool done;
+  ofstream out; bool error = false;
   MatrixXd oDemes = MatrixXd::Zero(o,3);
   oDemes << graph.get_the_obsrv_demes(),cvec;
   out.open((params.mcmcpath + "/rdistoDemes.txt").c_str(),ofstream::out);
@@ -607,6 +696,12 @@ bool EEMS::output_results(const MCMC &mcmc) const {
   out.close( );
   out.open((params.mcmcpath + "/rdistJtDhatJ.txt").c_str(),ofstream::out);
   if (!out.is_open()) { return false; }
+  int niters = mcmc.num_iters_to_save();
+
+  
+  cout << "niters = " << niters << endl << endl << endl;
+
+  
   out << JtDhatJ/niters << endl;
   out.close( );
   out.open((params.mcmcpath + "/mcmcqtiles.txt").c_str(),ofstream::out);
@@ -633,31 +728,21 @@ bool EEMS::output_results(const MCMC &mcmc) const {
   if (!out.is_open()) { return false; }
   out << fixed << setprecision(6) << mcmcpilogl << endl;
   out.close( );
-  done = dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates); if (!done) { return false; }
-  done = dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord); if (!done) { return false; }
-  done = dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord); if (!done) { return false; }
-  done = dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates); if (!done) { return false; }
-  done = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (!done) { return false; }
-  done = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (!done) { return false; }
+  error = dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates); if (error) { return(error); }
+  error = dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord); if (error) { return(error); }
+  error = dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord); if (error) { return(error); }
+  error = dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates); if (error) { return(error); }
+  error = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (error) { return(error); }
+  error = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (error) { return(error); }
+  error = output_current_state( ); if (error) { return(error); }
   out.open((params.mcmcpath + "/eemsrun.txt").c_str(),ofstream::out);
   if (!out.is_open( )) { return false; }
-  out << "[EEMS::Params] Random seed = "
-      << draw.get_seed( ) << endl << endl;
-  params.dlmwrite(out);
-  out << "Acceptance proportions:" << endl;
-  mcmc.output_proportions(out); out << endl;
-  out << "Final log prior = " << nowpi << endl
-      << "Final log llike = " << nowll << endl;
+  out << "Input parameter values:" << endl << params << endl
+      << "Acceptance proportions:" << endl << mcmc << endl
+      << "Final log prior: " << nowpi << endl
+      << "Final log llike: " << nowll << endl;
   out.close( );
-  return true;
-}
-void EEMS::report_iteration(const int iter) const {
-  cerr << fixed << setprecision(2)
-       << "and effective degrees of freedom = " << df << endl
-       << "        number of qVoronoi tiles = " << qtiles << endl
-       << "        number of mVoronoi tiles = " << mtiles << endl
-       << "          Log prior = " << nowpi << endl
-       << "          Log llike = " << nowll << endl;
+  return(error);
 }
 void EEMS::check_ll_computation( ) const {
   double pi0 = test_prior( );
@@ -669,5 +754,48 @@ void EEMS::check_ll_computation( ) const {
     exit(1);
   }
 }
-string EEMS::datapath( ) const { return params.datapath; }
-string EEMS::mcmcpath( ) const { return params.mcmcpath; }
+double EEMS::test_prior( ) const {
+  bool inrange = true;
+  for ( int i = 0 ; i < qtiles ; i++ ) {
+    if (!habitat.in_point(qSeeds(i,0),qSeeds(i,1))) { inrange = false; }
+  }
+  for ( int i = 0 ; i < mtiles ; i++ ) {
+    if (!habitat.in_point(mSeeds(i,0),mSeeds(i,1))) { inrange = false; }
+  }
+  if (qEffcts.cwiseAbs().minCoeff()>params.qEffctHalfInterval) { inrange = false; }
+  if (mEffcts.cwiseAbs().minCoeff()>params.mEffctHalfInterval) { inrange = false; }
+  if (abs(mrateMu)>params.mrateMuHalfInterval) { inrange = false; }
+  if ((df<params.dfmin) || (df>params.dfmax)) { inrange = false; }
+  if (!inrange) { return (-Inf); }
+  double logpi = - log(df)
+    + dnegbinln(mtiles,params.negBiSize,params.negBiProb)
+    + dnegbinln(qtiles,params.negBiSize,params.negBiProb)
+    + dinvgamln(mrateS2,params.mrateShape_2,params.mrateScale_2)
+    + dinvgamln(qrateS2,params.qrateShape_2,params.qrateScale_2)
+    + dmvnormln(mEffcts,VectorXd::Zero(mtiles),mrateS2*MatrixXd::Identity(mtiles,mtiles))
+    + dmvnormln(qEffcts,VectorXd::Zero(qtiles),qrateS2*MatrixXd::Identity(qtiles,qtiles))
+    + dinvgamln(sigma2,params.sigmaShape_2,params.sigmaScale_2);
+  return (logpi);
+}
+double EEMS::test_likelihood( ) const {
+  VectorXi mColors, qColors;
+  graph.index_closest_to_deme(mSeeds,mColors);
+  graph.index_closest_to_deme(qSeeds,qColors);
+  VectorXd q = VectorXd::Zero(d);
+  for ( int alpha = 0 ; alpha < d ; alpha++ ) {
+    double log10m = qEffcts(qColors(alpha)); // qrateMu = 0.0
+    q(alpha) = pow(10.0,log10m);
+  }
+  MatrixXd M = MatrixXd::Zero(d,d);
+  int alpha, beta;
+  for ( int edge = 0 ; edge < graph.get_num_edges() ; edge++ ) {
+    graph.get_edge(edge,alpha,beta);
+    double log10m1 = mEffcts(mColors(alpha)) + mrateMu;
+    double log10m2 = mEffcts(mColors(beta)) + mrateMu;
+    M(alpha,beta) = 0.5 * pow(10.0,log10m1) + 0.5 * pow(10.0,log10m2);
+  }
+  MatrixXd Delta = expected_dissimilarities(J, (M + M.transpose()) * Binvconst, q * qconst);
+  double logll = wishpdfln(-L*Diffs*L.transpose(),
+			   -L*Delta*L.transpose()*sigma2/df,df);
+  return (logll);
+}

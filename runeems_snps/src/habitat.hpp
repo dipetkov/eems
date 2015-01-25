@@ -34,8 +34,8 @@ public:
   Habitat( );
   ~Habitat( );
 
-  void initialize(const string &datapath);
-  bool dlmwrite(const string &mcmcpath) const;
+  void generate_outer(const string &datapath);
+  bool dlmwrite_outer(const string &mcmcpath) const;
   bool in_point(const double x, const double y) const;
 
   double get_area( ) const;
