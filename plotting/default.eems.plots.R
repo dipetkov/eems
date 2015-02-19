@@ -1,9 +1,14 @@
 
 ###### Required R packages ######
 
-library(fields) ## the rdist function computes Euclidean distances
-library(deldir) ## the deldir function calculates Voronoi tessellation
-## library(mapdata) ## the map database required to add geographic maps
+## The script needs several packages that handles geospatial data:
+require(rgdal) ## spTransform
+require(rgeos) ## gDifference
+require(raster) ## filledContour
+require(fields) ## the rdist function computes Euclidean distances
+##require(deldir) ## the deldir function calculates Voronoi tessellation
+##require(rworldmap) ## the map database required to add geographic maps
+##require(rworldxtra) ## and the high resolution world map
 
 ###### Define the default color schemes ######
 
@@ -78,30 +83,26 @@ read.dimns <- function(mcmcpath,longlat,nxmrks=NULL,nymrks=NULL) {
     if (!longlat) {
         outer <- outer[,c(2,1)]
     }
-    xmin <- min(outer[,1])
-    xmax <- max(outer[,1])
-    ymin <- min(outer[,2])
-    ymax <- max(outer[,2])
+    xlim <- range(outer[,1])
+    ylim <- range(outer[,2])
+    aspect <- (diff(ylim)/diff(xlim))/cos((mean(ylim) * pi)/180)
     ## Choose the number of interpolation in each direction
     if (is.null(nxmrks)&&is.null(nymrks)) {
-        xy.asp.ratio <- (xmax-xmin)/(ymax-ymin)
-        if (xy.asp.ratio>1) {
+        if (aspect>1) {
             nxmrks <- 100
-            nymrks <- round(nxmrks/xy.asp.ratio)
+            nymrks <- round(nxmrks*aspect)
         } else {
             nymrks <- 100
-            nxmrks <- round(nymrks*xy.asp.ratio)
+            nxmrks <- round(nymrks/aspect)
         }
     }
     ## The interpolation points are equally spaced
-    xmrks <- seq(xmin,xmax,length=nxmrks)
-    ymrks <- seq(ymin,ymax,length=nymrks)
+    xmrks <- seq(from=xlim[1],to=xlim[2],length=nxmrks)
+    ymrks <- seq(from=ylim[1],to=ylim[2],length=nymrks)
     marks <- cbind(rep(xmrks,times=nymrks),rep(ymrks,each=nxmrks))
-    ## Experimenting with the pixmap package to create pixel maps of estimated rates
-    marks.pixmap.order <- cbind(rep(xmrks,each=nymrks),rep(rev(ymrks),times=nxmrks))
-    return(list(nxmrks=nxmrks,xmrks=xmrks,xrange=c(xmin,xmax),xspan=(xmax-xmin),
-                nymrks=nymrks,ymrks=ymrks,yrange=c(ymin,ymax),yspan=(ymax-ymin),
-                marks=marks,marks.pixmap.order=marks.pixmap.order))
+    return(list(nxmrks=nxmrks,xmrks=xmrks,xlim=xlim,xspan=diff(xlim),
+                nymrks=nymrks,ymrks=ymrks,ylim=ylim,yspan=diff(ylim),
+                marks=marks,outer=outer,aspect=aspect))
 }
 read.edges <- function(mcmcpath) {
     edges <- read.table(paste(mcmcpath,'/edges.txt',sep=''),colClasses=numeric())
@@ -222,22 +223,37 @@ filled.countour.axes <- function(mcmcpath,longlat,plot.params) {
     sizes <- table(ipmap)
     alpha <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
-    if (plot.params$add.map) {
-        map(database="worldHires",fill=FALSE,add=TRUE,col=plot.params$col.map,lwd=plot.params$lwd.map)
+    ## The filledContour fills a rectangular plot; now color the habitat exterior white
+    boundary <- SpatialPolygons(list(Polygons(list(Polygon(outer, hole = FALSE)),"1")),
+                                proj4string=CRS(plot.params$proj.in))
+    boundary <- SpatialPolygonsDataFrame(boundary,data.frame(id="1"))
+    boundary <- spTransform(boundary,CRS=CRS(plot.params$proj.out))
+    exterior <- gDifference(gEnvelope(boundary),boundary)
+    if (!is.null(exterior)) {
+        plot(exterior,col="white",border="white",add=TRUE)
     }
-    if (plot.params$add.outline) {
-        for (v in 2:nrow(outer)) {
-            lines(outer[c(v-1,v),1],outer[c(v-1,v),2],col=plot.params$col.outline,lwd=plot.params$lwd.outline)
-        }
+    if (plot.params$add.map) {
+        map <- getMap(resolution="high")
+        map <- spTransform(map,CRS=CRS(plot.params$proj.out))
+        map <- gIntersection(map,boundary,byid=TRUE)
+        plot(map,col=NA,border=plot.params$col.map,lwd=plot.params$lwd.map,add=TRUE)
     }
     if (plot.params$add.grid) {
+        segments <- list()
         for (e in 1:nrow(edges)) {
-            lines(demes[edges[e,],1],demes[edges[e,],2],col=plot.params$col.grid,lwd=plot.params$lwd.grid)
+            segments[[e]] <- Line(cbind(demes[edges[e,],1],demes[edges[e,],2]))
         }
+        segments <- SpatialLines(list(Lines(segments,ID="a")),proj4string=CRS(plot.params$proj.in))
+        segments <- spTransform(segments,CRS=CRS(plot.params$proj.out))
+        lines(segments,col=plot.params$col.grid,lwd=plot.params$lwd.grid)
+    }
+    if (plot.params$add.outline) {
+        plot(boundary,col=NA,border=plot.params$col.outline,lwd=plot.params$lwd.outline,add=TRUE)
     }
     if (plot.params$add.samples) {
-        points(demes[alpha,1],demes[alpha,2],
-               col=plot.params$col.samples,pch=plot.params$pch.samples,
+        samples <- SpatialPoints(cbind(demes[alpha,1],demes[alpha,2]),proj4string=CRS(plot.params$proj.in))
+        samples <- spTransform(samples,CRS=CRS(plot.params$proj.out))
+        points(samples,col=plot.params$col.samples,pch=plot.params$pch.samples,
                cex=plot.params$cex.samples+plot.params$max.cex.samples*sizes/max(sizes))
     }
 }
@@ -254,25 +270,33 @@ one.eems.contour <- function(mcmcpath,dimns,Zmean,Zvar,longlat,plot.params,is.mr
         var.title <- "Effective diversity rates q : posterior variance"
         key.title <- expression(paste("e"["q"],sep=""))
     }
-    par(font.main=1,col="white",xpd=TRUE)
-    filled.contour(dimns$xmrks,dimns$ymrks,Zmean,asp=1,
-                   main=main.title,xlim=dimns$xrange,ylim=dimns$yrange,
-                   col=eems.colors,levels=eems.levels,frame.plot=FALSE,
-                   key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex=1.5),
-                   key.title = mtext(key.title,side=3,cex=1.5,col="black"),
-                   plot.axes = filled.countour.axes(mcmcpath,longlat,plot.params)
-                   )
+    rr <- flip(raster(t(Zmean),
+                      xmn=dimns$xlim[1],xmx=dimns$xlim[2],
+                      ymn=dimns$ylim[1],ymx=dimns$ylim[2]),direction='y')
+    projection(rr) <- CRS(plot.params$proj.in)
+    filledContour(projectRaster(rr,crs=CRS(plot.params$proj.out)),
+                  main=main.title,font.main=1,asp=1,
+                  col=eems.colors,levels=eems.levels,frame.plot=FALSE,
+                  key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex.axis=1.5),
+                  key.title = mtext(key.title,side=3,cex=1.5,font=1),
+                  plot.axes = filled.countour.axes(mcmcpath,longlat,plot.params))
+    
     min.Zvar <- min(Zvar)
     max.Zvar <- max(Zvar)
     Zvar <- (Zvar - min.Zvar)/(max.Zvar - min.Zvar)
     var.colors <- default.var.colors()
     var.levels <- seq(from=0,to=1,length.out=length(var.colors))
-    filled.contour(dimns$xmrks,dimns$ymrks,Zvar,asp=1,
-                   main=var.title,xlim=dimns$xrange,ylim=dimns$yrange,
-                   col=var.colors,levels=var.levels,frame.plot=FALSE,
-                   key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex=1.5),
-                   plot.axes = filled.countour.axes(mcmcpath,longlat,plot.params)
-                   )
+
+    rr <- flip(raster(t(Zvar),
+                      xmn=dimns$xlim[1],xmx=dimns$xlim[2],
+                      ymn=dimns$ylim[1],ymx=dimns$ylim[2]),direction='y')
+    projection(rr) <- CRS(plot.params$proj.in)
+    filledContour(projectRaster(rr,crs=CRS(plot.params$proj.out)),
+                  main=var.title,font.main=1,asp=1,
+                  col=var.colors,levels=var.levels,frame.plot=FALSE,
+                  key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex.axis=1.5),
+                  key.title = mtext(key.title,side=3,cex=1.5),
+                  plot.axes = filled.countour.axes(mcmcpath,longlat,plot.params))
 }
 average.eems.contours <- function(mcmcpath,dimns,longlat,plot.params,is.mrates) {
     mcmcpath1 <- character( )
@@ -312,8 +336,8 @@ average.eems.contours <- function(mcmcpath,dimns,longlat,plot.params,is.mrates) 
 }
 ## If there are multiple runs, pick the first one and create at most max.niter Voronoi diagrams
 ## This function is mainly for testing purposes, so no need to create a plot for each iteration
-voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.niter=10,
-                            plot.pixels=FALSE) {
+voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.niter=10) {
+    require(deldir)
     mcmcpath <- mcmcpath[1]
     print('Plotting Voronoi tessellation of estimated effective rates')
     print(mcmcpath)
@@ -347,18 +371,16 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.nit
         now.rates[indices] <- 0.999*eems.levels[L]
         now.seeds <- cbind(now.xseed,now.yseed)
         now.colors <- character( )
-        par(font.main=1,col="white",xpd=TRUE)
-        plot(0,0,type="n",xlab="",ylab="",axes=FALSE,asp=1,
-             xlim=dimns$xrange,ylim=dimns$yrange,
+        plot(0,0,type="n",axes=FALSE,xlab="",ylab="",xlim=dimns$xlim,ylim=dimns$ylim,asp=dimns$asp,
              main=paste(main.title,' : iteration ',i,' (after thinning)',sep=''))
         if (now.tiles==1) {
             ## There is only one tile
             tile.color <- eems.colors[round(L/2)]
             now.colors <- c(now.colors,tile.color)
-            polygon(dimns$xrange,dimns$yrange,col=tile.color,border=FALSE)
+            polygon(dimns$xlim,dimns$ylim,col=tile.color,border=FALSE)
         } else {
             ## Plot each tile in turn (as a polygon)
-            Voronoi <- deldir(now.xseed,now.yseed,rw=c(dimns$xrange,dimns$yrange))
+            Voronoi <- deldir(now.xseed,now.yseed,rw=c(dimns$xlim,dimns$ylim))
             tilelist <- tile.list(Voronoi)
             for (c in 1:now.tiles) {
                 tile.color <- eems.colors[ max((1:L)[eems.levels<now.rates[c]]) ]
@@ -369,22 +391,6 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,max.nit
         }
         points(now.seeds,pch=4,col="red")
         count <- count + now.tiles
-        if (plot.pixels) {
-            library(pixmap)
-            zvals <- compute.contour.vals(dimns,now.seeds,now.rates)
-            distances <- rdist(dimns$marks.pixmap.order,now.seeds)
-            closest <- apply(distances,1,which.min)
-
-            plot(dimns$marks.pixmap.order[,1],dimns$marks.pixmap.order[,2],
-                 pch=15,col=now.colors[closest],
-                 xlab="xmrks",ylab="ymrks",main="zmrks as a pixel map")
-            
-            ## There is a series of warnings from the pixmap library, which I can't suppress.
-            ## 'In rep(cellres, length = 2) : 'x' is NULL so the result will be NULL'
-            now.pixmap <- pixmapIndexed(1:(dimns$nxmrks*dimns$nymrks),nrow=dimns$nymrks,
-                                        col=now.colors[closest])
-            plot(now.pixmap,xlab="xmrks",ylab="ymrks",main="zmrks as a pixel map")
-        }
     }
     return(list(colors=eems.colors,levels=eems.levels))    
 }
@@ -402,7 +408,7 @@ plot.logposterior <- function(mcmcpath) {
     ltypes <- rep_len(1:3,length.out=nsimnos)
     if (nsimnos==0) { return(0) }
     posteriors <- list()
-    yrange <- NULL
+    ylim <- NULL
     niter <- NULL
     for (i in 1:length(mcmcpath)) {
         path <- mcmcpath[i]; print(path)
@@ -410,10 +416,10 @@ plot.logposterior <- function(mcmcpath) {
         pilogl <- matrix(pilogl,ncol=2,byrow=TRUE)
         posterior <- pilogl[,1] + pilogl[,2]
         posteriors[[i]] <- posterior
-        yrange <- range(c(yrange,posterior))
+        ylim <- range(c(ylim,posterior))
         niter <- max(niter,length(posterior))
     }
-    plot(c(1,niter),yrange,type="n",xlab="iteration (after thinning)",ylab="log posterior")
+    plot(c(1,niter),ylim,type="n",xlab="iteration (after thinning)",ylab="log posterior")
     for (i in 1:length(mcmcpath)) {
         posterior <- posteriors[[i]]
         lines(1:length(posterior),posterior,col=colors[i],lty=ltypes[i],lwd=2)
@@ -483,7 +489,6 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
     ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
     cnts <- minSize[upper.tri(minSize,diag=FALSE)]
-    par(font.main=1)
     plot(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)],
          xlab=expression(paste("Fitted dissimilarity between demes,  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
          ylab=expression(paste("Observed dissimilarity between demes,  ",D[ab]," - (",D[aa],"+",D[bb],")/2",sep="")))
@@ -519,13 +524,16 @@ save.graphics <- function(plotpath,plot.height,plot.width,res=600,out.png=TRUE) 
 ##   mcmcpath: one or several output directories (for the same dataset)
 ##   plotpath: filename of figures to generate
 ##     The following figures are created by default:
-##     plotpath-mrates01.png: effective migration rates
-##     plotpath-qrates01.png: effective diversity rates
-##     plotpath-rist01/02.png: fitted vs observed distances
+##     * plotpath-mrates01.png: effective migration rates
+##     * plotpath-qrates01.png: effective diversity rates
+##     * plotpath-rist01/02.png: fitted vs observed distances
+##     * plotpath-pilogl01.png: trace of posterior probability
 ##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
+##
 ## eems.plots take a variety of optional arguments:
 ##   plot.width and plot.height: width and height of the graphics region (in inches)
-##   add.map: add 'worldHires' map (using the mapdata package)?
+##   plot.voronoi (TRUE or FALSE): plot a few posterior Voronoi diagrams?
+##   add.map: add 'worldHires' map (using the rworldmap package)?
 ##   add.grid: add triangular population grid?
 ##   add.samples: add samples to their assigned location in the grid?
 ##   add.outline: add the habitat ring (as declared in the .outer file)?
@@ -536,19 +544,25 @@ save.graphics <- function(plotpath,plot.height,plot.width,res=600,out.png=TRUE) 
 ##   max.cex.samples: some demes might be assigned more samples than others.
 ##     If max.cex.samples>0, then demes with more samples will also have bigger size.
 ##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
+##   projection: specify the projection (the default is 'mercator')
 ####################################################################################
 eems.plots <- function(mcmcpath,plotpath,longlat,plot.width=0,plot.height=0,out.png=TRUE,
                        add.map=FALSE,add.grid=TRUE,add.outline=TRUE,add.samples=TRUE,plot.voronoi=FALSE,
-                       col.map=default.map.color(),col.grid=default.grid.color(),col.outline="red",col.samples="black",
-                       lwd.map=1,lwd.grid=1,lwd.outline=3,pch.samples=19,cex.samples=1,max.cex.samples=2) {
+                       col.map=default.map.color(),col.grid=default.grid.color(),col.outline="white",col.samples="black",
+                       lwd.map=1,lwd.grid=1,lwd.outline=2,pch.samples=19,cex.samples=1,max.cex.samples=2,
+                       projection=NULL) {
 
-    if (add.map) { library(mapdata) }
-    if (max.cex.samples<0) { max.cex.samples = 0 }
+    proj.in <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs"
+    proj.out <- "+proj=merc"
+    if (!is.null(projection)) { proj.out <- projection; }
+    if (add.map) { require(rworldmap); require(rworldxtra); }
+    if (max.cex.samples<0) { max.cex.samples <- 0; }
     
     plot.params <- list(add.map=add.map,add.grid=add.grid,add.outline=add.outline,add.samples=add.samples,
                         col.map=col.map,col.grid=col.grid,col.outline=col.outline,col.samples=col.samples,
                         lwd.map=lwd.map,lwd.grid=lwd.grid,lwd.outline=lwd.outline,pch.samples=pch.samples,
-                        cex.samples=cex.samples,max.cex.samples=max.cex.samples)
+                        cex.samples=cex.samples,max.cex.samples=max.cex.samples,
+                        proj.in=proj.in,proj.out=proj.out)
 
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -567,11 +581,11 @@ eems.plots <- function(mcmcpath,plotpath,longlat,plot.width=0,plot.height=0,out.
 
     print('Processing the following EEMS output:')
     print(mcmcpath)
-    
+
     dimns <- read.dimns(mcmcpath[1],longlat)
     if ((plot.height<=0)||(plot.width<=0)) {
-        plot.height <- 1.1*dimns$yspan
-        plot.width <- 1.25*dimns$xspan
+        plot.height <- min(dimns$yspan,12)
+        plot.width <- min(dimns$xspan,12)
     }
 
     ## Plot filled contour of estimated effective migration rates
