@@ -17,17 +17,15 @@ public:
 
   Draw( );
   ~Draw( );
-
   long seed;
-  long get_seed( ) const;
   
   void initialize(const long seed);
   double runif( );
+  int rnegbin(const int r, const double p);
   int runif_int(const int min, const int max);
   double rnorm(const double mu, const double var);
-  double rtnorm(const double mu, const double var, const double lob, const double upb);
+  double rtrnorm(const double mu, const double var, const double bnd);
   double rinvgam(const double shape, const double scale);
-  int rnegbin(const int r, const double p);
 
 private:
 

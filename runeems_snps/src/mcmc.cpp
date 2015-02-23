@@ -32,7 +32,7 @@ int MCMC::to_save_iteration( ) const {
   return (-1);
 }
 ostream& operator<<(ostream& out, const MCMC& mcmc) {
-  for ( int i = 0 ; i <=6 ; i++ ) {
+  for ( int i = 0 ; i <= 6 ; i++ ) {
     double a = mcmc.okayMoves.at(i);
     double A = mcmc.totalMoves.at(i);
     out << setprecision(2) << "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for ";

@@ -303,11 +303,11 @@ double EEMS::eval_birthdeath_mVoronoi(Proposal &proposal) const {
 void EEMS::update_sigma2( ) {
   double df_2 = 0.5 * df;
   nowll_partdf += nowtrDinvQxD/sigma2 + nmin1*log(sigma2);
-  nowpi += (params.sigmaShape_2+1.0)*log(sigma2) + (params.sigmaScale_2)/sigma2;
+  nowpi += (params.sigmaShape_2+1.0)*log(sigma2) + params.sigmaScale_2/sigma2;
   sigma2 = draw.rinvgam( params.sigmaShape_2 + df_2*nmin1,
 			 params.sigmaScale_2 + df_2*nowtrDinvQxD );
   nowll_partdf -= nowtrDinvQxD/sigma2 + nmin1*log(sigma2);
-  nowpi -= (params.sigmaShape_2+1.0)*log(sigma2) + (params.sigmaScale_2)/sigma2;
+  nowpi -= (params.sigmaShape_2+1.0)*log(sigma2) + params.sigmaScale_2/sigma2;
   nowll = df_2 * nowll_partdf + nmin1*df_2*log(df_2) - mvgammaln(df_2,nmin1) - n_2*ldLDLt;
 }
 void EEMS::propose_df(Proposal &proposal,const MCMC &mcmc) {
@@ -506,14 +506,14 @@ void EEMS::birthdeath_mVoronoi(Proposal &proposal) {
 void EEMS::update_hyperparams( ) {
   double SSq = qEffcts.squaredNorm();
   double SSm = mEffcts.squaredNorm();
-  nowpi += (params.mrateShape_2+1.0)*log(mrateS2) + (params.mrateScale_2)/mrateS2
-    +      (params.qrateShape_2+1.0)*log(qrateS2) + (params.qrateScale_2)/qrateS2
+  nowpi += (params.mrateShape_2+1.0)*log(mrateS2) + params.mrateScale_2/mrateS2
+    +      (params.qrateShape_2+1.0)*log(qrateS2) + params.qrateScale_2/qrateS2
     + (mtiles/2.0)*log(mrateS2) + SSm/(2.0*mrateS2)
     + (qtiles/2.0)*log(qrateS2) + SSq/(2.0*qrateS2);
   qrateS2 = draw.rinvgam(params.qrateShape_2 + 0.5 * qtiles, params.qrateScale_2 + 0.5 * SSq);
   mrateS2 = draw.rinvgam(params.mrateShape_2 + 0.5 * mtiles, params.mrateScale_2 + 0.5 * SSm);
-  nowpi -= (params.mrateShape_2+1.0)*log(mrateS2) + (params.mrateScale_2)/mrateS2
-    +      (params.qrateShape_2+1.0)*log(qrateS2) + (params.qrateScale_2)/qrateS2
+  nowpi -= (params.mrateShape_2+1.0)*log(mrateS2) + params.mrateScale_2/mrateS2
+    +      (params.qrateShape_2+1.0)*log(qrateS2) + params.qrateScale_2/qrateS2
     + (mtiles/2.0)*log(mrateS2) + SSm/(2.0*mrateS2)
     + (qtiles/2.0)*log(qrateS2) + SSq/(2.0*qrateS2);
 }
@@ -697,11 +697,6 @@ bool EEMS::output_results(const MCMC &mcmc) const {
   out.open((params.mcmcpath + "/rdistJtDhatJ.txt").c_str(),ofstream::out);
   if (!out.is_open()) { return false; }
   int niters = mcmc.num_iters_to_save();
-
-  
-  cout << "niters = " << niters << endl << endl << endl;
-
-  
   out << JtDhatJ/niters << endl;
   out.close( );
   out.open((params.mcmcpath + "/mcmcqtiles.txt").c_str(),ofstream::out);

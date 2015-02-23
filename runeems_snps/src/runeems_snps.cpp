@@ -3,6 +3,10 @@
 #include "eems.hpp"
 #include "mcmc.hpp"
 
+// The distance metric is a global variable, so that
+// the pairwise_distance function can see it
+// Choose 'euclidean' (the default) or 'greatcirc' (great circle distance)
+string dist_metric;
 
 int main(int argc, char** argv)
 {
@@ -31,16 +35,19 @@ int main(int argc, char** argv)
       cerr << "[RunEEMS] Error parametrizing EEMS." << endl;
       return(EXIT_FAILURE);      
     }
+
+    // Specify the distance metric in the params.ini file
+    dist_metric = params.distance;
     
     EEMS eems(params);
     MCMC mcmc(params);
 
     boost::filesystem::path dir(eems.prevpath().c_str());
     if (exists(dir)) {
-      cerr << "Loading final EEMS state from " << eems.prevpath() << endl << endl;
+      cerr << "Load final EEMS state from " << eems.prevpath() << endl << endl;
       eems.load_final_state();
     } else {
-      cerr << "Randomly initializing EEMS state" << endl << endl;
+      cerr << "Initialize EEMS random state" << endl << endl;
       eems.initialize_state();
     }
 
@@ -58,7 +65,7 @@ int main(int argc, char** argv)
     
     while (!mcmc.finished) {
       
-      if (!(mcmc.currIter%100)) {
+      if (!(mcmc.currIter%1000)) {
 	cerr << "Iteration " << mcmc.currIter << "..." << endl;
       }
       

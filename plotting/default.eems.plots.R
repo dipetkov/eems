@@ -1,14 +1,38 @@
 
 ###### Required R packages ######
 
-## The script needs several packages that handles geospatial data:
+## The script requires several packages that handle geospatial data:
 require(rgdal) ## spTransform
 require(rgeos) ## gDifference
 require(raster) ## filledContour
-require(fields) ## the rdist function computes Euclidean distances
+require(fields) ## the rdist/rdist.earth functions compute Euclidean/Great circle distances
 ##require(deldir) ## the deldir function calculates Voronoi tessellation
 ##require(rworldmap) ## the map database required to add geographic maps
 ##require(rworldxtra) ## and the high resolution world map
+
+## The distance metric used by EEMS (Euclidean distance by default)
+which.dist.metric <- function(mcmcpath) {
+    dist.metric <- "euclidean"
+    Lines = readLines(paste(mcmcpath,"/eemsrun.txt",sep=""))
+    nLines = length(Lines)
+    for (i in seq(nLines)) {
+        ## Check for a line that specifies "distance = ..."
+        str = gsub("\\s","",Lines[i])
+        trm = strsplit(str,"distance=")[[1]]
+        if (length(trm)==2) { dist.metric = trm[2] }
+    }
+    print(paste('Distance metric: ',dist.metric))
+    return (dist.metric)
+}
+pairwise.dist <- function(x,y,dist.metric) {
+    if (dist.metric=="greatcirc") {
+        ## Great circle distance:
+        return (rdist.earth(x,y))
+    } else {
+        ## Euclidean distance:
+        return (rdist(x,y))
+    }
+}
 
 ###### Define the default color schemes ######
 
@@ -100,9 +124,11 @@ read.dimns <- function(mcmcpath,longlat,nxmrks=NULL,nymrks=NULL) {
     xmrks <- seq(from=xlim[1],to=xlim[2],length=nxmrks)
     ymrks <- seq(from=ylim[1],to=ylim[2],length=nymrks)
     marks <- cbind(rep(xmrks,times=nymrks),rep(ymrks,each=nxmrks))
+    dist.metric <- which.dist.metric(mcmcpath)
     return(list(nxmrks=nxmrks,xmrks=xmrks,xlim=xlim,xspan=diff(xlim),
                 nymrks=nymrks,ymrks=ymrks,ylim=ylim,yspan=diff(ylim),
-                marks=marks,outer=outer,aspect=aspect))
+                marks=marks,aspect=aspect,
+                outer=outer,dist.metric=dist.metric))
 }
 read.edges <- function(mcmcpath) {
     edges <- read.table(paste(mcmcpath,'/edges.txt',sep=''),colClasses=numeric())
@@ -156,7 +182,7 @@ compute.contour.vals <- function(dimns,seeds,rates,use.weighted.mean=TRUE) {
     ## and 'rates' stores the log10-transformed rates of the tiles.
     ## If there are C seeds in the partition, then 'seeds' is a matrix
     ## with C rows and 2 columns and 'rates' is a vector with C elements
-    distances <- rdist(dimns$marks,seeds)
+    distances <- pairwise.dist(dimns$marks,seeds,dimns$dist.metric)
     closest <- apply(distances,1,which.min)
     if (use.weighted.mean) {
         zvals <- matrix(rates[closest],dimns$nxmrks,dimns$nymrks,byrow=FALSE)

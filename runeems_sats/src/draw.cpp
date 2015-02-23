@@ -7,9 +7,6 @@ void Draw::initialize(const long seed) {
   this->seed = seed;
   randgen = boost::mt19937(seed);
 }
-long Draw::get_seed( ) const {
-  return (seed);
-}
 double Draw::runif( ) {
   boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
     runif(randgen, boost::uniform_real<>(0.0,1.0));
@@ -24,12 +21,15 @@ double Draw::rnorm(const double mu, const double var) {
   boost::variate_generator<boost::mt19937&, boost::normal_distribution<> >
     rnorm(randgen, boost::normal_distribution<>(mu,sqrt(var)));
   return (randraw(rnorm));
-}  
-double Draw::rtnorm(const double mu, const double var, const double lob, const double upb) {
+}
+// Since rates are parameterized on the log scale, the support of
+// the truncated normal distribution is symmetric about 0 in all cases,
+// so instead of [xmin,xmax] it is sufficient to use [-bnd,+bnd]
+double Draw::rtrnorm(const double mu, const double var, const double bnd) {
   boost::variate_generator<boost::mt19937&, boost::normal_distribution<> >
     rnorm(randgen, boost::normal_distribution<>(mu,sqrt(var)));
-  double x = lob - 1.0;
-  while ((x<lob)||(x>upb)) { x = randraw(rnorm); }
+  double x = -bnd - 1.0;
+  while ((x< -bnd) || (x>bnd)) { x = randraw(rnorm); }
   return (x);
 }  
 double Draw::rinvgam(const double shape, const double scale) {

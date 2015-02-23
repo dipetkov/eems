@@ -3,15 +3,36 @@
 
 Graph::Graph( ) { }
 Graph::~Graph( ) { }
-void Graph::initialize(const string &datapath, const Habitat &habitat,
-		       const int nDemesSuggested, const int nIndiv)
+void Graph::generate_grid(const string &datapath, const Habitat &habitat,
+			  const int nDemeDensity, const int nIndiv)
 {
   cerr << "[Graph::initialize]" << endl;
+  // These two functions can be rewritten to load a pre-constructred population graph
+  // First, generate the deme coordinates, DemeCoord, and the list of edges, DemePairs
+  // Then, load the sample coordinates and map each sample to the closest deme
+  make_triangular_grid(habitat,nDemeDensity);
+  map_indiv_to_deme(datapath,nIndiv);
+  if (!this->is_connected()) {
+    cerr << "  The population grid is not connected." << endl; exit(1);
+  }
+  // Finally, reorder the demes, whether the graph is constructed on the fly or loaded from files
+  this->reindex_demes();
+  int nDemes = this->get_num_total_demes();
+  int oDemes = this->get_num_obsrv_demes();
+  int nEdges = this->get_num_edges();
+  cerr << "  The population grid has " << nDemes << " demes and " << nEdges << " edges" << endl
+       << "  There are " << nIndiv << " samples assigned to " << oDemes << " observed demes" << endl;
+  cerr << "[Graph::initialize] Done." << endl << endl;
+}
+/*
+  Construct a regular triangular grid, entirely contained inside the habitat outline
+ */
+void Graph::make_triangular_grid(const Habitat &habitat, const int nDemeDensity) {
   double xspan = habitat.get_xspan();
   double yspan = habitat.get_yspan();
   double area = habitat.get_area();
-  int xDemes = (int)sqrt(nDemesSuggested*xspan*xspan/area);
-  int yDemes = (int)sqrt(nDemesSuggested*yspan*yspan/area);
+  int xDemes = (int)sqrt(nDemeDensity*xspan*xspan/area);
+  int yDemes = (int)sqrt(nDemeDensity*yspan*yspan/area);
   double scalex = 1.0;
   double scaley = 1.0;
   // A triangular grid extends half a triangle on the right
@@ -20,175 +41,198 @@ void Graph::initialize(const string &datapath, const Habitat &habitat,
   // The new index will be -1 for demes to exclude because they fall outside the habitat
   // The rest of the demes will be assigned an unique index, starting with 0
   VectorXi newIndex = -1 * VectorXi::Ones(xDemes*yDemes);
-  int nDemes1 = 0; int d = 0;
-  int nEdges1 = 0; int e = 0;
-  int r1 = -1, r2 = -1, c1 = -1, c2 = -1, r;
-  // Suggest a regular triangular grid with xDemes in the x (longitude) direction and
-  // yDemes in the y (latitude) direction, but only include demes that fall inside the habitat
-  // (which might not be rectangular in shape)
+  int nDemes = 0;
+  int nEdges = 0;
+  // Suggest with a regular triangular xDemes-by-yDemes grid within the rectangle (xmin,ymin)
+  // -- (xmax,ymax) but only include demes that fall inside the habitat boundary
   // This first double loop counts the number of demes and edges, and orders the demes
-  for ( r1 = 0 ; r1 < yDemes ; r1++ ) {
-  for ( c1 = 0 ; c1 < xDemes ; c1++ ) {
+  for ( int r1 = 0, r2 = 0 ; r1 < yDemes ; r1++ ) {
+  for ( int c1 = 0, c2 = 0 ; c1 < xDemes ; c1++ ) {
     int alpha = r1 * xDemes + c1;
-    double x1 = habitat.get_xmin() + scalex*(c1+0.5*mod(r1,2));
+    double x1 = habitat.get_xmin() + scalex*(c1+0.5*(r1%2));
     double y1 = habitat.get_ymin() + scaley*(r1);
     if (habitat.in_point(x1,y1)) {
-      newIndex[alpha] = nDemes1++;
+      newIndex[alpha] = nDemes++;
       for ( int pos = 0 ; pos < 6 ; pos++ ) {
 	int beta = neighbors_in_grid(r1,c1,r2,c2,pos,xDemes,yDemes);
-	double x2 = habitat.get_xmin() + scalex*(c2+0.5*mod(r2,2));
+	double x2 = habitat.get_xmin() + scalex*(c2+0.5*(r2%2));
 	double y2 = habitat.get_ymin() + scaley*(r2);
-	// It is sufficient to enter each edge only once
-	// in 'Pairs' because migration is undirected
-	if ((alpha<beta) && habitat.in_point(x2,y2)) { nEdges1++; }
+	// It is sufficient to enter each edge only once because migration is undirected
+	if ((alpha<beta) && habitat.in_point(x2,y2)) { nEdges++; }
       }
     }
   } }
-  MatrixXd Demes1 = -1 * MatrixXd::Ones(nDemes1,2);
-  MatrixXi Edges1 = -1 * MatrixXi::Ones(nDemes1,6);
-  MatrixXi Pairs1 = -1 * MatrixXi::Ones(nEdges1,2);
+  DemeCoord.resize(nDemes,2);
+  DemePairs.resize(nEdges,2);
   // This second double loop assigns coordinates to the demes, and connects neighboring demes
-  for ( r1 = 0 ; r1 < yDemes ; r1++ ) {
-  for ( c1 = 0 ; c1 < xDemes ; c1++ ) {
+  for ( int r1 = 0, r2 = 0, e = 0 ; r1 < yDemes ; r1++ ) {
+  for ( int c1 = 0, c2 = 0        ; c1 < xDemes ; c1++ ) {
     int alpha = r1 * xDemes + c1;
-    double x1 = habitat.get_xmin() + scalex*(c1+0.5*mod(r1,2));
+    double x1 = habitat.get_xmin() + scalex*(c1+0.5*(r1%2));
     double y1 = habitat.get_ymin() + scaley*(r1);
     if (habitat.in_point(x1,y1)) {
-      Demes1(newIndex[alpha],0) = x1;
-      Demes1(newIndex[alpha],1) = y1; d++;
+      DemeCoord(newIndex[alpha],0) = x1;
+      DemeCoord(newIndex[alpha],1) = y1;
       for ( int pos = 0 ; pos < 6 ; pos++ ) {
 	int beta = neighbors_in_grid(r1,c1,r2,c2,pos,xDemes,yDemes);
-	double x2 = habitat.get_xmin() + scalex*(c2+0.5*mod(r2,2));
+	double x2 = habitat.get_xmin() + scalex*(c2+0.5*(r2%2));
 	double y2 = habitat.get_ymin() + scaley*(r2);
-	// It is sufficient to enter each edge only once
-	// in 'Pairs' because migration is undirected
-	if (habitat.in_point(x2,y2)) {
-	  Edges1(newIndex[alpha],pos) = newIndex[beta];
-	}
 	if ((alpha<beta) && habitat.in_point(x2,y2)) {
-	  Pairs1(e,0) = newIndex[alpha];
-	  Pairs1(e,1) = newIndex[beta]; e++;
+	  DemePairs(e,0) = newIndex[alpha];
+	  DemePairs(e,1) = newIndex[beta]; e++;
 	}
       }
     }
   } }
-  nDemes = Demes1.rows();
-  nEdges = Pairs1.rows();
-  cerr << "  Created a population grid with " << nDemes << " demes and " << nEdges << " edges" << endl;
-  /////////////////////////////////////////////
-  // Will assign new indices to the demes, so that:
-  //    the observed demes have indices from 1 to oDemes and 
-  //    the unobserved demes have indices from oDemes+1 to nDemes
-  // This will make it easier to exploit the Schur decomposition trick to get the resistances
-  // between observed demes
-  newIndex = -1 * VectorXi::Ones(nDemes);
-  i2alpha = -1 * VectorXi::Ones(nIndiv); // the deme to which each sample is assigned (to be determined)
-  Coord = readMatrixXd(datapath + ".coord"); // the coordinates of the sampled individuals
-  if (Coord.rows()==0||Coord.cols()!=2||Coord.rows()!=nIndiv) {
+}
+/*
+  Read the sample coordinates and assign each sample to its closest deme
+ */
+void Graph::map_indiv_to_deme(const string &datapath, const int nIndiv) {
+  MatrixXd IndivCoord = readMatrixXd(datapath + ".coord");
+  if (IndivCoord.rows()!=nIndiv || IndivCoord.cols()!=2) {
     cerr << "  Error reading sample coordinates from " << datapath + ".coord" << endl
 	 << "  Expect a list of " << nIndiv << " points, with two coordinates per line" << endl; exit(1);
   }
-  cerr << "  Read sample coordinates from " << datapath + ".coord" << endl;
-  oDemes = 0;
-  for ( int i=0 ; i<nIndiv ; i++ ) {
-    // Assign the sample to the closest deme -- should we be using great circle distances instead?
-    distEucSq(Demes1,Coord.row(i)).col(0).minCoeff( &r );
-    if (newIndex(r) == -1) {
-      newIndex(r) = oDemes++;
+  cerr << "  Loaded sample coordinates from " << datapath + ".coord" << endl;
+  indiv2deme.resize(nIndiv); // the deme to which each sample is assigned (to be determined)
+  for ( int i = 0, alpha = 0 ; i < nIndiv ; i++ ) {
+    pairwise_distance(DemeCoord,IndivCoord.row(i)).col(0).minCoeff( &alpha );
+    indiv2deme(i) = alpha;
+  }
+}
+/*
+  Assign new indices to the demes, so that
+   * the observed demes have indices from 0 to oDemes-1, and 
+   * the unobserved demes have indices from oDemes to nDemes-1
+  Then we can split the nDemes-by-nDemes matrix of pairwise distances between demes
+  into two contiguous blocks, which correspond to observed and unobserved demes, resp.
+  This makes it easier to exploit the Schur decomposition trick to compute distances
+ */
+void Graph::reindex_demes( ) {
+  int nDemes = DemeCoord.rows();
+  int nEdges = DemePairs.rows();
+  int oDemes = 0;
+  int nIndiv = indiv2deme.size();
+  if ( (DemePairs.maxCoeff()>=nDemes) || (DemePairs.minCoeff()<0) ) {
+    cerr << "[Graph::reindex_demes] DemePairs input error." << endl; exit(1);
+  }
+  if ( (indiv2deme.maxCoeff()>=nDemes) || (indiv2deme.minCoeff()<0) ) {
+    cerr << "[Graph::reindex_demes] indiv2deme input error." << endl; exit(1);
+  }
+  VectorXi newIndex = VectorXi::Constant(nDemes,-1);
+  for ( int i = 0, alpha = 0 ; i < nIndiv ; i++ ) {
+    alpha = indiv2deme(i);
+    if (newIndex(alpha) == -1) {
+      newIndex(alpha) = oDemes++;
     }
-    i2alpha(i) = newIndex(r);
+    indiv2deme(i) = newIndex(alpha);
   }
   // Count the number of samples are taken from each observed deme
-  Counts = VectorXi::Zero(oDemes);
-  for ( int i = 0 ; i < nIndiv ; ++i ) { Counts(i2alpha(i))++; }
+  DemeSizes = VectorXi::Zero(oDemes);
+  for ( int i = 0 ; i < nIndiv ; ++i ) {
+    DemeSizes(indiv2deme(i))++;
+  }
   cerr << "  There are " << oDemes << " observed demes (out of " << nDemes << " demes)" << endl;
-  // So far, have assigned new indices to the observed demes. Now assign indices to the unobserved demes.
-  r = oDemes; // unobserved demes have indices from oDemes to nDemes-1
-  for ( int j = 0 ; j < nDemes ; j++ ) { if (newIndex(j)<0) { newIndex(j) = r++; } }  
-  // At this point, i2alpha and Counts use the new deme indices
-  // But Demes, Edges and Pairs use the old deme indices
-  Demes = -1 * MatrixXd::Ones(nDemes,2);
-  Edges = -1 * MatrixXi::Ones(nDemes,6);
-  Pairs = -1 * MatrixXi::Ones(nEdges,2);
-  reindex_demes(Demes1, Edges1, Pairs1, newIndex);
-  /////////////////////////////////////////////
-  // Make sure the resulting graph is connected
-  BoostGraph testG;
-  for ( int i = 0 ; i < nEdges ; i++ ) {
-    add_edge((int)Pairs(i,0),(int)Pairs(i,1),testG);
+  // So far, have assigned new indices to the observed demes
+  // Now assign indices to the unobserved demes, which run from oDemes to nDemes-1
+  for ( int i = 0 ; i < nDemes ; i++ ) {
+    if (newIndex(i) == -1) { newIndex(i) = oDemes++; }
+  }
+  // Now indiv2deme and DemeSizes use the new deme indices
+  // But DemeCoords and DemePairs still use the old deme indices
+  // Have to store the deme coordinates in a temporary matrix
+  MatrixXd InputDemes = DemeCoord;
+  for ( int i = 0 ; i < DemeCoord.rows( ) ; i++ ) {
+    DemeCoord(newIndex(i),0) = InputDemes(i,0);
+    DemeCoord(newIndex(i),1) = InputDemes(i,1);
+  }
+  for ( int i = 0 ; i < DemePairs.rows( ) ; i++ ) {
+    int alpha = newIndex(DemePairs(i,0));
+    int beta = newIndex(DemePairs(i,1));
+    DemePairs(i,0) = alpha;
+    DemePairs(i,1) = beta;
+  }
+}
+// The graph is connected if it has exactly one connected component
+bool Graph::is_connected( ) const {
+  boost::adjacency_list <boost::vecS,boost::vecS,boost::undirectedS> testG;
+  for ( int i = 0 ; i < DemePairs.rows() ; i++ ) {
+    add_edge(DemePairs(i,0),DemePairs(i,1),testG);
   }
   vector<int> component(num_vertices(testG));
-  int num = connected_components(testG,&component[0]);
-  if (num!=1) {
-    cerr << "  The generated population grid is not connected." << endl; exit(1);
-  }
-  cerr << "[Graph::initialize] Done." << endl << endl;
+  return (connected_components(testG,&component[0])==1);
 }
-void Graph::reindex_demes(const MatrixXd &Demes1, const MatrixXi &Edges1, const MatrixXi &Pairs1,
-			  const VectorXi &newIndex)  {
-  bool err = false;
-  // Re-indexing does not change the size of the graph
-  if (Demes1.rows()!=nDemes) { err = true; }
-  if (Edges1.rows()!=nDemes) { err = true; }
-  if (Pairs1.rows()!=nEdges) { err = true; }
-  int nDemes = Demes1.rows();
-  int nEdges = Pairs1.rows();
-  ArrayXi tempIndex = newIndex.array();
-  for ( int i = 0 ; i < nDemes ; i++ ) {
-    if ((tempIndex==i).sum()!=1) { err = true; }
-  }
-  if (Edges1.maxCoeff()>=nDemes) { err = true; }
-  if (Pairs1.maxCoeff()>=nDemes) { err = true; }
-  if (Edges1.minCoeff()<-1) { err = true; }
-  if (Pairs1.minCoeff()< 0) { err = true; }
-  if (err) { cerr << "[Graph::reindex_demes] Input error." << endl; exit(1); }
-  for ( int i = 0 ; i < Demes1.rows( ) ; i++ ) {
-    Demes(newIndex(i),0) = Demes1(i,0);
-    Demes(newIndex(i),1) = Demes1(i,1);
-    for ( int pos = 0 ; pos < 6 ; pos++ ) {
-      if (Edges1(i,pos) < 0) {
-	Edges(newIndex(i),pos) = -1;
-      } else {
-	Edges(newIndex(i),pos) = newIndex(Edges1(i,pos));
-      }
-    }
-  }
-  for ( int i = 0 ; i < Pairs1.rows( ) ; i++ ) {
-    Pairs(i,0) = newIndex(Pairs1(i,0));
-    Pairs(i,1) = newIndex(Pairs1(i,1));
-  }
-}
-bool Graph::dlmwrite(const string &mcmcpath) const {
+bool Graph::dlmwrite_grid(const string &mcmcpath) const {
   ofstream out;
   // All the plotting is done in R, and indexing in R starts at 1
-  out.open((mcmcpath + "/edges.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << Edges.array() + 1 << endl;
-  out.close( );
   out.open((mcmcpath + "/ipmap.txt").c_str(),ofstream::out);
   if (!out.is_open()) { return false; }
-  out << i2alpha.array() + 1 << endl;
+  out << indiv2deme.array() + 1 << endl;
   out.close( );
   out.open((mcmcpath + "/demes.txt").c_str(),ofstream::out);
   if (!out.is_open()) { return false; }
-  out << Demes << endl;
+  out << DemeCoord << endl;
+  out.close( );
+  out.open((mcmcpath + "/edges.txt").c_str(),ofstream::out);
+  if (!out.is_open()) { return false; }
+  out << DemePairs.array() + 1 << endl;
   out.close( );
   return true;
 }
-MatrixXd Graph::get_the_obsrv_demes() const { return (Demes.topLeftCorner(oDemes,2)); }
-int Graph::get_num_obsrv_demes() const { return (oDemes); }
-int Graph::get_num_total_demes() const { return (nDemes); }
-int Graph::get_num_edges() const { return (nEdges); }
-int Graph::get_deme_of_indiv(const int i) const { return (i2alpha(i)); }
+int Graph::get_num_obsrv_demes() const { return (DemeSizes.size()); }
+int Graph::get_num_total_demes() const { return (DemeCoord.rows()); }
+int Graph::get_num_edges() const { return (DemePairs.rows()); }
+int Graph::get_deme_of_indiv(const int i) const { return (indiv2deme(i)); }
 void Graph::get_edge(int edge, int &alpha, int &beta) const
 {
-  alpha = Pairs(edge,0); beta = Pairs(edge,1);
-}
-void Graph::pdist2(const MatrixXd &Seeds, VectorXi &closest) const
-{
-  if (closest.size()!=nDemes) { closest.resize(nDemes); }
-  MatrixXd Dist = distEucSq(Seeds,Demes);
-  for ( int i = 0 ; i < nDemes ; i++ ) {
-    Dist.col(i).minCoeff( &closest(i) );
+  if ( (edge >= 0) && (edge < this->get_num_edges() ) ) {
+    alpha = DemePairs(edge,0); beta = DemePairs(edge,1);
+  } else {
+    alpha = beta = -1;
   }
+}
+MatrixXd Graph::get_the_obsrv_demes() const
+{
+  return (DemeCoord.topLeftCorner(this->get_num_obsrv_demes(),2));
+}
+/*
+  Compute the pairwise distances of each deme in DemeCoord to each seed in Seeds.
+  Once EEMS is initialized, DemeCoord is fixed but Seeds changes as tiles are added and removed.
+ */
+void Graph::index_closest_to_deme(const MatrixXd &Seeds, VectorXi &Closest) const
+{
+  int nDemes = this->get_num_total_demes();
+  if (Closest.size()!=nDemes) { Closest.resize(nDemes); }
+  MatrixXd Dist = pairwise_distance(Seeds,DemeCoord);
+  for ( int i = 0 ; i < nDemes ; i++ ) {
+    Dist.col(i).minCoeff( &Closest(i) );
+  }
+}
+int Graph::neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const int pos,
+			     const int nx, const int ny) const {
+  int alpha = r1 * nx + c1;
+  int beta = -1; r2 = -1; c2 = -1;
+  // mod(alpha  ,nx) > 0 means that alpha is not the first deme in the row
+  // mod(alpha+1,nx) > 0 means that alpha is not the last deme in the row
+  // r1 < (ny-1) means that alpha is not on the top row
+  // r1 > 0 means that alpha is not on the bottom row
+  // mod(alpha   ,2*nx) > 0 means that alpha is not the first deme in an odd row
+  // mode(alpha+1,2*nx) > 0 means that alpha is not the last deme in an even row
+  // mod(r1+1,2) == 1 means that alpha is on an odd row
+  if        ( (pos==0) && ( alpha   %nx>0) ) { 
+    r2 = r1; c2 = c1 - 1;
+  } else if ( (pos==3) && ((alpha+1)%nx>0) ) { 
+    r2 = r1; c2 = c1 + 1;
+  } else if ( (pos==5) && (r1>0) && ( alpha   %(2*nx)>0) ) {
+    r2 = r1 - 1; c2 = c1 - (r1+1)%2;
+  } else if ( (pos==4) && (r1>0) && ((alpha+1)%(2*nx)>0) ) {
+    r2 = r1 - 1; c2 = c1 + 1 - (r1+1)%2;
+  } else if ( (pos==1) && (r1<(ny-1)) && (alpha    %(2*nx)>0) ) {  
+    r2 = r1 + 1; c2 = c1 - (r1+1)%2;
+  } else if ( (pos==2) && (r1<(ny-1)) && ((alpha+1)%(2*nx)>0) ) {  
+    r2 = r1 + 1; c2 = c1 + 1 - (r1+1)%2;
+  }
+  if ((r2>=0)&&(c2>=0)) { beta = nx*r2 + c2; }
+  return (beta);
 }

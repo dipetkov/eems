@@ -3,7 +3,7 @@
 
 Habitat::Habitat( ) { }
 Habitat::~Habitat( ) { }
-void Habitat::initialize(const string &datapath)
+void Habitat::generate_outer(const string &datapath)
 {
   cerr << "[Habitat::initialize]" << endl;
   MatrixXd Outer = readMatrixXd(datapath + ".outer");
@@ -11,7 +11,7 @@ void Habitat::initialize(const string &datapath)
     cerr << "  Error reading habitat points from " << datapath + ".outer" << endl
 	 << "  Expect a list of points, with two coordinates per line" << endl; exit(1);     
   }
-  cerr << "  Read habitat points from " << datapath + ".outer" << endl;
+  cerr << "  Loaded habitat points from " << datapath + ".outer" << endl;
   xmin = Outer.col(0).minCoeff();
   xmax = Outer.col(0).maxCoeff();
   ymin = Outer.col(1).minCoeff();
@@ -45,7 +45,7 @@ bool Habitat::in_point(const double x, const double y) const
 {
   return (boost::geometry::covered_by(Point(x,y),domain));
 }
-bool Habitat::dlmwrite(const string &mcmcpath) const {
+bool Habitat::dlmwrite_outer(const string &mcmcpath) const {
   ofstream out((mcmcpath + "/outer.txt").c_str(),ofstream::out);
   if (!out.is_open()) { return false; }
   vector<Point>::const_iterator it;

@@ -9,10 +9,8 @@ public:
   MCMC(const Params &params);
   ~MCMC();
 
-  int qTile;
-  int mTile;
   int currIter;
-  int currType;
+  int currStep;
   int numMCMCIter;
   int numBurnIter;
   int numThinIter;
@@ -21,13 +19,13 @@ public:
 
   void start_iteration( );
   void end_iteration( );
-  void add_to_okay_moves( );
-  void add_to_total_moves( );
+  void add_to_okay_moves(const int type);
+  void add_to_total_moves(const int type);
   int num_iters_to_save( ) const;
   int to_save_iteration( ) const;
-
-  void change_update(const int qtiles, const int mtiles);
-  void output_proportions(ostream &out) const;
+  void change_update( );
+  
+  friend ostream& operator<<(ostream& out, const MCMC& mcmc);
     
 private:
 

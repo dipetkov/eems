@@ -1,90 +1,177 @@
 
 #include "util.hpp"
 
+extern string dist_metric;
+
 Params::Params( ) { }
 Params::~Params( ) { }
-Params::Params(const string &params_file) {
-  po::options_description eems_options("Options");
-  eems_options.add_options()
-    ("datapath",po::value<string>(&datapath)->default_value(""), "Datapath")
-    ("mcmcpath",po::value<string>(&mcmcpath)->default_value(""), "MCMCpath")
-    ("diploid", po::value<bool>(&diploid)->default_value(true), "diploid")
-    ("nDemes", po::value<int>(&nDemes)->default_value(0), "nDemes")
-    ("nIndiv", po::value<int>(&nIndiv)->default_value(0), "nIndiv")
-    ("nSites", po::value<int>(&nSites)->default_value(0), "nSites")
-    ("numMCMCIter", po::value<int>(&numMCMCIter)->default_value(1), "numMCMCIter")
-    ("numBurnIter", po::value<int>(&numBurnIter)->default_value(0), "numBurnIter")
-    ("numThinIter", po::value<int>(&numThinIter)->default_value(0), "numThinIter")
-    ("mSeedsProposalS2", po::value<double>(&mSeedsProposalS2)->default_value(0.01), "mSeedsProposalS2")
-    ("qSeedsProposalS2", po::value<double>(&qSeedsProposalS2)->default_value(0.1), "qSeedsProposalS2")
-    ("mEffctProposalS2", po::value<double>(&mEffctProposalS2)->default_value(0.1), "mEffctProposalS2")
-    ("qEffctProposalS2", po::value<double>(&qEffctProposalS2)->default_value(0.001), "qEffctProposalS2")
-    ("mrateMuProposalS2", po::value<double>(&mrateMuProposalS2)->default_value(0.01), "mrateMuProposalS2")
-    ("mrateShape", po::value<double>(&mrateShape)->default_value(0.001), "mrateShape")
-    ("qrateShape", po::value<double>(&qrateShape)->default_value(0.001), "qrateShape")
-    ("s2locShape", po::value<double>(&s2locShape)->default_value(0.001), "s2locShape")
-    ("qrateScale", po::value<double>(&qrateScale)->default_value(1.0), "qrateScale")
-    ("mrateScale", po::value<double>(&mrateScale)->default_value(1.0), "mrateScale")
-    ("s2locScale", po::value<double>(&s2locScale)->default_value(1.0), "s2locScale")
-    ("negBiProb", po::value<double>(&negBiProb)->default_value(0.67), "negBiProb")
-    ("negBiSize", po::value<int>(&negBiSize)->default_value(10), "negBiSize") ;
-  ////////////////////////////
-  // Constants:
-  testing = false;
-  mEffctHalfInterval = 2.4771; // log10(300)
-  qEffctHalfInterval = 0.1;
-  mrateMuHalfInterval = 2.0;
-  ifstream instrm(params_file.c_str());
-  po::variables_map vm;
+Params::Params(const string &params_file, const long seed_from_command_line) {
   try {
+    po::options_description eems_options("EEMS options from parameter file");
+    eems_options.add_options()
+      ("seed", po::value<long>(&seed)->default_value(seed_from_command_line), "Random seed")
+      ("datapath", po::value<string>(&datapath)->required(), "Datapath")
+      ("mcmcpath", po::value<string>(&mcmcpath)->required(), "MCMCpath")
+      ("prevpath", po::value<string>(&prevpath)->default_value(""), "Previous MCMCpath")
+      ("nDemes", po::value<int>(&nDemes)->required(), "nDemes")
+      ("nIndiv", po::value<int>(&nIndiv)->required(), "nIndiv")
+      ("nSites", po::value<int>(&nSites)->required(), "nSites")
+      ("diploid", po::value<bool>(&diploid)->default_value(true), "diploid")
+      ("distance", po::value<string>(&distance)->default_value("euclidean"), "distance")
+      ("numMCMCIter", po::value<int>(&numMCMCIter)->default_value(1), "numMCMCIter")
+      ("numBurnIter", po::value<int>(&numBurnIter)->default_value(0), "numBurnIter")
+      ("numThinIter", po::value<int>(&numThinIter)->default_value(0), "numThinIter")
+      ("mSeedsProposalS2", po::value<double>(&mSeedsProposalS2)->default_value(0.01), "mSeedsProposalS2")
+      ("qSeedsProposalS2", po::value<double>(&qSeedsProposalS2)->default_value(0.1), "qSeedsProposalS2")
+      ("mEffctProposalS2", po::value<double>(&mEffctProposalS2)->default_value(0.1), "mEffctProposalS2")
+      ("qEffctProposalS2", po::value<double>(&qEffctProposalS2)->default_value(0.001), "qEffctProposalS2")
+      ("mrateMuProposalS2", po::value<double>(&mrateMuProposalS2)->default_value(0.01), "mrateMuProposalS2")
+      ("qVoronoiPr", po::value<double>(&qVoronoiPr)->default_value(0.05), "qVoronoiPr")
+      ("mrateShape", po::value<double>(&mrateShape_2)->default_value(0.001), "mrateShape")
+      ("qrateShape", po::value<double>(&qrateShape_2)->default_value(0.001), "qrateShape")
+      ("sigmaShape", po::value<double>(&sigmaShape_2)->default_value(0.001), "sigmaShape")
+      ("qrateScale", po::value<double>(&qrateScale_2)->default_value(1.0), "qrateScale")
+      ("mrateScale", po::value<double>(&mrateScale_2)->default_value(1.0), "mrateScale")
+      ("sigmaScale", po::value<double>(&sigmaScale_2)->default_value(1.0), "sigmaScale")
+      ("negBiProb", po::value<double>(&negBiProb)->default_value(0.67), "negBiProb")
+      ("negBiSize", po::value<int>(&negBiSize)->default_value(10), "negBiSize") ;
+    ifstream instrm(params_file.c_str());
+    po::variables_map vm;
     po::store(po::parse_config_file(instrm,eems_options,true),vm);
     po::notify(vm);
-  } catch (exception& e) {
-    cerr << "[EEMS::Params] Error parsing input parameters in " << params_file << ": " << e.what() << endl; 
-  }
-  instrm.close();
-  ////////////////////////////
-  // Required argument: datapath, mcmcpath, nIndiv, nSites, nDemes
-  if (!((datapath.length()>0)&&(mcmcpath.length()>0))) {
-    cerr << "[EEMS::Params] The params file must specify datapath and mcmcpath" << endl;
-    exit(1);
-  }
-  if (!((nIndiv>0)&&(nSites>0)&&(nDemes>0))) {
-    cerr << "[EEMS::Params] The params file must specify nIndiv, nSites, nDemes" << endl;
-    exit(1);
-  }
-  dlmwrite(cerr);
+    instrm.close();
+  } catch(exception& e) {
+    cerr << "[EEMS::Params] Error parsing input parameters in " << params_file << ": " << endl;
+    cerr << e.what() << endl; exit(1);
+  } 
+  mrateShape_2 /= 2.0;
+  qrateShape_2 /= 2.0;
+  sigmaShape_2 /= 2.0;
+  mrateScale_2 /= 2.0;
+  qrateScale_2 /= 2.0;
+  sigmaScale_2 /= 2.0;
+  testing = false;
+  mEffctHalfInterval = 2.0;
+  qEffctHalfInterval = 0.1;
+  mrateMuHalfInterval = 2.4771; // log10(300)
 }
-void Params::dlmwrite(ostream &out) const {
-  out << "Input parameters:" << endl
-      << "               datapath = " << datapath << endl
-      << "               mcmcpath = " << mcmcpath << endl
-      << "                 nIndiv = " << nIndiv << endl
-      << "                 nSites = " << nSites << endl
-      << "                 nDemes = " << nDemes << endl
-      << "            numMCMCIter = " << numMCMCIter << endl
-      << "            numBurnIter = " << numBurnIter << endl
-      << "            numThinIter = " << numThinIter << endl
-      << "              negBiSize = " << negBiSize << endl
+ostream& operator<<(ostream& out, const Params& params) {
+  out << "               datapath = " << params.datapath << endl
+      << "               mcmcpath = " << params.mcmcpath << endl
+      << "               prevpath = " << params.prevpath << endl
+      << "               distance = " << params.distance << endl
+      << "                 nIndiv = " << params.nIndiv << endl
+      << "                 nSites = " << params.nSites << endl
+      << "                 nDemes = " << params.nDemes << endl
+      << "                   seed = " << params.seed << endl
+      << "            numMCMCIter = " << params.numMCMCIter << endl
+      << "            numBurnIter = " << params.numBurnIter << endl
+      << "            numThinIter = " << params.numThinIter << endl
+      << "              negBiSize = " << params.negBiSize << endl
       << fixed << setprecision(6)
-      << "              negBiProb = " << negBiProb << endl
-      << "             mrateShape = " << mrateShape << endl
-      << "             qrateShape = " << qrateShape << endl
-      << "             s2locShape = " << s2locShape << endl
-      << "             qrateScale = " << qrateScale << endl
-      << "             mrateScale = " << mrateScale << endl
-      << "             s2locScale = " << s2locScale << endl
-      << "       mSeedsProposalS2 = " << mSeedsProposalS2 << endl
-      << "       qSeedsProposalS2 = " << qSeedsProposalS2 << endl
-      << "       mEffctProposalS2 = " << mEffctProposalS2 << endl
-      << "       qEffctProposalS2 = " << qEffctProposalS2 << endl
-      << "      mrateMuProposalS2 = " << mrateMuProposalS2 << endl << endl;
+      << "              negBiProb = " << params.negBiProb << endl
+      << "             qVoronoiPr = " << params.qVoronoiPr << endl
+      << "             mrateShape = " << 2.0*params.mrateShape_2 << endl
+      << "             qrateShape = " << 2.0*params.qrateShape_2 << endl
+      << "             sigmaShape = " << 2.0*params.sigmaShape_2 << endl
+      << "             qrateScale = " << 2.0*params.qrateScale_2 << endl
+      << "             mrateScale = " << 2.0*params.mrateScale_2 << endl
+      << "             sigmaScale = " << 2.0*params.sigmaScale_2 << endl
+      << "       mSeedsProposalS2 = " << params.mSeedsProposalS2 << endl
+      << "       qSeedsProposalS2 = " << params.qSeedsProposalS2 << endl
+      << "       mEffctProposalS2 = " << params.mEffctProposalS2 << endl
+      << "       qEffctProposalS2 = " << params.qEffctProposalS2 << endl
+      << "      mrateMuProposalS2 = " << params.mrateMuProposalS2 << endl;
+  return out;
 }
-void get_boost_version(ostream& out) {
-  out << BOOST_LIB_VERSION;
+bool Params::check_input_params( ) const {
+  bool error = false;
+  boost::filesystem::path dir(mcmcpath.c_str());
+  cerr << "Using Boost " << BOOST_LIB_VERSION
+       << " and Eigen " << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION << endl
+       << "  EEMS was tested with Boost 1_57 and Eigen 3.2.4" << endl << endl;
+  if (!numeric_limits<double>::has_infinity || !numeric_limits<double>::infinity()) {
+    cerr << "  Infinity not supported on this platform" << endl;
+    error = true;
+  }
+  if (!boost::filesystem::create_directory(dir) && !exists(dir)) {
+    cerr << "  Failed to create output directory " << mcmcpath << endl;
+    error = true;
+  }
+  if (!(!distance.compare("euclidean") || !distance.compare("greatcirc"))) {
+    cerr << "  Choose either 'euclidean' or 'greatcirc' distance metric" << endl;
+    error = true;
+  }
+  if (!boost::filesystem::exists(datapath + ".coord") ||
+      !boost::filesystem::exists(datapath + ".sites") ||
+      !boost::filesystem::exists(datapath + ".outer")) {
+    cerr << "  Failed to find input files " << datapath << ".coord/sites/outer" << endl;
+    error = true;
+  }
+  if (!(mSeedsProposalS2>0) || !(mEffctProposalS2>0) ||
+      !(qSeedsProposalS2>0) || !(qEffctProposalS2>0) || !(mrateMuProposalS2>0)) {
+    cerr << "  Choose positive variance parameters for the proposal distributions:" << endl
+	 << "  mrateMuProposalS2 = " << mrateMuProposalS2 << endl
+	 << "   mSeedsProposalS2 = " << mSeedsProposalS2 << ", mEffctProposalS2 = " << mEffctProposalS2 << endl
+	 << "   qSeedsProposalS2 = " << qSeedsProposalS2 << ", qEffctProposalS2 = " << qEffctProposalS2 << endl;
+    error = true;
+  }
+  if (!(nDemes>0) || !(nIndiv>0) || !(nSites>0)) {
+    cerr << "  Error with the EEMS parameters:" << endl
+	 << "  nIndiv = " << nIndiv << ", nSites = " << nSites << ", nDemes = " << nDemes << endl;
+    error = true;
+  }
+  if (!(numMCMCIter>0) || !(numBurnIter>=0) || !(numThinIter>=0) || !(numMCMCIter>numBurnIter) ||
+      !(numMCMCIter>numBurnIter+numThinIter)) {
+    cerr << "  Error with the MCMC parameters:" << endl
+	 << "  numMCMCIter = " << numMCMCIter << ", numBurnIter = " << numBurnIter << ", numThinIter " << numThinIter << endl;
+    error = true;
+  }
+  if (!(qrateShape_2>0) || !(mrateShape_2>0) || !(sigmaShape_2) ||
+      !(qrateScale_2>0) || !(mrateScale_2>0) || !(sigmaScale_2)) {
+    cerr << "  Error with the Inverse Gamma hyperparameters:" << endl
+	 << "  qrateShape = " << 2.0*qrateShape_2 << ", qrateScale = " << 2.0*qrateScale_2 << endl
+	 << "  mrateShape = " << 2.0*mrateShape_2 << ", mrateScale = " << 2.0*mrateScale_2 << endl
+	 << "  sigmaShape = " << 2.0*sigmaShape_2 << ", sigmaScale = " << 2.0*sigmaScale_2 << endl;
+    error = true;
+  }
+  if (!(negBiSize>0) || !( (negBiProb>0) && (negBiProb<1) )) {
+    cerr << "  Error with the Negative Binomial hyperparameters:" << endl
+	 << "  negBiSize = " << negBiSize << ", negBiProb = " << negBiProb << endl;
+    error = true;
+  }
+  return(error);
 }
-void get_eigen_version(ostream& out) {
-  out << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION;
+VectorXd split(const string &line) {
+  istringstream in(line);
+  vector<double> numbers;
+  double number;
+  while (!in.eof()) { in >> number;
+    if (!in.fail()) { numbers.push_back(number); } else { break; }
+  }
+  if (in.fail()||in.bad()) { return (VectorXd::Zero(0)); }
+  // Since we don't know how many numbers there are,
+  // first we store the data in a std::vector of doubles,
+  // and then typecast it to Eigen::VectorXd
+  return (VectorXd::Map(&numbers[0],numbers.size()));
+}
+bool isposdef(const MatrixXd &A) {
+  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
+  double minval = eig.eigenvalues().minCoeff();
+  return (minval>0);
+}
+bool isdistmat(const MatrixXd &A) {
+  double a = A.minCoeff();
+  double b = A.diagonal().minCoeff();
+  double c = A.diagonal().maxCoeff();
+  double d = (A - A.transpose()).maxCoeff();
+  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
+  ArrayXd val = eig.eigenvalues().array();
+  double eps = 1e-12;
+  int negative = (val < -eps).count();
+  int positive = (val > eps).count();
+  int zero = ((val > -eps)&&(val < eps)).count();
+  return ((a>=0)&&(b==0)&&(c==0)&&(d==0)&&(positive==1)&&(zero==0));
 }
 double logdet(const MatrixXd &A) {
   return (A.selfadjointView<Lower>().ldlt().vectorD().array().log().sum());
@@ -117,10 +204,42 @@ double mvgammaln(const double a, const int p) {
   }
   return (val);
 }
-MatrixXd distEucSq(const MatrixXd &X, const MatrixXd &Y) {
+/*
+  Squared Euclidean distance: Taking the square root is not necessary
+  because EEMS uses the distances to find closest points. For example,
+    pairwise_distance(X,Y).col(0).minCoeff( &closest )
+  finds the row/point in X that is closest to the first row/point in Y
+ */
+MatrixXd euclidean_dist(const MatrixXd &X, const MatrixXd &Y) {
   return (  X.rowwise().squaredNorm().eval().replicate(1,Y.rows())
-  	  + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
-  	  - 2.0*X*Y.transpose() );
+	    + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
+	    - 2.0*X*Y.transpose() );
+}
+/* Great circle distance, up to a constant of proportionality equal to 2*R
+   where R is the earth's radius
+ */
+MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y) {
+  int nr = X.rows();
+  int nc = Y.rows();
+  MatrixXd lon1 = X.col(0).replicate(1,nc) * pi_180;
+  MatrixXd lat1 = X.col(1).replicate(1,nc) * pi_180;
+  MatrixXd lon2 = Y.col(0).transpose().replicate(nr,1) * pi_180;
+  MatrixXd lat2 = Y.col(1).transpose().replicate(nr,1) * pi_180;
+  MatrixXd dlon = 0.5*(lon2 - lon1);
+  MatrixXd dlat = 0.5*(lat2 - lat1);
+  MatrixXd a = dlat.array().sin().square().matrix() +
+    (dlon.array().sin().square() * lat1.array().cos() * lat2.array().cos()).matrix();
+  MatrixXd c = (a.array()<1.0).select(a.array().sqrt(),MatrixXd::Ones(nr,nc)).array().asin();
+  return (c); // Instead of (2*R*c) where R = 6378137 is the Earth's radius.
+}
+// Compute pairwise distances between the rows of X and the rows of Y.
+// Choose either Euclidean or great circle distance
+MatrixXd pairwise_distance(const MatrixXd &X, const MatrixXd &Y) {
+  if (!dist_metric.compare("greatcirc")) {
+    return (greatcirc_dist(X,Y));
+  } else {
+    return (euclidean_dist(X,Y));
+  }
 }
 MatrixXd resistance_distance(const MatrixXd &M, const int o) {
   MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum();
@@ -142,20 +261,6 @@ MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const Ve
   Delta.noalias() += 0.5*u_n*Jq.transpose();
   Delta.diagonal() -= Jq;
   return (Delta);
-}
-VectorXd split(const string &line) {
-  istringstream in(line);
-  vector<double> numbers;
-  double number;
-  while (!in.eof()) {
-    in >> number;
-    if (!in.fail()) { numbers.push_back(number); } else { break; }
-  }
-  if (in.fail()||in.bad()) { return (VectorXd::Zero(0)); }
-  // Since we don't know how many numbers there are,
-  // first we store the data in a std::vector of doubles,
-  // and then typecast it to Eigen::VectorXd
-  return (VectorXd::Map(&numbers[0],numbers.size()));
 }
 // Read a matrix, with unknown dimensions, from a text file
 // Return an empty matrix (0 rows, 0 columns) if there is an error
@@ -185,40 +290,13 @@ MatrixXd readMatrixXd(const string &filename) {
 double trace_AxB(const MatrixXd &A, const MatrixXd &B) {
   return (A.cwiseProduct(B).sum());
 }
-int mod(const int a, const int b) { return (a % b); }
-int neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const int pos,
-		      const int nx, const int ny) {
-  int alpha = r1 * nx + c1;
-  int beta = -1; r2 = -1; c2 = -1;
-  // mod(alpha  ,nx) > 0 means that alpha is not the first deme in the row
-  // mod(alpha+1,nx) > 0 means that alpha is not the last deme in the row
-  // r1 < (ny-1) means that alpha is not on the top row
-  // r1 > 0 means that alpha is not on the bottom row
-  // mod(alpha   ,2*nx) > 0 means that alpha is not the first deme in an odd row
-  // mode(alpha+1,2*nx) > 0 means that alpha is not the last deme in an even row
-  // mod(r1+1,2) == 1 means that alpha is on an odd row
-  if        ( (pos==0) && (mod(alpha  ,nx)>0) ) { 
-    r2 = r1; c2 = c1 - 1;
-  } else if ( (pos==3) && (mod(alpha+1,nx)>0) ) { 
-    r2 = r1; c2 = c1 + 1;
-  } else if ( (pos==5) && (r1>0 && mod(alpha,2*nx)>0) ) {
-    r2 = r1 - 1; c2 = c1 - mod(r1+1,2);
-  } else if ( (pos==4) && (r1>0 && mod(alpha+1,2*nx)>0) ) {       
-    r2 = r1 - 1; c2 = c1 + 1 - mod(r1+1,2);
-  } else if ( (pos==1) && (r1<(ny-1) && mod(alpha,2*nx)>0) ) {  
-    r2 = r1 + 1; c2 = c1 - mod(r1+1,2);
-  } else if ( (pos==2) && (r1<(ny-1) && mod(alpha+1,2*nx)>0) ) {  
-    r2 = r1 + 1; c2 = c1 + 1 - mod(r1+1,2);
-  }
-  if ((r2>=0)&&(c2>=0)) { beta = nx*r2 + c2; }
-  return (beta);
-}
 // If there are two draws and the first has two tiles and the second -- three tiles,
 // then sizes = c(2,3) and array = c(m_{1t_1},m_{1t_2},m_{2t_1},m_{2t_2},m_{2t_3})
 bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array) {
-  if (array.size()!=sizes.sum()) { return false; }
+  bool error = false;
+  if (array.size()!=sizes.sum()) { error = true; return(error); }
   ofstream out(filename.c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
+  if (!out.is_open()) { error = true; return(error); }
   vector<double>::const_iterator it = array.begin();
   for ( int i = 0 ; i < sizes.size() ; i++ ) {
     for ( int j = 0 ; j < sizes(i) ; j++ ) {
@@ -227,7 +305,7 @@ bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double>
     out << endl;
   }
   out.close( );
-  return true;
+  return(error);
 }
 void removeElem(VectorXd &vec, const int elemToRemove)
 {
@@ -262,6 +340,62 @@ void insertRow(MatrixXd &mat, const VectorXd &row)
   int rows = mat.rows();
   int cols = mat.cols();
   mat.noalias() = (MatrixXd(rows+1,cols) << mat, row.transpose()).finished();
+}
+/*
+  Log probability mass function of the negative binomial distribution, with
+  parameters size (number of failures) and prob (probability of success)
+  * up to a constant of proportionality that depends on size and prob,
+    but not on the random variable k (number of successes)
+  Also -- log pmf of the zero-truncated negative binomial, with the same parameters,
+  as long as k>0, since truncating only changes the constant of proportionality
+  Uses gamma(n) = (n-1)!
+ */
+double dnegbinln(const int k, const int size, const double prob) {
+  double pln = -Inf;
+  if ( (k>=0) && (size>0) && (prob>0) && (prob<1) ) {
+    pln = lgamma(size+k) - lgamma(k+1) + k*log(prob);
+  }
+  return (pln);
+}
+/*
+  Log probability density function of the inverse gamma distribution,
+  with parameters shape and scale
+  * Up to a constant of proportionality that depends on the shape and the scale,
+    but not on the random variable x
+ */
+double dinvgamln(const double x, const double shape, const double scale) {
+  double pln = -Inf;
+  if ( (x>0.0) && (shape>0.0) && (scale>0.0) ) {
+    pln = - (shape+1.0)*log(x) - scale/x;
+  }
+  return (pln);
+}
+/* 
+   Multivariate normal probability density function, on the log scale,
+   up to a constant of proportionality
+ */
+double dmvnormln(const VectorXd &x, const VectorXd &mu, const MatrixXd &sigma) {
+  double pln = -Inf;
+  if ( isposdef(sigma) ) {
+    LLT<MatrixXd> Chol(sigma);
+    MatrixXd L = Chol.matrixL();
+    pln = - L.diagonal().array().log().sum();
+    pln -= 0.5 * (x-mu).transpose() * Chol.solve(x-mu);
+  }
+  return (pln);
+}
+/*
+  Truncated normal probability density function, on the log scale,
+  with support [-bnd,+bnd], including the normalizing constant
+*/
+double dtrnormln(const double x, const double mu, const double sigma2, const double bnd) {
+  double pln = -Inf;
+  if ( (sigma2>0) && (x>=-bnd) && (x<=bnd) ) {
+    boost::math::normal pnorm(mu,sqrt(sigma2));
+    pln = - 0.5 * log(sigma2) - 0.5 * (x-mu) * (x-mu) / sigma2
+      - log(cdf(pnorm,bnd) - cdf(pnorm,-bnd));
+  }
+  return (pln);
 }
 VectorXd slice(const VectorXd &A, const VectorXi &I) {
   int elems = I.size();
