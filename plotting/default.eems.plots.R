@@ -27,7 +27,7 @@ which.dist.metric <- function(mcmcpath) {
 pairwise.dist <- function(x,y,dist.metric) {
     if (dist.metric=="greatcirc") {
         ## Great circle distance:
-        return (rdist.earth(x,y))
+        return (rdist.earth(x,y)) ## miles=FALSE, R=6371
     } else {
         ## Euclidean distance:
         return (rdist(x,y))

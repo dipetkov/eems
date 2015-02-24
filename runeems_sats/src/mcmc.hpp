@@ -2,6 +2,20 @@
 
 #include "util.hpp"
 
+#ifndef MCMC_H
+#define MCMC_H
+
+enum MoveType {
+  Q_VORONOI_RATE_UPDATE,
+  Q_VORONOI_POINT_MOVE,
+  Q_VORONOI_BIRTH_DEATH,
+  M_VORONOI_RATE_UPDATE,
+  M_MEAN_RATE_UPDATE,
+  M_VORONOI_POINT_MOVE,
+  M_VORONOI_BIRTH_DEATH,
+  DF_UPDATE,
+  UNKNOWN_MOVE_TYPE
+};
 
 class MCMC {
 public:
@@ -10,20 +24,16 @@ public:
   ~MCMC();
 
   int currIter;
-  int currStep;
   int numMCMCIter;
   int numBurnIter;
   int numThinIter;
-  bool iterDone;
   bool finished;
 
-  void start_iteration( );
   void end_iteration( );
   void add_to_okay_moves(const int type);
   void add_to_total_moves(const int type);
   int num_iters_to_save( ) const;
   int to_save_iteration( ) const;
-  void change_update( );
   
   friend ostream& operator<<(ostream& out, const MCMC& mcmc);
     
@@ -34,3 +44,5 @@ private:
   vector<double> totalMoves;
 
 };
+
+#endif

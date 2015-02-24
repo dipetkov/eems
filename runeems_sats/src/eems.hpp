@@ -8,6 +8,8 @@
 
 #include <boost/filesystem.hpp>
 
+#ifndef EEMS_H
+#define EEMS_H
 
 struct Proposal {
   int type;
@@ -51,6 +53,7 @@ public:
   double test_likelihood( ) const;
   void calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const;
   void calc_B(const VectorXi &mColors0, const VectorXd &mEffcts0, const double mrateMu0, MatrixXd &B0) const;
+  MoveType choose_move_type( );
   double eval_proposal_qEffcts(Proposal &proposal) const;
   double eval_proposal_mEffcts(Proposal &proposal) const;
   double eval_proposal_mrateMu(Proposal &proposal) const;
@@ -81,9 +84,7 @@ public:
   string datapath() const;
   string mcmcpath() const;
   string prevpath() const;
-  double likelihood() const;
-  double prior() const;
-  double runif();
+  string gridpath() const;
 
 private:
 
@@ -154,3 +155,5 @@ private:
   double EEMS_wishpdfln(const MatrixXd &B, const VectorXd &q, const VectorXd &sigma2, VectorXd &trDinvQxD) const;
   
 };
+
+#endif

@@ -6,6 +6,8 @@
 #include "graph.hpp"
 #include "habitat.hpp"
 
+#ifndef EEMS_H
+#define EEMS_H
 
 struct Proposal {
   int type;
@@ -51,6 +53,7 @@ public:
   double test_likelihood( ) const;
   void calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const;
   void calc_Binv(const VectorXi &mColors0, const VectorXd &mEffcts0, const double mrateMu0, MatrixXd &Binv0) const;
+  MoveType choose_move_type( );
   double eval_proposal_qEffcts(Proposal &proposal) const;
   double eval_proposal_mEffcts(Proposal &proposal) const;
   double eval_proposal_mrateMu(Proposal &proposal) const;
@@ -81,9 +84,7 @@ public:
   string datapath() const;
   string mcmcpath() const;
   string prevpath() const;
-  double likelihood() const;
-  double prior() const;
-  double runif();
+  string gridpath() const;
 
 private:
 
@@ -148,3 +149,5 @@ private:
 			double &trDinvQxD, double &ll_partdf) const;
   
 };
+
+#endif

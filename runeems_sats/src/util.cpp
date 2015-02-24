@@ -10,12 +10,13 @@ Params::Params(const string &params_file, const long seed_from_command_line) {
     po::options_description eems_options("EEMS options from parameter file");
     eems_options.add_options()
       ("seed", po::value<long>(&seed)->default_value(seed_from_command_line), "Random seed")
-      ("datapath", po::value<string>(&datapath)->required(), "Datapath")
-      ("mcmcpath", po::value<string>(&mcmcpath)->required(), "MCMCpath")
-      ("prevpath", po::value<string>(&prevpath)->default_value(""), "Previous MCMCpath")
-      ("nDemes", po::value<int>(&nDemes)->required(), "nDemes")
+      ("datapath", po::value<string>(&datapath)->required(), "Path to coord/sites/outer files")
+      ("mcmcpath", po::value<string>(&mcmcpath)->required(), "Path to output directory")
+      ("prevpath", po::value<string>(&prevpath)->default_value(""), "Path to previous output directory")
+      ("gridpath", po::value<string>(&gridpath)->default_value(""), "Path to demes/edges/ipmap files")
       ("nIndiv", po::value<int>(&nIndiv)->required(), "nIndiv")
       ("nSites", po::value<int>(&nSites)->required(), "nSites")
+      ("nDemes", po::value<int>(&nDemes)->default_value(1), "nDemes")
       ("diploid", po::value<bool>(&diploid)->default_value(true), "diploid")
       ("distance", po::value<string>(&distance)->default_value("euclidean"), "distance")
       ("numMCMCIter", po::value<int>(&numMCMCIter)->default_value(1), "numMCMCIter")
@@ -59,6 +60,7 @@ ostream& operator<<(ostream& out, const Params& params) {
   out << "               datapath = " << params.datapath << endl
       << "               mcmcpath = " << params.mcmcpath << endl
       << "               prevpath = " << params.prevpath << endl
+      << "               gridpath = " << params.gridpath << endl    
       << "               distance = " << params.distance << endl
       << "                 nIndiv = " << params.nIndiv << endl
       << "                 nSites = " << params.nSites << endl
@@ -86,7 +88,8 @@ ostream& operator<<(ostream& out, const Params& params) {
 }
 bool Params::check_input_params( ) const {
   bool error = false;
-  boost::filesystem::path dir(mcmcpath.c_str());
+  boost::filesystem::path mcmcdir(mcmcpath.c_str());
+  boost::filesystem::path prevdir(prevpath.c_str());
   cerr << "Using Boost " << BOOST_LIB_VERSION
        << " and Eigen " << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION << endl
        << "  EEMS was tested with Boost 1_57 and Eigen 3.2.4" << endl << endl;
@@ -94,7 +97,7 @@ bool Params::check_input_params( ) const {
     cerr << "  Infinity not supported on this platform" << endl;
     error = true;
   }
-  if (!boost::filesystem::create_directory(dir) && !exists(dir)) {
+  if (!boost::filesystem::create_directory(mcmcdir) && !exists(mcmcdir)) {
     cerr << "  Failed to create output directory " << mcmcpath << endl;
     error = true;
   }
@@ -106,6 +109,19 @@ bool Params::check_input_params( ) const {
       !boost::filesystem::exists(datapath + ".sites") ||
       !boost::filesystem::exists(datapath + ".outer")) {
     cerr << "  Failed to find input files " << datapath << ".coord/sites/outer" << endl;
+    error = true;
+  }
+  if (!gridpath.empty() && 
+      (!boost::filesystem::exists(gridpath + ".demes") ||
+       !boost::filesystem::exists(gridpath + ".edges") ||
+       !boost::filesystem::exists(gridpath + ".ipmap"))) {
+    // Path to input population grid is specified
+    // but one of the required files is missing
+    cerr << "  Failed to find graph files " << gridpath << ".demes/edges/ipmap" << endl;
+    error = true;
+  }
+  if (!prevpath.empty() && !exists(prevdir)) {
+    cerr << "  Failed to find directory " << prevpath << " to previous EEMS output" << endl;
     error = true;
   }
   if (!(mSeedsProposalS2>0) || !(mEffctProposalS2>0) ||

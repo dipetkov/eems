@@ -7,6 +7,9 @@
 #include <boost/geometry/geometries/ring.hpp>
 #include <boost/geometry/algorithms/covered_by.hpp>
 
+#ifndef HABITAT_H
+#define HABITAT_H
+
 typedef boost::geometry::model::point<double,2,boost::geometry::cs::cartesian> Point;
 typedef boost::geometry::model::ring<Point> Ring;
 
@@ -53,3 +56,5 @@ private:
   double ymin, ymax, yspan;
   
 };
+
+#endif

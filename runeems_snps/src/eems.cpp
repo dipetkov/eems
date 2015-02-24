@@ -6,7 +6,8 @@ EEMS::EEMS(const Params &params) {
   draw.initialize(params.seed);
   habitat.generate_outer(params.datapath);
   habitat.dlmwrite_outer(params.mcmcpath);
-  graph.generate_grid(params.datapath,habitat,params.nDemes,params.nIndiv);
+  graph.generate_grid(params.datapath,params.gridpath,
+		      habitat,params.nDemes,params.nIndiv);
   graph.dlmwrite_grid(params.mcmcpath);
   o = graph.get_num_obsrv_demes();
   d = graph.get_num_total_demes();
@@ -23,9 +24,7 @@ EEMS::~EEMS( ) { }
 string EEMS::datapath( ) const { return params.datapath; }
 string EEMS::mcmcpath( ) const { return params.mcmcpath; }
 string EEMS::prevpath( ) const { return params.prevpath; }
-double EEMS::likelihood() const { return nowll; }
-double EEMS::prior() const { return nowpi; }
-double EEMS::runif() { return(draw.runif()); }
+string EEMS::gridpath( ) const { return params.gridpath; }
 // Draw points randomly inside the habitat: the habitat is two-dimensional, so
 // a point is represented as a row in a matrix with two columns
 void EEMS::randpoint_in_habitat(MatrixXd &Seeds) {
@@ -160,9 +159,51 @@ bool EEMS::start_eems(const MCMC &mcmc) {
   mcmczCoord.clear();
   this->eval_prior();
   this->eval_likelihood();
+  cerr << "Input parameters: " << endl << params << endl
+       << "Initial log prior: " << nowpi << endl
+       << "Initial log llike: " << nowll << endl << endl;
   if ((nowpi==-Inf) || (nowpi==Inf) || (nowll==-Inf) || (nowll==Inf)) { error = true; }
   return(error);
-}  
+}
+MoveType EEMS::choose_move_type( ) {
+  double u1 = draw.runif( );
+  double u2 = draw.runif( );
+  // There are 4 types of proposals:
+  // * birth/death (with equal probability)
+  // * move a tile (chosen uniformly at random)
+  // * update the rate of a tile (chosen uniformly at random)
+  // * update the mean migration rate or the degrees of freedom (with equal probability)
+  MoveType move = UNKNOWN_MOVE_TYPE;
+  if (u1 < 0.25) {
+    // Propose birth/death to update the Voronoi tessellation of the effective diversity,
+    // with probability params.qVoronoiPr (which is 0.05 by default). Otherwise,
+    // propose birth/death to update the Voronoi tessellation of the effective migration.
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_BIRTH_DEATH;
+    } else {
+      move = M_VORONOI_BIRTH_DEATH;
+    }
+  } else if (u1 < 0.5) {
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_POINT_MOVE;
+    } else {
+      move = M_VORONOI_POINT_MOVE;
+    }
+  } else if (u1 < 0.75) {
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_RATE_UPDATE;
+    } else {
+      move = M_VORONOI_RATE_UPDATE;
+    }
+  } else {
+    if (u2 < 0.5) {
+      move = M_MEAN_RATE_UPDATE;
+    } else {
+      move = DF_UPDATE;
+    }
+  }
+  return(move);
+}
 double EEMS::eval_prior( ) {
   // The parameters should always be in range
   bool inrange = true;
@@ -311,7 +352,7 @@ void EEMS::update_sigma2( ) {
   nowll = df_2 * nowll_partdf + nmin1*df_2*log(df_2) - mvgammaln(df_2,nmin1) - n_2*ldLDLt;
 }
 void EEMS::propose_df(Proposal &proposal,const MCMC &mcmc) {
-  proposal.type = 7;
+  proposal.type = DF_UPDATE;
   proposal.newtrDinvQxD = nowtrDinvQxD;
   proposal.newll_partdf = nowll_partdf;
   proposal.newpi = -Inf;
@@ -336,7 +377,7 @@ void EEMS::propose_qEffcts(Proposal &proposal) {
   proposal.qTile = draw.runif_int(0,qtiles-1);
   double curqEffct = qEffcts(proposal.qTile);
   double newqEffct = draw.rnorm(curqEffct,params.qEffctProposalS2);
-  proposal.type = 0;
+  proposal.type = Q_VORONOI_RATE_UPDATE;
   proposal.newqEffct = newqEffct;
   // The prior distribution on the tile effects is truncated normal
   // So first check whether the proposed value is in range
@@ -355,7 +396,7 @@ void EEMS::propose_mEffcts(Proposal &proposal) {
   proposal.mTile = draw.runif_int(0,mtiles-1);
   double curmEffct = mEffcts(proposal.mTile);
   double newmEffct = draw.rnorm(curmEffct,params.mEffctProposalS2);
-  proposal.type = 3;
+  proposal.type = M_VORONOI_RATE_UPDATE;
   proposal.newmEffct = newmEffct;
   if ( abs(newmEffct) < params.mEffctHalfInterval ) {
     proposal.newpi = nowpi + (curmEffct*curmEffct - newmEffct*newmEffct) / (2.0*mrateS2);
@@ -368,7 +409,7 @@ void EEMS::propose_mEffcts(Proposal &proposal) {
 void EEMS::propose_mrateMu(Proposal &proposal) {
   // Make a random-walk Metropolis-Hastings proposal
   double newmrateMu = draw.rnorm(mrateMu,params.mrateMuProposalS2);
-  proposal.type = 4;
+  proposal.type = M_MEAN_RATE_UPDATE;
   proposal.newmrateMu = newmrateMu;
   // If the proposed value is in range, the prior probability does not change
   // as the prior distribution on mrateMu is uniform
@@ -387,7 +428,7 @@ void EEMS::move_qVoronoi(Proposal &proposal) {
   // A move is a jitter about the current (x,y) location of the tile center (seed)
   double newqSeedx = draw.rnorm(qSeeds(proposal.qTile,0),params.qSeedsProposalS2x);
   double newqSeedy = draw.rnorm(qSeeds(proposal.qTile,1),params.qSeedsProposalS2y);
-  proposal.type = 1;
+  proposal.type = Q_VORONOI_POINT_MOVE;
   proposal.newqSeedx = newqSeedx;
   proposal.newqSeedy = newqSeedy;
   if (habitat.in_point(newqSeedx,newqSeedy)) {
@@ -402,7 +443,7 @@ void EEMS::move_mVoronoi(Proposal &proposal) {
   proposal.mTile = draw.runif_int(0,mtiles-1);
   double newmSeedx = draw.rnorm(mSeeds(proposal.mTile,0),params.mSeedsProposalS2x);
   double newmSeedy = draw.rnorm(mSeeds(proposal.mTile,1),params.mSeedsProposalS2y);
-  proposal.type = 5;
+  proposal.type = M_VORONOI_POINT_MOVE;
   proposal.newmSeedx = newmSeedx;
   proposal.newmSeedy = newmSeedy;
   if (habitat.in_point(newmSeedx,newmSeedy)) {
@@ -456,7 +497,7 @@ void EEMS::birthdeath_qVoronoi(Proposal &proposal) {
     proposal.newpi = nowpi + log((qtiles/params.negBiProb)/(newqtiles+params.negBiSize))
       + 0.5 * log(qrateS2) + 0.5 * oldqEffct*oldqEffct/qrateS2;
   }
-  proposal.type = 2;
+  proposal.type = Q_VORONOI_BIRTH_DEATH;
   proposal.newqtiles = newqtiles;
   proposal.newll = eval_birthdeath_qVoronoi(proposal);
 }
@@ -499,7 +540,7 @@ void EEMS::birthdeath_mVoronoi(Proposal &proposal) {
     proposal.newpi = nowpi + log((mtiles/params.negBiProb)/(newmtiles+params.negBiSize))
       + 0.5 * log(mrateS2) + 0.5 * oldmEffct*oldmEffct/mrateS2;
   }
-  proposal.type = 6;
+  proposal.type = M_VORONOI_BIRTH_DEATH;
   proposal.newmtiles = newmtiles;
   proposal.newll = eval_birthdeath_mVoronoi(proposal);
 }
@@ -528,51 +569,55 @@ bool EEMS::accept_proposal(Proposal &proposal) {
   }
   double ratioln = proposal.newpi - nowpi + proposal.newll - nowll;
   // If the proposal is either birth or death, add the log(proposal ratio)
-  if (proposal.type==2 || proposal.type==6) {
+  if (proposal.type==Q_VORONOI_BIRTH_DEATH || proposal.type==M_VORONOI_BIRTH_DEATH) {
     ratioln += proposal.ratioln;
   }
   if ( log(u) < min(0.0,ratioln) ) {
     switch (proposal.type) {
-    case 0:
+    case Q_VORONOI_RATE_UPDATE:
       qEffcts(proposal.qTile) = proposal.newqEffct;
       nowq = proposal.newq;
       break;
-    case 1:
+    case Q_VORONOI_POINT_MOVE:
       qSeeds(proposal.qTile,0) = proposal.newqSeedx;
       qSeeds(proposal.qTile,1) = proposal.newqSeedy;
       nowq = proposal.newq;
       nowqColors = proposal.newqColors;
       break;
-    case 2:
+    case Q_VORONOI_BIRTH_DEATH:
       qSeeds = proposal.newqSeeds;
       qtiles = proposal.newqtiles;
       nowq = proposal.newq;
       qEffcts = proposal.newqEffcts;
       nowqColors = proposal.newqColors;
       break;
-    case 3:
+    case M_VORONOI_RATE_UPDATE:
       mEffcts(proposal.mTile) = proposal.newmEffct;
       nowBinv = proposal.newBinv;
       break;
-    case 4:
+    case M_MEAN_RATE_UPDATE:
       mrateMu = proposal.newmrateMu;
       nowBinv = proposal.newBinv;
       break;
-    case 5:
+    case M_VORONOI_POINT_MOVE:
       mSeeds(proposal.mTile,0) = proposal.newmSeedx;
       mSeeds(proposal.mTile,1) = proposal.newmSeedy;
       nowBinv = proposal.newBinv;
       nowmColors = proposal.newmColors;
       break;
-    case 6:
+    case M_VORONOI_BIRTH_DEATH:
       mSeeds = proposal.newmSeeds;
       mtiles = proposal.newmtiles;
       mEffcts = proposal.newmEffcts;
       nowBinv = proposal.newBinv;
       nowmColors = proposal.newmColors;
       break;
-    default:
+    case DF_UPDATE:
       df = proposal.newdf;
+      break;
+    default:
+      cerr << "[RJMCMC] Unknown move type" << endl;
+      exit(1);
     }
     nowpi = proposal.newpi;
     nowll = proposal.newll;
@@ -737,6 +782,8 @@ bool EEMS::output_results(const MCMC &mcmc) const {
       << "Final log prior: " << nowpi << endl
       << "Final log llike: " << nowll << endl;
   out.close( );
+  cerr << "Final log prior: " << nowpi << endl
+       << "Final log llike: " << nowll << endl;
   return(error);
 }
 void EEMS::check_ll_computation( ) const {

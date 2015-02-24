@@ -1,7 +1,5 @@
 
-#include "util.hpp"
 #include "eems.hpp"
-#include "mcmc.hpp"
 
 // The distance metric is a global variable, so that
 // the pairwise_distance function can see it
@@ -44,10 +42,10 @@ int main(int argc, char** argv)
     
     boost::filesystem::path dir(eems.prevpath().c_str());
     if (exists(dir)) {
-      cerr << "Loading final EEMS state from " << eems.prevpath() << endl << endl;
+      cerr << "Load final EEMS state from " << eems.prevpath() << endl << endl;
       eems.load_final_state();
     } else {
-      cerr << "Randomly initializing EEMS state" << endl << endl;
+      cerr << "Initialize EEMS random state" << endl << endl;
       eems.initialize_state();
     }
     
@@ -57,69 +55,44 @@ int main(int argc, char** argv)
       return(EXIT_FAILURE);
     }
     
-    cerr << "Input parameters: " << endl << params << endl
-	 << "Initial log prior: " << eems.prior( ) << endl
-	 << "Initial log llike: " << eems.likelihood( ) << endl << endl;
-    
     Proposal proposal;
     
     while (!mcmc.finished) {
-      
-      if (!(mcmc.currIter%100)) {
-	cerr << "Iteration " << mcmc.currIter << "..." << endl;
+
+      switch ( eems.choose_move_type( ) ) {
+      case Q_VORONOI_BIRTH_DEATH:
+	eems.birthdeath_qVoronoi(proposal);
+	break;
+      case M_VORONOI_BIRTH_DEATH:
+	eems.birthdeath_mVoronoi(proposal);
+	break;
+      case Q_VORONOI_POINT_MOVE:
+	eems.move_qVoronoi(proposal);
+	break;
+      case M_VORONOI_POINT_MOVE:
+	eems.move_mVoronoi(proposal);
+	break;
+      case Q_VORONOI_RATE_UPDATE:
+	eems.propose_qEffcts(proposal);
+	break;
+      case M_VORONOI_RATE_UPDATE:
+	eems.propose_mEffcts(proposal);
+	break;
+      case M_MEAN_RATE_UPDATE:
+	eems.propose_mrateMu(proposal);
+	break;
+      default:
+	cerr << "[RunEEMS] Unknown move type" << endl;
+	return(EXIT_FAILURE);
       }
+
+      mcmc.add_to_total_moves(proposal.type);
+      if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves(proposal.type); }
+      if (params.testing) { eems.check_ll_computation( ); }
       
-      mcmc.start_iteration( );
       eems.update_sigma2( );
-      
-      while (!mcmc.iterDone) {
-	
-	// There are 4 'steps' as EEMS cycles through 4 types of proposals:
-	// birth/death, move a tile, update the rate of  a tile, update the
-	// mean migration rate
-	double u = eems.runif( );
-	switch (mcmc.currStep) {
-	case 0:
-	  // Make a birth or death proposal, with equal probability
-	  // Choose to make a birth/death proposal in the Voronoi
-	  // tessellation of the diversity rates with probability
-	  // params.qVoronoiPr (which is 0.05 by default). Otherwise,
-	  // make a birth/death proposal in the Voronoi tessellation
-	  // of the migration rates
-	  if (u < params.qVoronoiPr) {
-	    eems.birthdeath_qVoronoi(proposal);
-	  } else {
-	    eems.birthdeath_mVoronoi(proposal);
-	  }
-	  break;
-	case 1:
-	  // Propose to move an existing tile within the habitat
-	  if (u < params.qVoronoiPr) {
-	    eems.move_qVoronoi(proposal);
-	  } else {
-	    eems.move_mVoronoi(proposal);
-	  }
-	  break;
-	case 2:
-	  // Propose to update the rate parameter of an existing tile
-	  if (u < params.qVoronoiPr) {
-	    eems.propose_qEffcts(proposal);
-	  } else {
-	    eems.propose_mEffcts(proposal);
-	  }
-	  break;
-	default:
-	  // Propose to update the overall (log10) migration rate
-	  eems.propose_mrateMu(proposal);
-	}
-	
-	mcmc.add_to_total_moves(proposal.type);
-	if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves(proposal.type); }
-	if (params.testing) { eems.check_ll_computation( ); }
-	mcmc.change_update( );
-      }
-      
       eems.update_hyperparams( );
+      mcmc.end_iteration( );
       
       // Check whether to save the current parameter state,
       // as the thinned out iterations are not saved
@@ -128,14 +101,10 @@ int main(int argc, char** argv)
 	eems.print_iteration(mcmc);
 	eems.save_iteration(mcmc);
       }      
-      mcmc.end_iteration( );
     }
     
     error = eems.output_results(mcmc);
-    if (error) { cerr << "[RunMCMC] Error saving eems results to " << eems.mcmcpath() << endl; }
-    
-    cerr << "Final log prior: " << eems.prior( ) << endl
-	 << "Final log llike: " << eems.likelihood( ) << endl;
+    if (error) { cerr << "[RunEEMS] Error saving eems results to " << eems.mcmcpath() << endl; }
     
   } catch(exception& e) {
     cerr << e.what() << endl;

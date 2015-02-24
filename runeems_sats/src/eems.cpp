@@ -6,7 +6,8 @@ EEMS::EEMS(const Params &params) {
   draw.initialize(params.seed);
   habitat.generate_outer(params.datapath);
   habitat.dlmwrite_outer(params.mcmcpath);
-  graph.generate_grid(params.datapath,habitat,params.nDemes,params.nIndiv);
+  graph.generate_grid(params.datapath,params.gridpath,
+		      habitat,params.nDemes,params.nIndiv);
   graph.dlmwrite_grid(params.mcmcpath);
   o = graph.get_num_obsrv_demes();
   d = graph.get_num_total_demes();
@@ -24,9 +25,7 @@ EEMS::~EEMS( ) { }
 string EEMS::datapath( ) const { return params.datapath; }
 string EEMS::mcmcpath( ) const { return params.mcmcpath; }
 string EEMS::prevpath( ) const { return params.prevpath; }
-double EEMS::likelihood() const { return nowll; }
-double EEMS::prior() const { return nowpi; }
-double EEMS::runif() { return(draw.runif()); }
+string EEMS::gridpath( ) const { return params.gridpath; }
 // Draw points randomly inside the habitat: the habitat is two-dimensional, so
 // a point is represented as a row in a matrix with two columns
 void EEMS::randpoint_in_habitat(MatrixXd &Seeds) {
@@ -235,9 +234,47 @@ bool EEMS::start_eems(const MCMC &mcmc) {
   mcmczCoord.clear();
   this->eval_prior();
   this->eval_likelihood();
+  cerr << "Input parameters: " << endl << params << endl
+       << "Initial log prior: " << nowpi << endl
+       << "Initial log llike: " << nowll << endl << endl;
   if ((nowpi==-Inf) || (nowpi==Inf) || (nowll==-Inf) || (nowll==Inf)) { error = true; }
   return(error);
 }  
+MoveType EEMS::choose_move_type( ) {
+  double u1 = draw.runif( );
+  double u2 = draw.runif( );
+  // There are 4 types of proposals:
+  // * birth/death (with equal probability)
+  // * move a tile (chosen uniformly at random)
+  // * update the rate of a tile (chosen uniformly at random)
+  // * update the mean migration rate or the degrees of freedom (with equal probability)
+  MoveType move = UNKNOWN_MOVE_TYPE;
+  if (u1 < 0.25) {
+    // Propose birth/death to update the Voronoi tessellation of the effective diversity,
+    // with probability params.qVoronoiPr (which is 0.05 by default). Otherwise,
+    // propose birth/death to update the Voronoi tessellation of the effective migration.
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_BIRTH_DEATH;
+    } else {
+      move = M_VORONOI_BIRTH_DEATH;
+    }
+  } else if (u1 < 0.5) {
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_POINT_MOVE;
+    } else {
+      move = M_VORONOI_POINT_MOVE;
+    }
+  } else if (u1 < 0.75) {
+    if (u2 < params.qVoronoiPr) {
+      move = Q_VORONOI_RATE_UPDATE;
+    } else {
+      move = M_VORONOI_RATE_UPDATE;
+    }
+  } else {
+    move = M_MEAN_RATE_UPDATE;
+  }
+  return(move);
+}
 double EEMS::eval_prior( ) {
   // The parameters should always be in range
   bool inrange = true;
@@ -776,6 +813,8 @@ bool EEMS::output_results(const MCMC &mcmc) const {
       << "Final log prior: " << nowpi << endl
       << "Final log llike: " << nowll << endl;
   out.close( );
+  cerr << "Final log prior: " << nowpi << endl
+       << "Final log llike: " << nowll << endl;
   return(error);
 }
 void EEMS::check_ll_computation( ) const {

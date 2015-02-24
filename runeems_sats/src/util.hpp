@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 #include <vector>
 #include <limits>
@@ -25,9 +27,8 @@ using namespace Eigen;
 #include <boost/algorithm/string.hpp>
 namespace po = boost::program_options;
 
-
-#ifndef UTILS
-#define UTILS
+#ifndef UTIL_H
+#define UTIL_H
 
 const double Inf = numeric_limits<double>::infinity();
 const double pi = boost::math::constants::pi<double>();
@@ -50,7 +51,7 @@ public:
   
   long seed;
   bool diploid, testing;
-  string datapath, mcmcpath, prevpath;
+  string datapath, mcmcpath, prevpath, gridpath;
   double qEffctHalfInterval, mEffctHalfInterval, mrateMuHalfInterval;
   double mSeedsProposalS2, mSeedsProposalS2x, mSeedsProposalS2y;
   double qSeedsProposalS2, qSeedsProposalS2x, qSeedsProposalS2y;

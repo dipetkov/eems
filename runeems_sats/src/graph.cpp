@@ -3,15 +3,30 @@
 
 Graph::Graph( ) { }
 Graph::~Graph( ) { }
-void Graph::generate_grid(const string &datapath, const Habitat &habitat,
+void Graph::generate_grid(const string &datapath, const string &gridpath, const Habitat &habitat,
 			  const int nDemeDensity, const int nIndiv)
 {
   cerr << "[Graph::initialize]" << endl;
   // These two functions can be rewritten to load a pre-constructred population graph
   // First, generate the deme coordinates, DemeCoord, and the list of edges, DemePairs
   // Then, load the sample coordinates and map each sample to the closest deme
-  make_triangular_grid(habitat,nDemeDensity);
-  map_indiv_to_deme(datapath,nIndiv);
+  if (gridpath.empty()) {
+    cerr << "  Generate population grid and sample assignment"<< endl;
+    make_triangular_grid(habitat,nDemeDensity);
+    map_indiv_to_deme(datapath,nIndiv);
+  } else {
+    cerr << "  Load population grid and sample assignment from " << datapath << endl;
+    // Read the population grid (demes and edges)
+    if (!read_input_grid(datapath,DemeCoord,DemePairs)) {
+      cerr << "  Error reading population grid." << endl;
+      exit(1);
+    }
+    // Read the assignment of individuals to demes
+    if (!read_indiv_to_deme(datapath,DemeCoord.rows(),indiv2deme)) {
+      cerr << "  Error reading sample assignment." << endl;
+      exit(1);
+    }
+  }
   if (!this->is_connected()) {
     cerr << "  The population grid is not connected." << endl; exit(1);
   }
@@ -235,4 +250,26 @@ int Graph::neighbors_in_grid(const int r1, const int c1, int &r2, int &c2, const
   }
   if ((r2>=0)&&(c2>=0)) { beta = nx*r2 + c2; }
   return (beta);
+}
+// Read the population grid (demes and edges)
+// The grid to read does not need to be triangular as long as it is connected
+bool Graph::read_input_grid(const string &datapath, MatrixXd &DemeCoord, MatrixXi &DemePairs) {
+  // Read the deme coordinates
+  DemeCoord = readMatrixXd(datapath + ".demes");
+  if (DemeCoord.cols()!=2) { return (false); }
+  // Read the connected pairs of demes
+  MatrixXd tempi = readMatrixXd(datapath + ".edges");
+  if (tempi.cols()!=2) { exit(1); }
+  DemePairs = tempi.cast<int>();
+  DemePairs = DemePairs.array() - 1;
+  int nDemes = DemeCoord.rows();
+  return (DemePairs.minCoeff()>=0 && DemePairs.maxCoeff()<nDemes);
+}
+// Read the assignment of individuals to demes
+bool Graph::read_indiv_to_deme(const string &datapath, const int nDemes, VectorXi &indiv2deme) {
+  MatrixXd tempi = readMatrixXd(datapath + ".ipmap");
+  if (tempi.cols()!=1) { exit(1); }
+  indiv2deme = tempi.col(0).cast<int>();
+  indiv2deme = indiv2deme.array() - 1;
+  return (indiv2deme.minCoeff()>=0 && indiv2deme.maxCoeff()<nDemes);
 }

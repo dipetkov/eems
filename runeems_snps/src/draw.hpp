@@ -10,6 +10,9 @@
 
 #include "util.hpp"
 
+#ifndef DRAW_H
+#define DRAW_H
+
 /* Random number generation with Boost */
 
 class Draw {
@@ -34,3 +37,5 @@ private:
   double randraw(T &generator) { return generator( ); }
   
 };
+
+#endif
