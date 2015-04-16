@@ -26,8 +26,8 @@ struct Proposal {
   double newpi;
   double newll;
   double newmrateMu;
-  double newtrDinvQxD;
-  double newll_partdf;
+  double newtriDeltaQD;
+  double newll_atfixdf;
   VectorXd newqEffcts;
   VectorXd newmEffcts;
   MatrixXd newqSeeds;
@@ -122,7 +122,7 @@ private:
   void rnorm_effects(const double HalfInterval, const double rateS2, VectorXd &Effcts);
   
   ///////////////////////////////////////////
-  double nowtrDinvQxD, nowll_partdf;
+  double nowtriDeltaQD, nowll_atfixdf;
   VectorXi nowqColors;
   VectorXi nowmColors;
   VectorXd nowq;
@@ -146,7 +146,7 @@ private:
   vector<double> mcmczCoord;
   
   double EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &q, const double sigma2, const double df,
-			double &trDinvQxD, double &ll_partdf) const;
+			double &triDeltaQD, double &ll_atfixdf) const;
   
 };
 

@@ -1,6 +1,16 @@
 
 
-source('default.eems.plots.R')
+## Check that the 'rEEMSplots' package, which provides the
+## eems.plots function, is installed
+available = suppressMessages(suppressWarnings(require('rEEMSplots',
+    quietly = TRUE, character.only = TRUE, warn.conflicts = FALSE)))
+if (!available) {
+    stop(paste("First install the 'rEEMSplots' package\n",
+               "install.packages('rEEMSplots', repos = NULL, type='source')"))
+}
+
+
+library(rEEMSplots)
 
 
 ## mcmcpath is a list of three output directories; the results will be averaged
@@ -18,8 +28,9 @@ longlat <- TRUE
 ##     * plotpath-rist01/02.png: fitted vs observed distances
 ##     * plotpath-pilogl01.png: trace of posterior probability
 ##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
+##                          longlat = FALSE basically "transposes" the x and y axes
 ##
-## eems.plots take a variety of optional arguments:
+## eems.plots takes a variety of optional arguments:
 ##   plot.width and plot.height: width and height of the graphics region (in inches)
 ##   plot.voronoi (TRUE or FALSE): plot a few posterior Voronoi diagrams?
 ##   add.map: add 'worldHires' map (using the mapdata package)?
@@ -35,15 +46,13 @@ longlat <- TRUE
 ##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
 
 
-## Added the option 'projection' which specifies the projection (the default is 'mercator')
-## For example, use 'projection = "+proj=merc"' for mercator
-##              and 'projection = "+proj=longlat"' for no projection
-## Or use another projection by specifying the corresponding PROJ.4 string
+## The options projection.in/projection.out allow to specify the input/output projection.
+## For example, use projection.in = "+proj=merc" for mercator
+##               or projection.in = "+proj=longlat +datum=WGS84" if the coordinates are longitude and latitude
+## Or use another projection by specifying the corresponding PROJ.4 string.
 
 
 eems.plots(mcmcpath,plotpath,longlat,
-           add.map=TRUE,
+           add.map=FALSE,
            add.grid=TRUE,
-           add.samples=TRUE,
-           add.outline=TRUE,
-           projection = "+proj=longlat")
+           add.samples=TRUE)

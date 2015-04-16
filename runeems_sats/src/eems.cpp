@@ -71,7 +71,7 @@ void EEMS::initialize_diffs( ) {
   ///////////////////////////////////////
   logn.resize(p);
   nmin1.resize(p);
-  ll_partdf = 0.0;
+  ll_atfixdf = 0.0;
   for ( int i = 0 ; i < p ; i ++ ) {
     VectorXd z = VectorXd::Zero(n);
     if (params.diploid) {
@@ -111,7 +111,7 @@ void EEMS::initialize_diffs( ) {
     MatrixXd Di = - 2.0 * Si;
     Di += Si.diagonal().replicate(1,ni);
     Di += Si.diagonal().transpose().replicate(ni,1);
-    ll_partdf += logdet(Li*Li.transpose()) + nimin1 * (log_2 + log_pi)
+    ll_atfixdf += logdet(Li*Li.transpose()) + nimin1 * (log_2 + log_pi)
       + nimin1 * pseudologdet( - Li*Di*Li.transpose(),1);
     logn(i) = log(ni);
     nmin1(i) = nimin1;
@@ -304,9 +304,9 @@ double EEMS::eval_likelihood( ) {
   graph.index_closest_to_deme(qSeeds,nowqColors);
   calc_q(nowqColors,qEffcts,nowq);
   calc_B(nowmColors,mEffcts,mrateMu,nowB);
-  VectorXd trDinvQxD = VectorXd::Zero(p);
-  nowll = EEMS_wishpdfln(nowB,nowq,sigma2,trDinvQxD);
-  nowtrDinvQxD = trDinvQxD;
+  VectorXd triDeltaQD = VectorXd::Zero(p);
+  nowll = EEMS_wishpdfln(nowB,nowq,sigma2,triDeltaQD);
+  nowtriDeltaQD = triDeltaQD;
   return (nowll);
 }
 void EEMS::calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const {
@@ -346,9 +346,9 @@ void EEMS::calc_B(const VectorXi &mColors0, const VectorXd &mEffcts0, const doub
   B0 -= 0.5 * h.replicate(1,o);
   B0 -= 0.5 * h.transpose().replicate(o,1);
 }
-double EEMS::EEMS_wishpdfln(const MatrixXd &B, const VectorXd &q, const VectorXd &sigma2, VectorXd &trDinvQxD) const {
+double EEMS::EEMS_wishpdfln(const MatrixXd &B, const VectorXd &q, const VectorXd &sigma2, VectorXd &triDeltaQD) const {
   VectorXd ldetDinvQ = VectorXd::Zero(p);
-  if (trDinvQxD.size() != p) { trDinvQxD.resize(p); }
+  if (triDeltaQD.size() != p) { triDeltaQD.resize(p); }
   for ( int i = 0 ; i < p ; i++ ) {
     VectorXd qi = slice(q,ovec[i]);
     VectorXd qiinv = pow(qi.array(),-1.0);
@@ -364,16 +364,16 @@ double EEMS::EEMS_wishpdfln(const MatrixXd &B, const VectorXd &q, const VectorXd
     ldetDinvQ(i) = logn(i) - log(abs(oDinvo))
       + cmin1[i].dot(qiinv.array().log().matrix())
       - lu.matrixLU().diagonal().array().abs().log().sum();
-    trDinvQxD(i) = trace_AxB(X,JtDobsJ[i]) - oDiDDi/oDinvo;
+    triDeltaQD(i) = trace_AxB(X,JtDobsJ[i]) - oDiDDi/oDinvo;
   }
-  return ( 0.5 * ( ldetDinvQ.sum() - (trDinvQxD.array() / sigma2.array()).sum() -
-		   (nmin1.array() * sigma2.array().log()).sum() - ll_partdf ) );
+  return ( 0.5 * ( ldetDinvQ.sum() - (triDeltaQD.array() / sigma2.array()).sum() -
+		   (nmin1.array() * sigma2.array().log()).sum() - ll_atfixdf ) );
 }
 double EEMS::eval_proposal_qEffcts(Proposal &proposal) const {
   VectorXd newqEffcts = qEffcts;
   newqEffcts(proposal.qTile) = proposal.newqEffct;
   calc_q(nowqColors,newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_proposal_qSeeds(Proposal &proposal) const {
   MatrixXd newqSeeds = qSeeds;
@@ -381,22 +381,22 @@ double EEMS::eval_proposal_qSeeds(Proposal &proposal) const {
   newqSeeds(proposal.qTile,1) = proposal.newqSeedy;
   graph.index_closest_to_deme(newqSeeds,proposal.newqColors);
   calc_q(proposal.newqColors,qEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_birthdeath_qVoronoi(Proposal &proposal) const {
   graph.index_closest_to_deme(proposal.newqSeeds,proposal.newqColors);
   calc_q(proposal.newqColors,proposal.newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(nowB,proposal.newq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_proposal_mEffcts(Proposal &proposal) const {
   VectorXd newmEffcts = mEffcts;
   newmEffcts(proposal.mTile) = proposal.newmEffct;
   calc_B(nowmColors,newmEffcts,mrateMu,proposal.newB);
-  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_proposal_mrateMu(Proposal &proposal) const {
   calc_B(nowmColors,mEffcts,proposal.newmrateMu,proposal.newB);
-  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_proposal_mSeeds(Proposal &proposal) const {
   MatrixXd newmSeeds = mSeeds;
@@ -404,22 +404,22 @@ double EEMS::eval_proposal_mSeeds(Proposal &proposal) const {
   newmSeeds(proposal.mTile,1) = proposal.newmSeedy;
   graph.index_closest_to_deme(newmSeeds,proposal.newmColors);
   calc_B(proposal.newmColors,mEffcts,mrateMu,proposal.newB);
-  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtriDeltaQD));
 }
 double EEMS::eval_birthdeath_mVoronoi(Proposal &proposal) const {
   graph.index_closest_to_deme(proposal.newmSeeds,proposal.newmColors);
   calc_B(proposal.newmColors,proposal.newmEffcts,mrateMu,proposal.newB);
-  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtrDinvQxD));
+  return (EEMS_wishpdfln(proposal.newB,nowq,sigma2,proposal.newtriDeltaQD));
 }
 ///////////////////////////////////////////
 void EEMS::update_sigma2( ) {
   for ( int i = 0 ; i < p ; i++ ) {
     nowpi += (params.sigmaShape_2+1.0)*log(sigma2(i)) + params.sigmaScale_2/sigma2(i);
-    nowll += 0.5 * nowtrDinvQxD(i) /sigma2(i) + 0.5 * nmin1(i) * log(sigma2(i));
+    nowll += 0.5 * nowtriDeltaQD(i) /sigma2(i) + 0.5 * nmin1(i) * log(sigma2(i));
     sigma2(i) = draw.rinvgam( params.sigmaShape_2 + 0.5 * nmin1(i),
-			      params.sigmaScale_2 + 0.5 * nowtrDinvQxD(i) );
+			      params.sigmaScale_2 + 0.5 * nowtriDeltaQD(i) );
     nowpi -= (params.sigmaShape_2+1.0)*log(sigma2(i)) + params.sigmaScale_2/sigma2(i);
-    nowll -= 0.5 * nowtrDinvQxD(i) /sigma2(i) + 0.5 * nmin1(i) * log(sigma2(i));
+    nowll -= 0.5 * nowtriDeltaQD(i) /sigma2(i) + 0.5 * nmin1(i) * log(sigma2(i));
   }
 }
 void EEMS::propose_qEffcts(Proposal &proposal) {
@@ -664,7 +664,7 @@ bool EEMS::accept_proposal(Proposal &proposal) {
     }
     nowpi = proposal.newpi;
     nowll = proposal.newll;
-    nowtrDinvQxD = proposal.newtrDinvQxD;
+    nowtriDeltaQD = proposal.newtriDeltaQD;
     return true;
   } else {
     proposal.newpi = nowpi;

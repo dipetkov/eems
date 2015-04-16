@@ -1,0 +1,7 @@
+useDynLib(rEEMSplots)
+import(RcppEigen)
+importFrom(Rcpp, evalCpp)
+import(raster)
+import(rgeos)
+import(sp)
+exportPattern(eems.plots)

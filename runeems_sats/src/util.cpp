@@ -231,9 +231,8 @@ MatrixXd euclidean_dist(const MatrixXd &X, const MatrixXd &Y) {
 	    + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
 	    - 2.0*X*Y.transpose() );
 }
-/* Great circle distance, up to a constant of proportionality equal to 2*R
-   where R is the earth's radius
- */
+// Great circle distance, up to a constant of proportionality equal to 2*R
+// where R is the earth's radius
 MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y) {
   int nr = X.rows();
   int nc = Y.rows();
