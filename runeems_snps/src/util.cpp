@@ -274,15 +274,16 @@ MatrixXd resistance_distance(const MatrixXd &M, const int o) {
   R.noalias() += u_o*H.diagonal().transpose();
   return (R);
 }
-MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const VectorXd &q) {
+// Implements Equation S12 in the Supplementary 
+MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const VectorXd &W) {
   int n = J.rows();
   int o = J.cols();
-  VectorXd Jq = J*q.head(o);
+  VectorXd JW = J*W.head(o);
   VectorXd u_n = VectorXd::Ones(n);
   MatrixXd Delta = J*resistance_distance(M,o)*J.transpose();
-  Delta.noalias() += 0.5*Jq*u_n.transpose();
-  Delta.noalias() += 0.5*u_n*Jq.transpose();
-  Delta.diagonal() -= Jq;
+  Delta.noalias() += 0.5*JW*u_n.transpose();
+  Delta.noalias() += 0.5*u_n*JW.transpose();
+  Delta.diagonal() -= JW;
   return (Delta);
 }
 // Read a matrix, with unknown dimensions, from a text file

@@ -633,7 +633,7 @@ load.required.package <- function(package) {
 ##   add.samples: add samples to their assigned location in the grid?
 ##   add.outline: add the habitat ring (as declared in the .outer file)?
 ##   col.map/col.grid/col.samples/col.outline: specify the colors
-##   lwd.max/lwd.grid/lwd.outline: specify the line width
+##   lwd.map/lwd.grid/lwd.outline: specify the line width
 ##   pch.samples: specify the character
 ##   cex.samples: specify the character size
 ##   max.cex.samples: some demes might be assigned more samples than others.

@@ -32,7 +32,7 @@ struct Proposal {
   VectorXd newmEffcts;
   MatrixXd newqSeeds;
   MatrixXd newmSeeds;
-  VectorXd newq;
+  VectorXd newW;
   MatrixXd newBinv;
   VectorXi newqColors;
   VectorXi newmColors;
@@ -51,15 +51,17 @@ public:
   double test_prior( ) const;
   double eval_likelihood( );
   double test_likelihood( ) const;
-  void calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const;
-  void calc_Binv(const VectorXi &mColors0, const VectorXd &mEffcts0, const double mrateMu0, MatrixXd &Binv0) const;
+  void calc_within(const VectorXi &qColors, const VectorXd &qEffcts, VectorXd &W) const;
+  void calc_between(const VectorXi &mColors, const VectorXd &mEffcts, const double mrateMu, MatrixXd &Binv) const;
   MoveType choose_move_type( );
+  // These functions change the within demes component:
   double eval_proposal_qEffcts(Proposal &proposal) const;
+  double eval_proposal_qSeeds(Proposal &proposal) const;
+  double eval_birthdeath_qVoronoi(Proposal &proposal) const;
+  // These functions change the between demes component:
   double eval_proposal_mEffcts(Proposal &proposal) const;
   double eval_proposal_mrateMu(Proposal &proposal) const;
-  double eval_proposal_qSeeds(Proposal &proposal) const;
   double eval_proposal_mSeeds(Proposal &proposal) const;
-  double eval_birthdeath_qVoronoi(Proposal &proposal) const;
   double eval_birthdeath_mVoronoi(Proposal &proposal) const;
 
   // Gibbs updates:
@@ -125,9 +127,9 @@ private:
   double nowtriDeltaQD, nowll_atfixdf;
   VectorXi nowqColors;
   VectorXi nowmColors;
-  VectorXd nowq;
+  VectorXd nowW;
   MatrixXd nowBinv;
-  double qconst, Binvconst;
+  double Wconst, Binvconst;
 
   // Variables to store the results in :
   // Fixed size:
@@ -145,7 +147,7 @@ private:
   vector<double> mcmcwCoord;
   vector<double> mcmczCoord;
   
-  double EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &q, const double sigma2, const double df,
+  double EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &W, const double sigma2, const double df,
 			double &triDeltaQD, double &ll_atfixdf) const;
   
 };

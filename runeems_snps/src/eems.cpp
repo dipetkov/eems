@@ -15,9 +15,9 @@ EEMS::EEMS(const Params &params) {
   p = params.nSites;
   initialize_diffs();
   if (params.diploid) {
-    Binvconst = 1.0; qconst = 2.0;
+    Binvconst = 1.0; Wconst = 2.0;
   } else {
-    Binvconst = 4.0; qconst = 1.0;
+    Binvconst = 4.0; Wconst = 1.0;
   }
 }
 EEMS::~EEMS( ) { }
@@ -229,47 +229,83 @@ double EEMS::eval_prior( ) {
   return (nowpi);
 }
 double EEMS::eval_likelihood( ) {
+  // For every deme in the graph -- which migration tile does the deme fall into?
+  // The "color" of the deme is the index of the tile
   graph.index_closest_to_deme(mSeeds,nowmColors);
+  // For every deme in the graph -- which diversity tile does the deme fall into?
   graph.index_closest_to_deme(qSeeds,nowqColors);
-  calc_q(nowqColors,qEffcts,nowq);
-  calc_Binv(nowmColors,mEffcts,mrateMu,nowBinv);
+  // Expected genetic dissimilarities Delta are modeled as
+  // Delta(a,b) = BetweenDistance(a,b) + ( WithinDiversity(a) + WithinDiversity(b) )/2
+  //            = B(a,b) + ( W(a) + W(b) )/ 2
+  // For every deme in the graph -- what is its effective diversity q(a)?
+  calc_within(nowqColors,qEffcts,nowW);
+  // For every pair of demes -- what is the effective resistance distance B(a,b)?
+  // Binv is the inverse of B
+  calc_between(nowmColors,mEffcts,mrateMu,nowBinv);
   double triDeltaQD, ll_atfixdf;
-  nowll = EEMS_wishpdfln(nowBinv,nowq,sigma2,df,triDeltaQD,ll_atfixdf);
+  // Compute the Wishart log likelihood
+  nowll = EEMS_wishpdfln(nowBinv,nowW,sigma2,df,triDeltaQD,ll_atfixdf);
   nowtriDeltaQD = triDeltaQD;
   nowll_atfixdf = ll_atfixdf;
   return (nowll);
 }
-void EEMS::calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const {
-  if (q0.size()!=o) { q0.resize(o); }
+void EEMS::calc_within(const VectorXi &qColors, const VectorXd &qEffcts, VectorXd &W) const {
+  // o is the number of observed demes in the graph
+  if (W.size()!=o) { W.resize(o); }
+  // For every observed deme in the graph
   for ( int alpha = 0 ; alpha < o ; alpha++ ) {
-    q0(alpha) = pow(10.0,qEffcts0(qColors0(alpha)));
+    // WithinDiversity = W(a) = 10^( q_alpha ) = 10^( q_tile(tile_alpha))
+    W(alpha) = pow(10.0,qEffcts(qColors(alpha)));
   }
-  q0 *= qconst;
+  // The constant is slightly different for haploid and diploid species
+  W *= Wconst;
 }
-void EEMS::calc_Binv(const VectorXi &mColors0, const VectorXd &mEffcts0, const double mrateMu0, MatrixXd &Binv0) const {
-  if (Binv0.rows()!=n||Binv0.cols()!=d) { Binv0.resize(d,d); }
+void EEMS::calc_between(const VectorXi &mColors, const VectorXd &mEffcts, const double mrateMu, MatrixXd &Binv) const {
+  // d is the number of demes in the graph (observed or not)
+  if (Binv.rows()!=d||Binv.cols()!=d) { Binv.resize(d,d); }
+  // A sparse matrix of migration rates will be constructed on the fly
+  // First a triplet (a,b,m) is added for each edge (a,b)
+  // I have decided to construct the sparse matrix rather than update it
+  // because a single change to the migration Voronoi tessellation can
+  // change the migration rate of many edges simultaneously
   vector<Tri> coefficients;
   int alpha, beta;
+  // For every edge in the graph -- it does not matter whether demes are observed or not
+  // as the resistance distance takes into consideration all paths between a and b
+  // to produces the effective resistance B(a,b)
   for ( int edge = 0 ; edge < graph.get_num_edges() ; edge++ ) {
     graph.get_edge(edge,alpha,beta);
-    double log10m1 = mrateMu0 + mEffcts0(mColors0(alpha));
-    double log10m2 = mrateMu0 + mEffcts0(mColors0(beta));
-    double m12 = 0.5 * pow(10.0,log10m1) + 0.5 * pow(10.0,log10m2);
-    coefficients.push_back(Tri(alpha,beta,m12));
-    coefficients.push_back(Tri(beta,alpha,m12));
+    // On the log10 scale, log10(m_alpha) = mrateMu + m_alpha = mrateMu + m_tile(tile_alpha)
+    // On the log10 scale, log10(m_beta) = mrateMu + m_beta = mrateMu + m_tile(tile_beta)
+    double log10m_alpha = mrateMu + mEffcts(mColors(alpha));
+    double log10m_beta = mrateMu + mEffcts(mColors(beta));
+    // Then on the original scale, m(alpha,beta) = (10^m_alpha + 10^m_beta)/2
+    double m_ab = 0.5 * pow(10.0,log10m_alpha) + 0.5 * pow(10.0,log10m_beta);
+    // The graph is undirected, so m(alpha->beta) = m(beta->alpha)
+    coefficients.push_back(Tri(alpha,beta,m_ab));
+    coefficients.push_back(Tri(beta,alpha,m_ab));
   }
   SpMat sparseM(d,d);
+  // Actually construct and fill in the sparse matrix
   sparseM.setFromTriplets(coefficients.begin(),coefficients.end());
+  // Initialize a dense matrix from the sparse matrix
   MatrixXd M = MatrixXd(sparseM);
+  // Read S1.4 Computing the resistance distances in the Supplementary
+  // This computation is specific to the resistance distance metric
+  // but the point is that we have a method to compute the between
+  // demes component of the expected genetic dissimilarities from
+  // the sparse matrix of migration rates
+  // Here instead of B, we compute its inverse Binv
   MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum(); Hinv.array() += 1.0;
   if (o==d) {
-    Binv0 = -0.5 * Hinv;
+    Binv = -0.5 * Hinv; // If all the demes are observed, it is quite easy to compute Binv
   } else {
-    Binv0 = -0.5 * Hinv.topLeftCorner(o,o);
-    Binv0 += 0.5 * Hinv.topRightCorner(o,d-o) *
+    Binv = -0.5 * Hinv.topLeftCorner(o,o);
+    Binv += 0.5 * Hinv.topRightCorner(o,d-o) *
       Hinv.bottomRightCorner(d-o,d-o).selfadjointView<Lower>().llt().solve(Hinv.bottomLeftCorner(d-o,o));
   }
-  Binv0 *= Binvconst;
+  // The constant is slightly different for haploid and diploid species 
+  Binv *= Binvconst;
 }
 /*
   This function implements the computations described in the Section S1.3 in the Supplementary Information,
@@ -278,22 +314,22 @@ void EEMS::calc_Binv(const VectorXi &mColors0, const VectorXd &mEffcts0, const d
   since lu is the decomposition of (B*C - W) and T is B * inv(W)
   Returns wishpdfln( -L*D*L' ; - (sigma2/df) * L*Delta(m,q)*L' , df )
  */
-double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &w, const double sigma2, const double df,
+double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &W, const double sigma2, const double df,
 			    double &triDeltaQD, double &ll_atfixdf) const {
   double df_2 = 0.5 * df;
   MatrixXd T = Binv.selfadjointView<Lower>().ldlt().solve(MatrixXd::Identity(o,o));
-  T *= cvec.asDiagonal(); T -= w.asDiagonal();             // Now T = B*C - W
+  T *= cvec.asDiagonal(); T -= W.asDiagonal();             // Now T = B*C - W
   PartialPivLU<MatrixXd> lu(T);
-  VectorXd winv = pow(w.array(),-1.0);
-  T.noalias() = T*winv.asDiagonal()*cinv.asDiagonal();
+  VectorXd Winv = pow(W.array(),-1.0);
+  T.noalias() = T*Winv.asDiagonal()*cinv.asDiagonal();
   T += cinv.asDiagonal();                                  // Now T = B*inv(W)
   MatrixXd X = lu.solve(T);
-  VectorXd Xc_winv = X*cvec - winv;
-  double oDinvo = cvec.dot(Xc_winv);                       // oDinvo = 1'*inv(Delta)*1
-  double oDiDDi = Xc_winv.transpose()*JtDobsJ*Xc_winv;     // oDiDDi = 1'*inv(Delta)*D*inv(D)*1
+  VectorXd Xc_Winv = X*cvec - Winv;
+  double oDinvo = cvec.dot(Xc_Winv);                       // oDinvo = 1'*inv(Delta)*1
+  double oDiDDi = Xc_Winv.transpose()*JtDobsJ*Xc_Winv;     // oDiDDi = 1'*inv(Delta)*D*inv(D)*1
   triDeltaQD = trace_AxB(X,JtDobsJ) - oDiDDi/oDinvo;       // triDeltaQD = tr(inv(Delta)*Q*D)
   double ldetDinvQ = logn - log(abs(oDinvo))               // ldetDinvQ = logDet(-inv(Delta)*Q)
-    + cmin1.dot(winv.array().log().matrix())               // log(det(W_n) * det(inv(W_o)))
+    + cmin1.dot(Winv.array().log().matrix())               // log(det(W_n) * det(inv(W_o)))
     - lu.matrixLU().diagonal().array().abs().log().sum();  // log(abs(det(B*C - W)))
   ll_atfixdf = ldetDinvQ - triDeltaQD/sigma2 - nmin1*log(sigma2) - ldDiQ;
   return (df_2*ll_atfixdf + nmin1*df_2*log(df_2) - mvgammaln(df_2,nmin1) - n_2*ldLDLt);
@@ -301,44 +337,45 @@ double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &w, const doubl
 double EEMS::eval_proposal_qEffcts(Proposal &proposal) const {
   VectorXd newqEffcts = qEffcts;
   newqEffcts(proposal.qTile) = proposal.newqEffct;
-  calc_q(nowqColors,newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_within(nowqColors,newqEffcts,proposal.newW);
+  return (EEMS_wishpdfln(nowBinv,proposal.newW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 double EEMS::eval_proposal_qSeeds(Proposal &proposal) const {
   MatrixXd newqSeeds = qSeeds;
   newqSeeds(proposal.qTile,0) = proposal.newqSeedx;
   newqSeeds(proposal.qTile,1) = proposal.newqSeedy;
   graph.index_closest_to_deme(newqSeeds,proposal.newqColors);
-  calc_q(proposal.newqColors,qEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_within(proposal.newqColors,qEffcts,proposal.newW);
+  return (EEMS_wishpdfln(nowBinv,proposal.newW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 double EEMS::eval_birthdeath_qVoronoi(Proposal &proposal) const {
   graph.index_closest_to_deme(proposal.newqSeeds,proposal.newqColors);
-  calc_q(proposal.newqColors,proposal.newqEffcts,proposal.newq);
-  return (EEMS_wishpdfln(nowBinv,proposal.newq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_within(proposal.newqColors,proposal.newqEffcts,proposal.newW);
+  return (EEMS_wishpdfln(nowBinv,proposal.newW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 double EEMS::eval_proposal_mEffcts(Proposal &proposal) const {
   VectorXd newmEffcts = mEffcts;
   newmEffcts(proposal.mTile) = proposal.newmEffct;
-  calc_Binv(nowmColors,newmEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_between(nowmColors,newmEffcts,mrateMu,proposal.newBinv);
+  return (EEMS_wishpdfln(proposal.newBinv,nowW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 double EEMS::eval_proposal_mrateMu(Proposal &proposal) const {
-  calc_Binv(nowmColors,mEffcts,proposal.newmrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_between(nowmColors,mEffcts,proposal.newmrateMu,proposal.newBinv);
+  return (EEMS_wishpdfln(proposal.newBinv,nowW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
+// Propose to move one tile in the migration Voronoi tessellation
 double EEMS::eval_proposal_mSeeds(Proposal &proposal) const {
   MatrixXd newmSeeds = mSeeds;
   newmSeeds(proposal.mTile,0) = proposal.newmSeedx;
   newmSeeds(proposal.mTile,1) = proposal.newmSeedy;
   graph.index_closest_to_deme(newmSeeds,proposal.newmColors);
-  calc_Binv(proposal.newmColors,mEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_between(proposal.newmColors,mEffcts,mrateMu,proposal.newBinv);
+  return (EEMS_wishpdfln(proposal.newBinv,nowW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 double EEMS::eval_birthdeath_mVoronoi(Proposal &proposal) const {
   graph.index_closest_to_deme(proposal.newmSeeds,proposal.newmColors);
-  calc_Binv(proposal.newmColors,proposal.newmEffcts,mrateMu,proposal.newBinv);
-  return (EEMS_wishpdfln(proposal.newBinv,nowq,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
+  calc_between(proposal.newmColors,proposal.newmEffcts,mrateMu,proposal.newBinv);
+  return (EEMS_wishpdfln(proposal.newBinv,nowW,sigma2,df,proposal.newtriDeltaQD,proposal.newll_atfixdf));
 }
 ///////////////////////////////////////////
 void EEMS::update_sigma2( ) {
@@ -576,18 +613,18 @@ bool EEMS::accept_proposal(Proposal &proposal) {
     switch (proposal.type) {
     case Q_VORONOI_RATE_UPDATE:
       qEffcts(proposal.qTile) = proposal.newqEffct;
-      nowq = proposal.newq;
+      nowW = proposal.newW;
       break;
     case Q_VORONOI_POINT_MOVE:
       qSeeds(proposal.qTile,0) = proposal.newqSeedx;
       qSeeds(proposal.qTile,1) = proposal.newqSeedy;
-      nowq = proposal.newq;
+      nowW = proposal.newW;
       nowqColors = proposal.newqColors;
       break;
     case Q_VORONOI_BIRTH_DEATH:
       qSeeds = proposal.newqSeeds;
       qtiles = proposal.newqtiles;
-      nowq = proposal.newq;
+      nowW = proposal.newW;
       qEffcts = proposal.newqEffcts;
       nowqColors = proposal.newqColors;
       break;
@@ -674,8 +711,8 @@ void EEMS::save_iteration(const MCMC &mcmc) {
   VectorXd h = B.diagonal();
   B -= 0.5 * h.replicate(1,o);
   B -= 0.5 * h.transpose().replicate(o,1);
-  B += 0.5 * nowq.replicate(1,o);
-  B += 0.5 * nowq.transpose().replicate(o,1);
+  B += 0.5 * nowW.replicate(1,o);
+  B += 0.5 * nowW.transpose().replicate(o,1);
   JtDhatJ += sigma2 * B;
 }
 bool EEMS::output_current_state( ) const {
@@ -819,24 +856,35 @@ double EEMS::test_prior( ) const {
     + dinvgamln(sigma2,params.sigmaShape_2,params.sigmaScale_2);
   return (logpi);
 }
-double EEMS::test_likelihood( ) const {
+double EEMS::test_likelihood() const {
+  // mSeeds, mEffcts and mrateMu define the migration Voronoi tessellation
+  // qSeeds, qEffcts define the diversity Voronoi tessellation
+  // These are EEMS parameters, so no need to pass them to test_likelihood
   VectorXi mColors, qColors;
+  // For every deme in the graph -- which migration tile does the deme fall into? 
   graph.index_closest_to_deme(mSeeds,mColors);
+  // For every deme in the graph -- which diversity tile does the deme fall into? 
   graph.index_closest_to_deme(qSeeds,qColors);
-  VectorXd q = VectorXd::Zero(d);
+  VectorXd W = VectorXd::Zero(d);
+  // Transform the log10 diversity parameters into diversity rates on the original scale
   for ( int alpha = 0 ; alpha < d ; alpha++ ) {
-    double log10m = qEffcts(qColors(alpha)); // qrateMu = 0.0
-    q(alpha) = pow(10.0,log10m);
+    double log10q_alpha = qEffcts(qColors(alpha)); // qrateMu = 0.0
+    W(alpha) = pow(10.0,log10q_alpha);
   }
   MatrixXd M = MatrixXd::Zero(d,d);
   int alpha, beta;
+  // Transform the log10 migration parameters into migration rates on the original scale
   for ( int edge = 0 ; edge < graph.get_num_edges() ; edge++ ) {
     graph.get_edge(edge,alpha,beta);
-    double log10m1 = mEffcts(mColors(alpha)) + mrateMu;
-    double log10m2 = mEffcts(mColors(beta)) + mrateMu;
-    M(alpha,beta) = 0.5 * pow(10.0,log10m1) + 0.5 * pow(10.0,log10m2);
+    double log10m_alpha = mEffcts(mColors(alpha)) + mrateMu;
+    double log10m_beta = mEffcts(mColors(beta)) + mrateMu;
+    M(alpha,beta) = 0.5 * pow(10.0,log10m_alpha) + 0.5 * pow(10.0,log10m_beta);
+    M(beta,alpha) = M(alpha,beta);
   }
-  MatrixXd Delta = expected_dissimilarities(J, (M + M.transpose()) * Binvconst, q * qconst);
+  // J is an indicator matrix such that J(i,a) = 1 if individual i comes from deme a,
+  // and J(i,a) = 0 otherwise  
+  MatrixXd Delta = expected_dissimilarities(J, M * Binvconst, W * Wconst);
+  // Exactly equation S13
   double logll = wishpdfln(-L*Diffs*L.transpose(),
 			   -L*Delta*L.transpose()*sigma2/df,df);
   return (logll);

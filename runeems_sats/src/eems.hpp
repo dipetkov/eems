@@ -32,7 +32,7 @@ struct Proposal {
   VectorXd newmEffcts;
   MatrixXd newqSeeds;
   MatrixXd newmSeeds;
-  VectorXd newq;
+  VectorXd newW;
   MatrixXd newB;
   VectorXi newqColors;
   VectorXi newmColors;
@@ -51,15 +51,17 @@ public:
   double test_prior( ) const;
   double eval_likelihood( );
   double test_likelihood( ) const;
-  void calc_q(const VectorXi &qColors0, const VectorXd &qEffcts0, VectorXd &q0) const;
-  void calc_B(const VectorXi &mColors0, const VectorXd &mEffcts0, const double mrateMu0, MatrixXd &B0) const;
+  void calc_within(const VectorXi &qColors, const VectorXd &qEffcts, VectorXd &W) const;
+  void calc_between(const VectorXi &mColors, const VectorXd &mEffcts, const double mrateMu, MatrixXd &B) const;
   MoveType choose_move_type( );
+  // These functions change the within demes component:  
   double eval_proposal_qEffcts(Proposal &proposal) const;
+  double eval_proposal_qSeeds(Proposal &proposal) const;
+  double eval_birthdeath_qVoronoi(Proposal &proposal) const;
+  // These functions change the between demes component:
   double eval_proposal_mEffcts(Proposal &proposal) const;
   double eval_proposal_mrateMu(Proposal &proposal) const;
-  double eval_proposal_qSeeds(Proposal &proposal) const;
   double eval_proposal_mSeeds(Proposal &proposal) const;
-  double eval_birthdeath_qVoronoi(Proposal &proposal) const;
   double eval_birthdeath_mVoronoi(Proposal &proposal) const;
 
   // Gibbs updates:
@@ -132,9 +134,9 @@ private:
   VectorXd nowtriDeltaQD;
   VectorXi nowqColors;
   VectorXi nowmColors;
-  VectorXd nowq;
+  VectorXd nowW;
   MatrixXd nowB;
-  double ll_atfixdf, qconst, Bconst;
+  double ll_atfixdf, Wconst, Bconst;
 
   // Variables to store the results in :
   // Fixed size:

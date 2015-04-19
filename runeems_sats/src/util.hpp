@@ -74,7 +74,7 @@ double mvgammaln(const double a, const int p);
 double wishpdfln(const MatrixXd &X, const MatrixXd &Sigma, const double df);
 MatrixXd pairwise_distance(const MatrixXd &X, const MatrixXd &Y);
 MatrixXd resistance_distance(const MatrixXd& M, const int o);
-MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd& M, const VectorXd& q);
+MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd& M, const VectorXd& W);
 MatrixXd readMatrixXd(const string &filename);
 double trace_AxB(const MatrixXd &A, const MatrixXd &B);
 
