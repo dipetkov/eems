@@ -255,7 +255,8 @@ filled.countour.axes.proj.known <- function(mcmcpath,longlat,plot.params) {
     if (plot.params$add.map) {
         map <- getMap(resolution="high")
         map <- spTransform(map,CRS=CRS(plot.params$proj.out))
-        map <- gIntersection(map,boundary,byid=TRUE)
+        ## The following line throws an error if coordinates are in the Lambert-93 conic projection.
+        ##map <- gIntersection(map,boundary,byid=TRUE)
         plot(map,col=NA,border=plot.params$col.map,lwd=plot.params$lwd.map,add=TRUE)
     }
     if (plot.params$add.grid) {

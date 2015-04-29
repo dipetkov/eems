@@ -3,3 +3,7 @@ analyses/
 output/
 *swp
 *wt/
+.png
+.txt
+.so
+.o
