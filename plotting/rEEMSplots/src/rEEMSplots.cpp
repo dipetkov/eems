@@ -3,33 +3,27 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-using std::string;
-using Eigen::MatrixXd;
-using Eigen::MatrixXi;
-using Eigen::VectorXd;
-using Eigen::VectorXi;
-
 // rcppstandardize_rates
-MatrixXd rcppstandardize_rates(const VectorXd &tilex, const VectorXd &rates,
-			       const VectorXd &xseed, const VectorXd &yseed,
-			       const MatrixXd &marks, const VectorXd &nmrks,
-			       const std::string &distm);
-MatrixXd rcppnotstandardize_rates(const VectorXd &tilex, const VectorXd &rates,
-				  const VectorXd &xseed, const VectorXd &yseed,
-				  const MatrixXd &marks, const VectorXd &nmrks,
-				  const std::string &distm);
+Eigen::MatrixXd rcppstandardize_rates(const Eigen::VectorXd &tilex, const Eigen::VectorXd &rates,
+				      const Eigen::VectorXd &xseed, const Eigen::VectorXd &yseed,
+				      const Eigen::MatrixXd &marks, const Eigen::VectorXd &nmrks,
+				      const std::string &distm);
+Eigen::MatrixXd rcppnotstandardize_rates(const Eigen::VectorXd &tilex, const Eigen::VectorXd &rates,
+					 const Eigen::VectorXd &xseed, const Eigen::VectorXd &yseed,
+					 const Eigen::MatrixXd &marks, const Eigen::VectorXd &nmrks,
+					 const std::string &distm);
 RcppExport SEXP rEEMSplots__rcppstandardize_rates( SEXP tiles_, SEXP rates_, SEXP xseed_, SEXP yseed_,
 						   SEXP marks_, SEXP nmrks_, SEXP distm_) {
 BEGIN_RCPP
   SEXP Zmrks_;
   {
-    Rcpp::traits::input_parameter< const VectorXd& >::type tiles(tiles_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type rates(rates_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type xseed(xseed_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type yseed(yseed_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type nmrks(nmrks_);
-    Rcpp::traits::input_parameter< const MatrixXd& >::type marks(marks_);
-    Rcpp::traits::input_parameter< const string& >::type distm(distm_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type tiles(tiles_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type rates(rates_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type xseed(xseed_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yseed(yseed_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type nmrks(nmrks_);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type marks(marks_);
+    Rcpp::traits::input_parameter< const std::string& >::type distm(distm_);
     
     Eigen::MatrixXd Zmrks = rcppstandardize_rates(tiles,rates,xseed,yseed,marks,nmrks,distm);
     
@@ -44,13 +38,13 @@ RcppExport SEXP rEEMSplots__rcppnotstandardize_rates( SEXP tiles_, SEXP rates_, 
 BEGIN_RCPP
   SEXP Zmrks_;
   {
-    Rcpp::traits::input_parameter< const VectorXd& >::type tiles(tiles_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type rates(rates_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type xseed(xseed_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type yseed(yseed_);
-    Rcpp::traits::input_parameter< const VectorXd& >::type nmrks(nmrks_);
-    Rcpp::traits::input_parameter< const MatrixXd& >::type marks(marks_);
-    Rcpp::traits::input_parameter< const string& >::type distm(distm_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type tiles(tiles_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type rates(rates_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type xseed(xseed_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yseed(yseed_);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type nmrks(nmrks_);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type marks(marks_);
+    Rcpp::traits::input_parameter< const std::string& >::type distm(distm_);
     
     Eigen::MatrixXd Zmrks = rcppnotstandardize_rates(tiles,rates,xseed,yseed,marks,nmrks,distm);
     

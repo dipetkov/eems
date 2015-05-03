@@ -1,0 +1,2 @@
+Input parameter values:
+	       distance = euclidean
