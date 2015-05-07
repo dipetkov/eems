@@ -98,6 +98,7 @@ Eigen::MatrixXd rcppstandardize_rates(const Eigen::VectorXd &tiles, const Eigen:
     }
     Zvals += zvals; pos += now_tiles;
   }
+  // Do not divide by niters here but in 'average.eems.contours' instead
   ///Zvals = Zvals.array() / niters;
   return Zvals.transpose();
 }
@@ -105,7 +106,6 @@ Eigen::MatrixXd rcppnotstandardize_rates(const Eigen::VectorXd &tiles, const Eig
                                          const Eigen::VectorXd &xseed, const Eigen::VectorXd &yseed,
                                          const Eigen::MatrixXd &marks, const Eigen::VectorXd &nmrks,
                                          const std::string &distm) {
-  bool use_weighted_mean = true;
   int nxmrks = nmrks(0);
   int nymrks = nmrks(1);
   Eigen::MatrixXd Zvals = Eigen::MatrixXd::Zero(nymrks,nxmrks);
@@ -121,6 +121,7 @@ Eigen::MatrixXd rcppnotstandardize_rates(const Eigen::VectorXd &tiles, const Eig
     compute_contour_vals(zvals,marks,now_rates,now_seeds,distm);
     Zvals += zvals; pos += now_tiles;
   }
+  // Do not divide by niters here but in 'average.eems.contours' instead
   ///Zvals = Zvals.array() / niters;
   return Zvals.transpose();
 }

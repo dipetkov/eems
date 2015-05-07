@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt,DIV=15,mpinclude=true]{scrartcl}
+\documentclass[a4paper,10pt,DIV=15,titlepage,mpinclude=true]{scrartcl}
 \usepackage[xetex]{graphicx}
 \usepackage{amsmath,amsthm}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
@@ -16,6 +16,83 @@
 
 \usepackage{afterpage}
 \usepackage{verbatimbox}
+\usepackage[final]{listings}
+
+
+\lstdefinestyle{Cppcode}{
+  language=c++,
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left,
+  stepnumber=1,
+  numbersep=7pt,
+  numberstyle=\tiny\color{gray},
+  backgroundcolor=\color{black!3},
+  showstringspaces=false,
+  columns=flexible,
+  rulecolor=\color{black!3},
+  breaklines=true,
+  breakatwhitespace=true,
+  alsoletter={.,0,1,2,3,4,5,6,7,8,9},
+  keywordstyle=\color{RoyalBlue},
+  commentstyle=\color{YellowGreen},
+  stringstyle=\color{ForestGreen},
+  escapeinside={\#\%*}{*)},
+  mathescape=true,
+  alsoletter={.},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morekeywords={NULL,TRUE,FALSE,*,...},
+}
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left,
+  stepnumber=1,
+  numbersep=7pt,
+  numberstyle=\tiny\color{gray},
+  backgroundcolor=\color{black!3},
+  showstringspaces=false,
+  columns=flexible,
+  rulecolor=\color{black!3},
+  breaklines=true,
+  breakatwhitespace=true,
+  alsoletter={.,0,1,2,3,4,5,6,7,8,9},
+  keywordstyle=\color{RoyalBlue},
+  commentstyle=\color{YellowGreen},
+  stringstyle=\color{ForestGreen},
+  escapeinside={\#\%*}{*)},
+  mathescape=true,
+  alsoletter={.},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morekeywords={NULL,TRUE,FALSE,*,...},
+}
+\lstset{literate=
+    {0}{{{\color{BurntOrange}{0}}}}1
+    {1}{{{\color{BurntOrange}{1}}}}1
+    {2}{{{\color{BurntOrange}{2}}}}1
+    {3}{{{\color{BurntOrange}{3}}}}1
+    {4}{{{\color{BurntOrange}{4}}}}1
+    {5}{{{\color{BurntOrange}{5}}}}1
+    {6}{{{\color{BurntOrange}{6}}}}1
+    {7}{{{\color{BurntOrange}{7}}}}1
+    {8}{{{\color{BurntOrange}{8}}}}1
+    {9}{{{\color{BurntOrange}{9}}}}1
+    {.0}{{{\color{BurntOrange}{.0}}}}2
+    {.1}{{{\color{BurntOrange}{.1}}}}2
+    {.2}{{{\color{BurntOrange}{.2}}}}2
+    {.3}{{{\color{BurntOrange}{.3}}}}2
+    {.4}{{{\color{BurntOrange}{.4}}}}2
+    {.5}{{{\color{BurntOrange}{.5}}}}2
+    {.6}{{{\color{BurntOrange}{.6}}}}2
+    {.7}{{{\color{BurntOrange}{.7}}}}2
+    {.8}{{{\color{BurntOrange}{.8}}}}2
+    {.9}{{{\color{BurntOrange}{.9}}}}2
+    {\ }{{ }}{1}% handle the space
+}
+
 
 % Change the style of the captions and the headers
 \usepackage[normal,bf,labelsep=quad]{caption}
@@ -23,310 +100,744 @@
 \setkomafont{caption}{\sffamily}
 \setkomafont{disposition}{\bfseries}
 
-% Macro for finding figures
-\graphicspath{{/Users/desislava/Documents/GitHub/eems/Documentation/Figures/}}
 
+% Macro for finding figures
+\graphicspath{{./Figures/}}
+
+\usepackage{cleveref}
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple}
+\renewcommand\thesubfigure{\textbf{(\alph{subfigure})}}
+
+
+%\newcommand{\keystring}[1]{{\color{red}\tt #1}}
+\newcommand{\keystring}[1]{{\tt #1}}
+
+
+\newcommand{\given}{\,|\,}
+\newcommand{\specialrm}[1]{\mathrm{#1}}
+\providecommand{\E}{\specialrm{E}}
+
+%\titlehead{EEMS documentation}
+\subject{Instruction Manual}
+\title{EEMS: a method to visualize patterns of non-stationary isolation by distance}
+\subtitle{Version 0.0.0.9000}
+\author{Desislava Petkova <\href{mailto:desislavka@gmail.com}{desislavka@gmail.com}>}
 
 \begin{document}
 
+\maketitle
+\tableofcontents
+\listoffigures
+\clearpage
+
+
 EEMS is a program to analyze and visualize spatial population structure from geo-referenced genetic samples. EEMS uses the concept of \textit{effective migration} to model the relationship between genetics and geography, and it outputs an \textit{e}stimated \textit{e}ffective \textit{m}igration \textit{s}urface (hence, EEMS) -- a visual representation of population structure that highlights potential regions of higher-than-average and lower-than-average historic gene flow.
 
-This EEMS implementation uses Eigen for linear algebra computations and Boost for random number generation and the habitat geometry. (The habitat is assumed to be a (possibly irregular) closed polygon without holes; see Section \ref{sec:habitat}.) The Eigen template library can be downloaded from \url{http://eigen.tuxfamily.org}, and the Boost libraries can be downloaded from \url{http://www.boost.org}. EEMS has been tested with Eigen 3.2.2 and Boost 1\_57.
+\section{Installation}
 
-\section{The input files}
+This EEMS implementation uses Eigen for linear algebra computations and Boost for random number generation and the habitat geometry. The Eigen template library can be downloaded from \url{http://eigen.tuxfamily.org}, and the Boost libraries can be downloaded from \url{http://www.boost.org}. EEMS has been tested with Eigen 3.2.2 and Boost 1\_57.
 
-There are three data input files plus a parameter input file. The data input files should be in the same directory, and the description below assumes that \textit{datapath} specifies their location.
+After downloading Eigen (which does not need installation) and installing Boost, update the variables {\tt EIGEN\_INC}, {\tt BOOST\_INC}, {\tt BOOST\_LIB} in the Makefile. The dynamic Boost libraries are linked to slightly differently on a Mac and a Linux machine, so run \keystring{`make darwin'} on a Mac or \keystring{`make linux'} on a Linux machine.
+
+There are two versions of EEMS: \keystring{runeems\_snps} for SNP data and \keystring{runeems\_sats} for microsatellite data. The data input format and the EEMS model are somewhat different for SNPs and microsatellites, hence the two versions. The source code can be found in \keystring{runeems\_snps/src} and \keystring{runeems\_sats/src}, respectively. The directories \keystring{runeems\_snps/data} and \keystring{runeems\_sats/data} contain data, simulated with \keystring{ms} \cite{Hudson:2002fk}, to illustrate the input file format and how EEMS is run.
+
+\section{Input data}
+
+There are three data input files as well as a parameter input file. The data input files should be in the same directory, and the description below assumes that \keystring{datapath} is the full path + the file name (but without the extension).
 
 For SNP data on $n$ individuals, the input files are:
 \begin{itemize}
-  \item \textit{datapath}.diffs: the matrix of average pairwise genetic differences. (This matrix can be computed with {\tt bed2diffs} if the dataset is already in plink binary format.)
-  \item \textit{datapath}.coord: the sample coordinates (two coordinates per sample, one sample per line)
-  \item \textit{datapath}.outer: the habitat coordinates (as a sequence of vertices that outline a closed polygon; see Section \ref{sec:habitat} for details and some examples.)
+  \item \keystring{datapath.diffs}: the matrix of average pairwise genetic dissimilarities. This can be computed with the small program \keystring{bed2diffs} if the dataset is already in plink binary format. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:diffs}.
+  \item \keystring{datapath.coord}: the sample coordinates, two coordinates per sample, one sample per line. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:coord}.
+  \item \keystring{datapath.outer}: the habitat coordinates, as a sequence of vertices that form a closed polygon. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:outer}.
 \end{itemize}
 
 For microsatellite data on $n$ individuals at $L$ loci, the input files are:
 \begin{itemize}
-  \item \textit{datapath}.sites: the matrix of allele copies (This matrix is $n\times L $ for haploid markers and $n\times2L$ for diploid markers; missing alleles can be specified by any negative number.)
-  \item \textit{datapath}.coord: as described above for SNP data.
-  \item \textit{datapath}.outer: as described above for SNP data.
+  \item \keystring{datapath.sites}: the matrix of allele copies (This matrix is $n\times L $ for $L$ haploid markers and $n\times2L$ for $L$ diploid markers; missing alleles are specified by any negative number.)
+  \item \keystring{datapath.coord}, \keystring{datapath.outer}: as described above for SNP data.
 \end{itemize}
 
-\section{The habitat} \label{sec:habitat}
 
-The habitat is represented as a ring (a polygon without holes), with vertices listed counterclockwise in the file \textit{datapath}.outer, with one vertex per line. See Figure \ref{fig:habitat-examples} for examples.
-
-The vertices of the population graph (the demes) will fall inside the habitat by construction. However, EEMS will not check that the sampling locations fall inside the habitat -- instead, each sample will be assigned to the closest deme. Therefore, the user should specify a habitat that is sufficiently large to cover all sampling locations.
-
-\begin{myverbbox}{\habitatA}
-Input habitat: 
-  POLYGON((0 0,0 6,12 6,12 0))
-Corrected habitat: 
-  POLYGON((0 0,0 6,12 6,12 0,0 0))
-  
-  
+\begin{myverbbox}{\WangetalIrregularHabitatDiffs}
+       0  0.656010  0.666522   ...
+0.656010         0  0.661998   ...
+0.666522  0.661998         0   ...
+0.662323  0.652633  0.651595   ...
+0.675922  0.668446  0.668843   ...
+     ...       ...       ...   ...
+     
+     
 \end{myverbbox}
-\begin{myverbbox}{\habitatB}
-Input habitat: 
-  POLYGON((0 0,0 6,12 6,12 0,0 0))
-    
 
-
-  
-\end{myverbbox}
-\begin{myverbbox}{\habitatC}
-Input habitat: 
-  POLYGON((0 0,12 0,12 6,0 6,0 0))
-Corrected habitat: 
-  POLYGON((0 0,0 6,12 6,12 0,0 0))  
+\begin{myverbbox}{\WangetalIrregularHabitatCoord}
+30.9  -3.0
+30.9  -3.0
+30.9  -3.0
+30.9  -3.0
+30.9  -3.0
+...
 
 
 \end{myverbbox}
-\begin{myverbbox}{\habitatD}
-Input habitat: 
-  POLYGON((0 0,2 3,0 6,12 6,10 3,
-           12 0,0 0))
-  
 
-  
+\begin{myverbbox}{\WangetalIrregularHabitatOuter}
+-18.1  9.6
+-16.0  7.0
+-10.0  3.0
+...
+-19.2  17.8
+-19.5  14.3
+-18.1  9.6
+
+
 \end{myverbbox}
- 
+
+
 \afterpage{
 \begin{figure}
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\begin{tabular}{p{2.7in}c}
-\habitatA&
-\includegraphics[height=1.7in]{rectangular-habitat-choose_grid01.png}
+\scriptsize
+\begin{tabular}{p{2.2in}p{2.2in}}
+\WangetalIrregularHabitatDiffs&
+\includegraphics[width=2.2in]{wang_etal2012-nIndiv314-irregular-habitat-diffs.png}
 \end{tabular}
-\caption{}
+\caption{The observed genetic dissimilarity matrix: the top left corner of \keystring{datapath.diffs} on the left and the entire matrix as a heatmap on the right.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:input:diffs}
 \end{subfigure}
-
-\vspace{20pt}
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\begin{tabular}{p{2.7in}c}
-\habitatC&
-\includegraphics[height=1.7in]{rectangular-habitat-choose_grid03.png}
+\scriptsize
+\begin{tabular}{p{2.2in}p{2.2in}}
+\WangetalIrregularHabitatCoord&
+\includegraphics[width=2.2in]{wang_etal2012-nIndiv314-irregular-habitat-coord.png}
 \end{tabular}
-\caption{}
+\caption{The sample coordinates: the top 5 lines in \keystring{datapath.coord} on the left and the complete sampling scheme on the right. A bigger circle means that more samples are taken from that location.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:input:coord}
 \end{subfigure}
-
-\vspace{20pt}
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\begin{tabular}{p{2.7in}c}
-\habitatD&
-\includegraphics[height=1.7in]{rectangular-habitat-choose_grid04.png}
+\scriptsize
+\begin{tabular}{p{2.2in}p{2.2in}}
+\WangetalIrregularHabitatOuter&
+\includegraphics[width=2.2in]{wang_etal2012-nIndiv314-irregular-habitat-outer.png}
 \end{tabular}
-\caption{}
-\end{subfigure}
-\caption{The habitat is represented as a ring, i.e., a simple closed polygon without holes. (a) The ring should be \textit{closed}, i.e., the first vertex is also the last vertex. (b) The vertices should be listed \textit{counterclockwise}. (c) It is straightforward to specify a habitat with complex irregular shape as a ring.}
-\label{fig:habitat-examples}
-\end{figure}
-\clearpage}
-
-\section{The population graph}
-
-The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, `nDemes`, and EEMS constructs a grid with about the same number of demes that fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries), and it might be helpful to iterate between refining the habitat specification and the number of demes `nDemes` to choose a satisfactory grid. As an example, Figure \ref{fig:grid-for-African-elephant} shows how to choose the habitat coordinates and construct a population graph for the African elephant dataset. Alternatively, there exists a convenient online tool to draw polygons with Google Maps API, available at \url{http://www.birdtheme.org/useful/v3tool.html}, that might be useful for outlining an irregularly shaped habitat.
-
-The sample and habitat coordinates can be specified either latitude first or longitude first as long as the files \textit{datapath}.coord and \textit{datapath}.outer use the same convention. (However, the ordering of the coordinates must be specified when plotting the results; see Section \ref{sec:plotting-eems}.)
-
-\afterpage{
-\begin{figure}[!]
-
-\begin{subfigure}[t]{0.45\textwidth}
-\centering
-\includegraphics[height=2in]{V3b-nohyb-nIndiv1124-choose_grid01.png}
-\caption{}
-\end{subfigure}
-\begin{subfigure}[t]{0.45\textwidth}
-\centering
-\includegraphics[height=2in]{V3b-nohyb-nIndiv1124-choose_grid02.png}
-\caption{}
+\caption{The habitat polygon: the top and bottom lines in \keystring{datapath.outer} on the left and the entire habitat outline on the right.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:input:outer}
 \end{subfigure}
 
-\vspace{20pt}
-
-\begin{subfigure}[t]{0.45\textwidth}
-\centering
-\includegraphics[height=2in]{V3b-nohyb-nIndiv1124-choose_grid03.png}
-\caption{}
-\end{subfigure}
-\begin{subfigure}[t]{0.45\textwidth}
-\centering
-\includegraphics[height=2in]{V3b-nohyb-nIndiv1124-choose_grid04.png}
-\caption{}
-\end{subfigure}
-
-\vspace{20pt}
-
-\begin{subfigure}[t]{\textwidth}
-\centering
-\includegraphics[height=2in]{V3b-nohyb-nIndiv1124-choose_grid05.png}
-\caption{}
-\end{subfigure}
-
-\caption{This example shows how we can specify the habitat boundaries by first creating a rectangular grid and then picking a few vertices (in the rectangular grid) to outline the sampled habitat. (a) Samples are collected at known locations across a two-dimensional habitat. In this example, elephant samples are collected throughout Africa. (b) It is straightforward (using EEMS) to construct a triangular grid that spans a rectangular habitat because a rectangle is defined by only four vertices. However, we might want to exclude some regions from the ``habitat''; in the case of the African elephant, we might want to exclude the Atlantic and the Indian oceans. (c) We can choose a few vertices that approximately outline the habitat. (d) The resulting habitat has roughly the shape of Sub-Saharan Africa. (e) An irregularly shaped grid is generated automatically by EEMS given the irregular habitat outline (in red) and the deme density.}
-\label{fig:grid-for-African-elephant}
+\caption[The input data -- an example]{EEMS requires three data input files. 
+\subref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:diffs} \keystring{datapath.diffs} is the observed genetic dissimilarity matrix. There is a lot of population structure in this example and the rows and columns can be ordered to emphasize the pattern further. This ordering, however, is irrelevant to EEMS. 
+\subref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:coord} The sampling locations in \keystring{datapath.coord} should be given in the same order as the rows and columns of the dissimilarity matrix. 
+\subref{fig:wang_etal2012-nIndiv314-irregular-habitat:input:outer} The habitat vertices in \keystring{datapath.outer} should be listed \textit{counterclockwise} and the first vertex should also be the last vertex, so that the outline is a \textit{closed ring}. Otherwise, EEMS attempts to ``correct'' the polygon and prints a warning message.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:input}
 \end{figure}
 \clearpage}
 
 \newpage
+
 \section{Input parameters}
 
 There are a number of program parameters that can be set by the user. First, there are several parameters that have to be specified (there are no default values for those):
 \begin{itemize}
-  \item `datapath`: path to the input data. For SNP data, EEMS expects three files: a matrix of average pairwise differences, \textit{datapath}.diffs; a list of sample coordinates, \textit{datapath}.coord; a list of habitat boundary points, \textit{datapath}.outer. For microsatellite data, EEMS also expects three files: a matrix of allele copies, \textit{datapath}.sites; a list of sample coordinates, \textit{datapath}.coord; a list of habitat boundary points, \textit{datapath}.outer.
-  \item `mcmcpath`: path to the output directory. EEMS creates this directory and saves all results there. (There is an accompanying R script which parses the output files and generates several figures that represent the EEMS results.)
-  \item `nIndiv` and `nSites`: number of samples and number of markers.
-  \item `numMCMCIter`, `numBurnIter`, `numThinIter`: number of MCMC iterations, number of burn-in iterations to discard at the start, and number of iterations to thin between two writing steps.
-  \item `nDemes`: the (approximate) number of demes in the population graph. If the habitat is irregular, the actual number of demes in the grid might not be exactly equal to the specified number of demes.
+  \item \keystring{datapath}: path to the input data. For SNP data, EEMS expects three files: a matrix of average pairwise differences, \keystring{datapath.diffs}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath}.outer. For microsatellite data, EEMS also expects three files: a matrix of allele copies, \keystring{datapath.sites}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath.outer}.
+  \item \keystring{mcmcpath}: path to the output directory. EEMS creates this directory and saves all results there. (There is an accompanying R package which parses the output files and generates several figures to visualize the EEMS results.)
+  \item \keystring{nIndiv} and \keystring{nSites}: number of samples and number of markers.
+  \item \keystring{numMCMCIter}, \keystring{numBurnIter}, \keystring{numThinIter}: number of MCMC iterations, number of burn-in iterations to discard at the start, and number of iterations to thin between two writing steps.
+  \item \keystring{nDemes}: the (approximate) number of demes in the population graph. If the habitat is irregular, the actual number of demes in the grid might not be exactly equal to the specified number of demes. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}. Alternatively, instead of \keystring{nDemes}, specify \keystring{gridpath} where the file \keystring{gridpath.demes} is a list of demes, the file \keystring{gridpath.edges} is a list of edges and \keystring{gridpath.ipmap} is a mapping which assigns samples to demes. See \Cref{sec:pop-grid}.
 \end{itemize}
 
-Additionally, there are several extra parameters that can be specified optionally (they have default values but modifying those values could improve convergence).
+Further, there are several extra parameters that can be specified optionally (they have default values but modifying those values could improve convergence).
 
 \begin{itemize}
 \item Variances for the proposal distributions of migration parameters:
 \begin{itemize}
-  \item `mEffctProposalS2`: proposal variance for the migration cell effects, $e_1,\ldots,e_{C_m}$
-  \item `mSeedsProposalS2`: proposal variance for the migration cell locations, $s_1,\ldots,s_{C_m}$
-  \item `mrateMuProposalS2`: proposal variance for the overall migration rate $\mu$ (on the $\log_{10}$ scale)
+  \item \keystring{mEffctProposalS2}: proposal variance for the migration cell effects, $e_1,\ldots,e_{C_m}$
+  \item \keystring{mSeedsProposalS2}: proposal variance for the migration cell locations, $s_1,\ldots,s_{C_m}$
+  \item \keystring{mrateMuProposalS2}: proposal variance for the overall migration rate $\mu$ (on the $\log_{10}$ scale)
 \end{itemize}
 \item Variances for the proposal distributions of diversity parameters:
 \begin{itemize}
-  \item `qEffctProposalS2`: proposal variance for the diversity cell effects, $f_1,\ldots,f_{C_q}$
-  \item `qSeedsProposalS2`: proposal variance for the diversity cell locations, $t_1,\ldots,t_{C_q}$
+  \item \keystring{qEffctProposalS2}: proposal variance for the diversity cell effects, $f_1,\ldots,f_{C_q}$
+  \item \keystring{qSeedsProposalS2}: proposal variance for the diversity cell locations, $t_1,\ldots,t_{C_q}$
 \end{itemize}
 \item Hyperparameters:
 \begin{itemize}
-  \item `mrateShape,mrateScale`: (inverse gamma) hyperparameters for the variance $\omega_m^2$ of the migration effects
-  \item `qrateShape,qrateScale`: (inverse gamma) hyperparameters for the variance $\omega_q^2$ of the diversity effects
-  \item `s2locShape,s2locShape`: (inverse gamma) hyperparameters for the scale parameters $\sigma_1^2,\ldots,\sigma_p^2$
-  \item `negBiSize`: number of failures for the Negative-Binomial prior on the number of Voronoi tiles
-  \item `negBiProb`: success probability for the Negative-Binomial prior on the number of Voronoi tiles
+  \item \keystring{mrateShape,mrateScale}: (inverse gamma) hyperparameters for the variance $\omega_m^2$ of the migration effects
+  \item \keystring{qrateShape,qrateScale}: (inverse gamma) hyperparameters for the variance $\omega_q^2$ of the diversity effects
+  \item \keystring{s2locShape,s2locShape}: (inverse gamma) hyperparameters for the scale parameters $\sigma_1^2,\ldots,\sigma_p^2$
+  \item \keystring{negBiSize}: number of failures for the Negative-Binomial prior on the number of Voronoi tiles
+  \item \keystring{negBiProb}: success probability for the Negative-Binomial prior on the number of Voronoi tiles
 \end{itemize}
 \end{itemize}
 
-\newpage
-\section{Running the EEMS program -- an example}\label{sec:running-eems}
+\subsection{Population grid}\label{sec:pop-grid}
+
+The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, \keystring{nDemes}, and EEMS constructs a grid with about the same number of demes which fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries) and it might be helpful to iterate between refining the habitat specification and the density argument \keystring{nDemes}, to choose a satisfactory grid. [Or even better, since the assignment of samples to demes changes with the grid, run EEMS with slightly different grids to investigates how/whether this changes the results.] See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice} for an illustration. Furthermore, there exists a convenient online tool to draw polygons with Google Maps API, available at \url{http://www.birdtheme.org/useful/v3tool.html}, that might be useful for outlining an irregularly shaped habitat.
+
+Alternatively, EEMS can read in the population graph. In this case, there are three necessary files:
+\begin{itemize}
+  \item \keystring{gridpath.demes}: list of demes, two coordinates per deme, one deme per row.
+  \item \keystring{gridpath.edges}: list of connected pairs of demes, two indices per edge, one edge per row. Demes are indexed from 1 to $d$ (where $d$ is the number of demes in the grid), in the order implied by \keystring{gridpath.demes}, i.e., the deme with index 1 has the coordinates on the 1st row in \keystring{gridpath.demes}.
+  \item \keystring{gridpath.ipmap}: list of deme indices which indicate the deme each sample is assigned to. There should be $n$ rows (where $n$ is the number of samples), with one row for each sample in \keystring{datapath.coord}, in the same order.
+\end{itemize}
+
+The sample and habitat coordinates can be specified either latitude first or longitude first as long as the files \keystring{datapath.coord} and \keystring{datapath.outer} use the same convention. However, the ordering of the coordinates must be specified when plotting the results; see Section \ref{sec:plotting-eems}.
+
+Finally, the vertices of the population graph (the demes) fall inside the habitat by construction. However, EEMS does not check that the sampling locations fall inside the habitat -- instead, each sample is assigned to the closest deme. Therefore, the user should specify a habitat that is sufficiently large to cover all sampling locations.
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes100-simno0-mrates01.png}
+\caption{\keystring{nDemes = 100} (There are 75 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes100}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes400-simno0-mrates01.png}
+\caption{\keystring{nDemes = 400} (There are 358 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes400}
+\end{subfigure}
+
+\vspace{20pt}
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes700-simno0-mrates01.png}
+\caption{\keystring{nDemes = 700} (There are 651 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes700}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes1000-simno0-mrates01.png}
+\caption{\keystring{nDemes = 1000} (There are 927 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes1000}
+\end{subfigure}
+
+\caption[The triangular grid -- an example]{Given the grid density parameter, \keystring{nDemes}, EEMS automatically generates a triangular grid, which is contained entirely inside the habitat. Then EEMS assigns each sample to its closest deme. Here the habitat is outlined in red. [The outline was created, as a ``\textit{polyline}'', with a convenient online tool from Google, available at \url{http://www.birdtheme.org/useful/v3tool.html}.] A higher value for \keystring{nDemes} produces a denser grid, and a denser grid means a more flexible EEMS model because, with more vertices and edges, there are more rate parameters in the model. However, the computational cost of running EEMS increases as well.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}
+\end{figure}
+\clearpage}
+
+\newpage 
+
+\section{Running the EEMS program}\label{sec:running-eems}
 
 This example shows how to run EEMS on a small simulated dataset (one of the ``barrier to migration'' datasets used for Figure 2 in the EEMS paper.)
 
-First, create three input parameter files. All parameters are the same, except for the output directory `mcmcpath`.
+First, copy/create the three input parameter files. All parameters are the same, except for the output directory \keystring{mcmcpath}.
 
 \bigskip
 
 \noindent params-simno1.ini:
-\begin{verbatim}
-datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
-mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1
+\begin{lstlisting}[style=Cppcode]
+datapath = ../data/barrier-schemeX-nIndiv300-nSites3000
+mcmcpath = ../data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes200-simno1
 nIndiv = 300
 nSites = 3000
-nDemes = 153
+nDemes = 200
 diploid = false
-numMCMCIter = 20000
-numBurnIter = 10000
-numThinIter = 99
-\end{verbatim}
+numMCMCIter = 1500000
+numBurnIter = 500000
+numThinIter = 2999
+\end{lstlisting}
 
 \noindent params-simno2.ini:
-\begin{verbatim}
-datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
-mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno2
+\begin{lstlisting}[style=Cppcode]
+datapath = ../data/barrier-schemeX-nIndiv300-nSites3000
+mcmcpath = ../data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes200-simno2
 nIndiv = 300
 nSites = 3000
-nDemes = 153
+nDemes = 200
 diploid = false
-numMCMCIter = 20000
-numBurnIter = 10000
-numThinIter = 99
-\end{verbatim}
+numMCMCIter = 1500000
+numBurnIter = 500000
+numThinIter = 2999
+\end{lstlisting}
 
 \noindent params-simno3.ini:
-\begin{verbatim}
-datapath = ./data/barrier-schemeX-nIndiv300-nSites3000
-mcmcpath = ./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno3
+\begin{lstlisting}[style=Cppcode]
+datapath = ../data/barrier-schemeX-nIndiv300-nSites3000
+mcmcpath = ../data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes200-simno3
 nIndiv = 300
 nSites = 3000
-nDemes = 153
+nDemes = 200
 diploid = false
-numMCMCIter = 20000
-numBurnIter = 10000
-numThinIter = 99
-\end{verbatim}
+numMCMCIter = 1500000
+numBurnIter = 500000
+numThinIter = 2999
+\end{lstlisting}
 
-Then run EEMS (on the command line) on the simulated dataset, with three different random seeds. (The argument {\tt --seed} is optional; if not specified, the seed is randomly assigned.)
+Then run EEMS (on the command line) on the simulated dataset, with three different random seeds. The argument \keystring{--seed} is optional; it can be specified in the parameter file as well, and if not specified, the seed is randomly assigned.
 
-\begin{verbatim}
+\begin{lstlisting}[style=Cppcode]
 ./runeems_snps --params params-simno1.ini --seed 123
 ./runeems_snps --params params-simno2.ini --seed 456
 ./runeems_snps --params params-simno3.ini --seed 789
-\end{verbatim}
+\end{lstlisting}
 
-\section{Plotting the EEMS results -- an example}\label{sec:plotting-eems}
+\newpage
 
-Finally, plot the results of the three EEMS runs (in an R console).
+\section{Plotting the EEMS results}\label{sec:plotting-eems}
 
-\begin{verbatim}
-source('default.eems.plots.R')
+First install the R package \keystring{rEEMSplots} which provides the function \keystring{eems.plots}. It is not on CRAN, so install it from source instead.
 
-## mcmcpath is a list of three output directories; the results will be averaged
-mcmcpath <- paste('barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno',1:3,sep='')
-plotpath <- 'barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3'
+\begin{lstlisting}[style=Rcode]
+## Check that the current directory contains the rEEMSplots source directory (from GitHub)
+if (file.exists("./rEEMSplots")) {
+  install.packages("rEEMSplots", repos=NULL, type="source")
+} else {
+  stop("Move to the directory that contains the rEEMSplots source to install the package.")
+}
+\end{lstlisting}
 
-## eems.plots takes three required arguments:
-##   mcmcpath: one or several output directories (for the same dataset)
-##   plotpath: filename of figures to generate
-##     The following figures are created by default:
-##     plotpath-mrates01.png: effective migration rates
-##     plotpath-qrates01.png: effective diversity rates
-##     plotpath-rist01/02.png: fitted vs observed distances
-##   longlat (TRUE or FALSE): are the coordinates ordered longitude/latitude or not?
-## eems.plots take a variety of optional arguments:
-##   plot.width and plot.height: width and height of the graphics region (in inches)                                      
-##   res: resolution of png figures (generated with the bitmap function)                        
-##   add.map: add 'worldHires' map (using the mapdata package)?                                 
-##   add.grid: add triangular population grid?                                                  
-##   add.samples: add samples to their assigned location in the grid?                           
-##   add.outline: add the habitat ring (as declared in the .outer file)?                        
-##   col.map/col.grid/col.samples/col.outline: specify the colors                               
-##   lwd.max/lwd.grid/lwd.outline: specify the line width                                       
-##   pch.samples: specify the character                                                         
-##   cex.samples: specify the character size                                                    
-##   max.cex.samples: some demes might be assigned more samples than others.                    
-##     If max.cex.samples>0, then demes with more samples will also have bigger size.           
-##     If the sampling is uneven, then max.cex.samples>0 will underline this fact.
+\keystring{rEEMSplots} provides a single function, with a variety of options. I will use an example to demonstrate those options.
 
-longlat = TRUE                                              
-eems.plots(mcmcpath,plotpath,longlat,
-           add.map=FALSE,
-           add.grid=TRUE,
-           add.samples=TRUE,
-           add.outline=FALSE)
-\end{verbatim}
+\begin{lstlisting}[style=Rcode]
+## Use the provided example or supply the path to your own EEMS run.
+eems.results.to.plot = paste(path.package("rEEMSplots"),"/extdata/EEMS-example",sep="")
+name.figures.to.save = "EEMS-example-rEEMSplots"
+
+if (!file.exists(eems.results.to.plot)) {
+  stop("Check that the rEEMSplots package is installed without errors.")
+}
+\end{lstlisting}
+
+\subsection{Required arguments}
+
+\begin{enumerate}
+  \item \keystring{mcmcpath} is a list of EEMS output directories, for the same dataset. It can be a single directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. [In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.] Warning: There is minimal checking that all directories in the list are for the same dataset.
+  \item \keystring{plotpath} is the full path + the file name for the graphics to be generated. There are five output figures: \keystring{plotpath}-mrates01 (effective migration surface), \keystring{plotpath}-qrates01 (effective diversity surface), \keystring{plotpath}-rdist01 (between-demes component of genetic dissimilarity), \keystring{plotpath}-rdist02 (within-demes component of genetic dissimilarity), \keystring{plotpath}-pilogl01 (posterior probability trace). The three latter figures are helpful in checking that the MCMC sampler has converged (the trace plot) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities).
+  \item \keystring{longlat} specifies whether coordinates are given as pairs (longitude, latitude) or (latitude, longitude). In the former case, \keystring{longlat = TRUE}, and in the latter case, \keystring{longlat = FALSE}. [More generally, the coordinates are ordered pairs of numbers. Almost all plotting options are valid for general coordinates, except for the options to specify the projection and to add the geographic map.]
+\end{enumerate}
+
+I will use the PoBI data to demonstrate how to visualize EEMS results. PoBI stands for ``People of the British Isles'' -- see \cite{Winney:2012aa} for information on how the data was collected and an initial analysis, as well as \cite{Leslie:2015aa} for extensive population structure analysis using fineSTRUCTURE \cite{Lawson:2012fk}.
+
+\Cref{fig:rEEMSplots-example-default} shows the figures produced by \keystring{eems.plots} when only the three required arguments are specified.
+
+\begin{lstlisting}[style=Rcode]
+## Produce the five EEMS figures, with default values for all optional parameters. 
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-default",sep=""),
+           longlat = TRUE)
+\end{lstlisting}
+
+Passing \keystring{longlat = FALSE} instead of \keystring{longlat = TRUE} has the effect of flipping the $x$-axis and the $y$-axis -- compare \Cref{fig:rEEMSplots-example-default:mrates01,fig:rEEMSplots-example-default:qrates01} to \Cref{fig:rEEMSplots-example-axes-flipped:mrates01,fig:rEEMSplots-example-axes-flipped:qrates01}. It is particularly important to specify this argument correctly if adding a geographic map to the migration and diversity contour plots. [That's why \keystring{longlat} is a required, not an optional argument.]
+
+\begin{lstlisting}[style=Rcode]
+## Flip the x and y axis, i.e., assume that the x coordinate is the latitude and the y coordinate is the longitude.
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-axes-flipped",sep=""),
+           longlat = FALSE)
+\end{lstlisting}
+
+\subsection{Optional arguments about the graphics format}
+
+\keystring{eems.plots} generates output graphics as either PNGs (the default) or PDFs.
+
+\begin{itemize}
+  \item \keystring{plot.height/plot.width}: dimensions of the display region, in inches.
+  \item \keystring{out.png}: TRUE or FALSE, specifies whether to generate PNGs or PDFs.
+  \item \keystring{res}: resolution, in dots per inch, only relevant if the output is PNG graphics. The default is 600.
+\end{itemize}
+
+\begin{lstlisting}[style=Rcode]
+## Generate PNG figures with height 9 inches, width 8 inches and resolution 600 dots per inch.
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-output-PNGs",sep=""),
+           longlat = TRUE,
+           plot.height = 8,
+           plot.width = 7,
+           res = 600,
+           out.png = TRUE)
+
+## Generate PDF figures with height 9 inches and width 8 inches. The resolution option, res, is ignored.
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-output-PDFs",sep=""),
+           longlat = TRUE,
+           plot.height = 8,
+           plot.width = 7,
+           res = 600,
+           out.png = FALSE)
+\end{lstlisting}
+
+\subsection{Optional arguments about the population grid}
+
+\begin{itemize}
+  \item \keystring{add.grid}: TRUE or FALSE, specifies whether to add the population grid or not.
+  \begin{itemize}
+    \item \keystring{col.grid}: the color of the grid (default is \keystring{gray80})
+    \item \keystring{lwd.grid}: the line width (default is 1)
+  \end{itemize}
+  \item \keystring{add.outline}: TRUE or FALSE, specifies whether to add the habitat outline or not.
+  \begin{itemize}
+    \item \keystring{col.outline}: the color of the outline (default is \keystring{white})
+    \item \keystring{lwd.outline}: the line width (default is 2)
+  \end{itemize}
+  \item \keystring{add.demes}: TRUE or FALSE, specifies whether to add the observed demes or not. 
+  \begin{itemize}
+    \item \keystring{col.demes}: the color of the demes (default is \keystring{black})
+    \item \keystring{pch.demes}: the symbol/character used for plotting the demes (default is 19)
+    \item \keystring{min.cex.demes}: the minimum size of the deme symbol/character (default is 1)
+    \item \keystring{max.cex.demes}: the maximum size of the deme symbol/character (default is 3)
+  \end{itemize}
+\end{itemize}
+
+The unusual options are \keystring{min.cex.demes} and \keystring{max.cex.demes}. If \keystring{max.cex.demes > min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \keystring{min.cex.demes} and the deme with the most samples has size \keystring{max.cex.demes}. So if the sampling is uneven, then \keystring{max.cex.demes > min.cex.demes} underlines this fact. See \Cref{fig:rEEMSplots-example-demes-and-edges} for an example.
+
+\begin{lstlisting}[style=Rcode]
+## Choose somewhat impractical colors and shapes for the outline, the grid and the demes.
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-demes-and-edges",sep=""),
+           longlat = TRUE,
+           add.grid = TRUE,
+           col.grid = "gray90",
+           lwd.grid = 2,
+           add.outline = TRUE,
+           col.outline = "blue",
+           lwd.outline = 5,
+           add.demes = TRUE,
+           col.demes = "red",
+           pch.demes = 5,
+           min.cex.demes = 0.5,
+           max.cex.demes = 1.5)
+\end{lstlisting}
+
+\subsection{Optional arguments about the cartographic projection}
+
+If we know the projection of the input coordinates and the R package \keystring{rgdal} is installed, then we can plot the effective migration and diversity surfaces in another projection. See \Cref{fig:rEEMSplots-example-cartographic-projections} for an example.
+
+\begin{itemize}
+  \item \keystring{projection.in}: input projection, as a valid PROJ.4 string.
+  \item \keystring{projection.out}: output projection, as a valid PROJ.4 string.
+\end{itemize}
+
+\begin{lstlisting}[style=Rcode]
+library(rgdal)
+
+## Produce contour plots in the Mercator projection (used by Google Maps)
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-merc-projection",sep=""),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
+           projection.out = "+proj=merc +datum=WGS84")
+\end{lstlisting}
+
+\subsection{Optional arguments about the geographic map}
+
+If we know the projection of the input coordinates and the R packages \keystring{rgdal}, \keystring{rworldmap}, \keystring{rworldxtra} are installed, then we can add a geographic map to the two contour plots. See \Cref{fig:rEEMSplots-example-geographic-map} for an example.
+
+\begin{itemize}
+  \item \keystring{add.map}: TRUE or FALSE, specifies whether to add a geographic map or not.
+  \item \keystring{col.map}: the color of the map (default is \keystring{gray60})
+  \item \keystring{lwd.map}: the line width (default is 2)
+\end{itemize}
+
+\begin{lstlisting}[style=Rcode]
+library(rworldmap)
+library(rworldxtra)
+
+## Add a high-resolution geographic map
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-geographic-map",sep=""),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
+           projection.out = "+proj=merc +datum=WGS84",
+           add.map = TRUE,
+           col.map = "black",
+           lwd.map = 5)
+\end{lstlisting}
+
+\subsection{Optional arguments about the color scheme}
+
+Finally, we can also specify the color palette as a vector of colors, \keystring{eems.plot}, ordered from low to high. See \Cref{fig:rEEMSplots-example-new-eems-colors} for an example.
+
+\begin{lstlisting}[style=Rcode]
+library(RColorBrewer)
+
+## Use a divergent Red to Blue color scheme from 'RColorBrewer' instead of the default DarkOrange to Blue color scheme.                                                     
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-new-eems-colors",sep=""),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
+           projection.out = "+proj=merc +datum=WGS84",
+           eems.colors = brewer.pal(11,"RdBu"))
+\end{lstlisting}
+
+\subsection{A test function to generate Voronoi diagrams}
+
+Given one EEMS output directory, the function \keystring{eems.voronoi}, also available in the \keystring{rEEMSplots} package, produces Voronoi diagrams drawn from the posterior distribution of the rate parameters: there is one series of tessellations for the effective migration rates and another series for the effective diversity rates. Both series contain one figure for each saved MCMC iteration, after burn-in and thinning. Warning: \keystring{eems.voronoi} potentially generates a large number of figures. See \Cref{fig:rEEMSplots-voronoi-diagrams} for a small example.
+
+\begin{lstlisting}[style=Rcode]
+library(deldir)
+
+## Plot a series of Voronoi diagrams for the EEMS model parameters:          
+## the effective migration rates (m) and the effective diversity rates (q).
+eems.voronoi(mcmcpath = eems.results.to.plot,
+             plotpath = paste(name.figures.to.save,"-default",sep=""),
+             longlat = TRUE,
+             plot.height = 7,
+             plot.width = 5)
+\end{lstlisting}
+
+\newpage 
+
+\section{Observed vs fitted distances} \label{sec:obsr-vs-fitted-dist}
+
+EEMS aims to model the genetic differentiation between individuals in space. To achieve this, EEMS constructs a triangular grid, assigns each sample to its closest vertex (deme) and estimates a migration rate for every edge and a diversity rate for every vertex in the grid.
+
+To be specific, consider two different demes $\alpha$ and $\beta$. Suppose that individual $i$ is assigned to deme $\alpha$, which we denote by $\delta(i) = \alpha$. Similarly, suppose that $\delta(i^\prime) = \alpha$ but $i$ and $i^\prime$ are distinct individuals, that $\delta(j) = \beta$ and $\delta(j^\prime) = \beta$ but $j$ and $j^\prime$ are distinct individuals. [Of course, $i$ and $j$ are distinct individuals because they come from two different demes.]
+
+In EEMS, the observed genetic dissimilarity is the average squared genetic difference, across $p$ markers:
+\begin{align}
+D_{ij}&=\frac{1}{p}\sum_{k=1}^p\big(Z_{ik}-Z_{jk}\big)^2,
+\end{align}
+where $Z_{ik},Z_{ik}$ are the genotypes of $i,j$ at marker $k$. There are various other ways to define genetic (dis)similarity -- for example, fineSTRUCTURE uses a statistic called ``coancestry'' which is a measure of genetic similarity. Proportion of the genome shared identical by descent (IBD fraction) is another statistic informative about recent population structure.
+
+EEMS assumes that individuals in the same deme are exchangeable. Since $\delta(i) = \delta(i^\prime) = \alpha$ and $\delta(j) = \delta(j^\prime) = \beta$, exchangeability implies that:
+\begin{align}
+\E\big\{D_{ij}\big\} = \Delta_{\alpha\beta},&&
+\E\big\{D_{ii^\prime}\big\} = \Delta_{\alpha\beta},&&
+\E\big\{D_{jj^\prime}\big\} = \Delta_{\beta\beta}.
+\end{align}
+That is, the expected genetic dissimilarity between two distinct individuals depends only on their locations. [In other words, EEMS is a spatially explicit model.] In matrix notation, the observed data is the matrix of average squared genetic differences, $D=(D_{ij})$, which is modeled by a \textit{block} matrix of expected genetic dissimilarities, $\Delta=\big(\Delta_{\delta(i)\delta(j)}\big)=(\Delta_{\alpha\beta})$. [Both matrices have a main diagonal of 0s because self-dissimilarity is 0.]
+
+We might want a spatially explicit model to be consistent with the following ideas: We expect that $(i,j)$ are more dissimilar than either $(i,i^\prime)$ or $(j,j^\prime)$ because $i,j$ come from different locations. However, in general, we can't expect $(i,i^\prime)$ to be as dissimilar as $(j,j^\prime)$ -- there might be some differences in local genetic diversity. And to model the genetic dissimilarity due to migration in space we need to take into account any differences in local diversity. For this reason, EEMS decomposes the genetic dissimilarity into two components: between demes and within demes:
+\begin{align}
+\Delta_{\alpha\beta} = \underbrace{\Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}_{\text{between demes}} + \underbrace{\big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}_{\text{within demes}}.
+\end{align}
+The within-demes component, $W$, characterizes the expected genetic dissimilarity between two distinct individuals from the same deme and is a function of the effective diversity rates:
+\begin{align}
+W_\alpha = \Delta_{\alpha\alpha} = {\color{red} g(q)_\alpha}.
+\end{align}
+[Here $g(q)$ is a vector and $g(q)_\alpha$ is the element that corresponds to deme $\alpha$.]
+
+The between-demes component, $B$, characterizes the expected genetic dissimilarity between two individuals from distinct demes, \textit{after} correcting for the local differences in genetic diversity, and is a function of the effective migration rates: 
+\begin{align}
+B_{\alpha\beta} = \Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2 = {\color{red} f(m)_{\alpha\beta}}.
+\end{align}
+[Here $f(m)$ is a matrix and $f(m)_{\alpha\beta}$ is the element that corresponds to the pair of demes $(\alpha,\beta)$.]
+
+Therefore, EEMS models expected genetic dissimilarity as:
+\begin{align}
+\Delta_{\alpha\beta} & = \underbrace{\Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2} ~+~ \underbrace{\big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}\\
+&= \phantom{\Delta_{\alpha\beta} -\big(}B_{\alpha\beta}\phantom{\big(+\Delta_{\beta\beta}\big)/2} ~+~ \big(W_\alpha ~+~ W_\beta\big)/2.
+\end{align}
+The between-demes component of the genetic dissimilarity is plotted in \keystring{plotpath}-rdist01, as a scatterplot of observed vs fitted values. The within-demes component of the genetic dissimilarity is plotted in \keystring{plotpath}-rdist02. See \Cref{fig:observed-vs-fitted-dissimilarities} for an example. If the EEMS model fits the data well (after the MCMC chain has converged), we expect to see a strong linear relationship between the observed and fitted values in both scatterplots. Therefore, these scatterplots are useful for model-checking diagnostics.
+
+However, once we are reasonably convinced that the EEMS model is appropriate for the data being analyzed, the parameters of the model are of greater interest than the expected dissimilarities: i.e., $m$ and $q$ are more interesting than $f(m)$ and $g(q)$. The rate parameters are visualized in the colored contour plots: the effective migration rates $m$ are plotted in \keystring{plotpath}-mrates01, the effective diversity rates $q$ are plotted in \keystring{plotpath}-qrates01, in both cases on the $\log_{10}$ scale and after some normalization. [The function $f$, which takes the migration rates $m$ and returns a matrix of expected between-demes dissimilarities, is the effective resistance distance in an undirected, connected graph. The function $g$, which takes the diversity rates and returns a vector of expected within-demes dissimilarities, is the identity.]
 
 \afterpage{
 \begin{figure}[!]
 
-\begin{subfigure}[t]{\textwidth}
+\begin{subfigure}[t]{0.47\textwidth}
 \centering
-\includegraphics[height=2.4in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-mrates01.png}
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-default-mrates01.png}
 \caption{}
+\label{fig:rEEMSplots-example-default:mrates01}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-default-qrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-default:qrates01}
+\end{subfigure}
+
+\vspace{20pt}
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-default-rdist01.png}
+\caption{}
+\label{fig:rEEMSplots-example-default:rdist01}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-default-rdist02.png}
+\caption{}
+\label{fig:rEEMSplots-example-default:rdist02}
 \end{subfigure}
 
 \vspace{20pt}
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\includegraphics[height=2.4in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-mrates02.png}
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-default-pilogl01.png}
 \caption{}
+\label{fig:rEEMSplots-example-default:pilogl01}
 \end{subfigure}
 
-\caption{EEMS analysis of a ``barrier to migration`` simulation. (a) Estimated effective migration surface. (b) (Relative) Variance of the posterior mean migration surface. The migration rates in some regions are estimated with more certainty than in other regions, and this can be illustrated by plotting the variance in the estimated effective migration surface. In this black-and-white contour plot, black means high variance and white means low variance; the posterior variance is rescaled to range from 0 to 1 as $(v_{xy}-v_{min})/(v_{max}-v_{min})$, where $v_{xy}$ is the variance at location $(x,y)$ and $v_{min},v_{max}$ are the lowest and the highest variance across all locations.}
+\caption[EEMS graphics with default options]{The \keystring{eems.plots} function in the \keystring{rEEMSplots} package produces five figures. 
+\subref{fig:rEEMSplots-example-default:mrates01} Estimated effective migration surface. 
+\subref{fig:rEEMSplots-example-default:qrates01} Estimated effective diversity surface. 
+\subref{fig:rEEMSplots-example-default:rdist01} Observed vs fitted dissimilarities: between-demes component. See Section \ref{sec:obsr-vs-fitted-dist} for more details. 
+\subref{fig:rEEMSplots-example-default:rdist02} Observed vs fitted dissimilarities: within-demes component. See Section \ref{sec:obsr-vs-fitted-dist} for more details. 
+\subref{fig:rEEMSplots-example-default:pilogl01} Posterior probability trace.}
+\label{fig:rEEMSplots-example-default}
 \end{figure}
+\clearpage}
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.477\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-axes-flipped-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-axes-flipped:mrates01}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-axes-flipped-qrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-axes-flipped:qrates01}
+\end{subfigure}
+
+\vspace{20pt}
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-axes-flipped-rdist01.png}
+\caption{}
+\label{fig:rEEMSplots-example-axes-flipped:rdist01}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-axes-flipped-rdist02.png}
+\caption{}
+\label{fig:rEEMSplots-example-axes-flipped:rdist02}
+\end{subfigure}
+
+\vspace{20pt}
+
+\begin{subfigure}[t]{\textwidth}
+\centering
+\includegraphics[height=2.1in]{EEMS-example-rEEMSplots-axes-flipped-pilogl01.png}
+\caption{}
+\label{fig:rEEMSplots-example-axes-flipped:pilogl01}
+\end{subfigure}
+
+\caption[EEMS graphics with flipped axes]{In EEMS points in the habitat (e.g., the sampling locations, the demes, the tile seeds) are represented as ordered pairs $(x,y)$. The $x$ and $y$ axes can be flipped with the \keystring{longlat} argument to \keystring{eems.plots}: use \keystring{longlat = TRUE} for the original ordering of the two coordinates and \keystring{longlat = FALSE} to flip them. This changes the migration and the diversity figures, \subref{fig:rEEMSplots-example-axes-flipped:mrates01} and \subref{fig:rEEMSplots-example-axes-flipped:qrates01}, but not the three diagnostic figures, \subref{fig:rEEMSplots-example-axes-flipped:rdist01}, \subref{fig:rEEMSplots-example-axes-flipped:rdist02} and \subref{fig:rEEMSplots-example-axes-flipped:pilogl01}. In fact, all optional arguments to the plotting function modify only the migration and diversity contour plots.}
+\label{fig:rEEMSplots-example-axes-flipped}
+\end{figure}
+\clearpage}
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-demes-and-edges-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-demes-and-edges:min.cex.demes=0.5,max.cex.deme=1.5}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-demes-and-edges-v2-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-demes-and-edges:min.cex.demes=1=max.cex.demes}
+\end{subfigure}
+
+\caption[EEMS graphics with population grid]{Use the options \keystring{add.grid}, \keystring{add.demes}, \keystring{add.outline} to add the population grid, the sampled demes and/or the habitat outline. The colors, line width and the symbol/character can all be specified. Most importantly, the arguments \keystring{min.cex.demes} and \keystring{max.cex.demes} can be used to underline the sampling scheme, so that a deme with more samples is indicated with a larger symbol/character. 
+\subref{fig:rEEMSplots-example-demes-and-edges:min.cex.demes=0.5,max.cex.deme=1.5} \keystring{min.cex.demes = 0.5}, \keystring{max.cex.demes = 1.5} 
+\subref{fig:rEEMSplots-example-demes-and-edges:min.cex.demes=1=max.cex.demes} \keystring{min.cex.demes = max.cex.demes = 1}}
+\label{fig:rEEMSplots-example-demes-and-edges}
+\end{figure}
+
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-default-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-cartographic-projections:longlat}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-merc-projection-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-cartographic-projections:merc}
+\end{subfigure}
+
+\caption[EEMS graphics in the Mercator projection]{Use the arguments \keystring{projection.in} and \keystring{projection.out} to specify the input and output projection, as valid PROJ.4 strings. This requires the \keystring{rgdal} package. 
+\subref{fig:rEEMSplots-example-cartographic-projections:longlat} The effective migration surface with longitude and latitude untransformed: \keystring{projection.out = "+proj=longlat +datum=WGS84"}. 
+\subref{fig:rEEMSplots-example-cartographic-projections:merc} The same effective migration surface in the Mercator projection: \keystring{projection.out = "+proj=merc +datum=WGS84"}.}
+\label{fig:rEEMSplots-example-cartographic-projections}
+\end{figure}
+\clearpage}
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-geographic-map-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-geographic-map:merc}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-lambert93-proj-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-geographic-map:lambert-93}
+\end{subfigure}
+
+\caption[EEMS graphics with geographic map]{If we know the input projection (e.g., if we know that the input coordinates are given in longitude/latitude), then we can add a geographic map to the migration and diversity contour plots. This requires the \keystring{rworldmap} package (for the \keystring{getMap} function which provides access a world map derived from Natural Earth data) and the \keystring{rworldxtra} package (for the high-resolution version of the map). 
+\subref{fig:rEEMSplots-example-geographic-map:merc} In the Mercator (cylindrical) projection. 
+\subref{fig:rEEMSplots-example-geographic-map:lambert-93} In the Lambert-93 (conic) projection, with PROJ.4 string \keystring{"+proj=lcc +lat\_1=49 +lat\_2=44 +lat\_0=46.5 +lon\_0=3 +x\_0=700000 +y\_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no\_defs"}.}
+\label{fig:rEEMSplots-example-geographic-map}
+\end{figure}
+
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-new-eems-colors-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-new-eems-colors:RedBlue}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.4in]{EEMS-example-rEEMSplots-spectral-colors-mrates01.png}
+\caption{}
+\label{fig:rEEMSplots-example-new-eems-colors:Spectral}
+\end{subfigure}
+
+\caption[EEMS graphics with alternative divergent colors]{By default, the plotting function \keystring{eems.plots} uses a DarkOrange to Blue color scheme, adapted from the \keystring{dichromat} package. [This scheme takes the dark oranges from the \keystring{BluetoDarkOrange.12} theme and the blues the \keystring{BrowntoBlue.12} theme.] To specify a different color scheme, we can supply a vector of colors with the \keystring{eems.colors} argument. These can be any colors but only a divergent scheme makes sense for a contour plot. 
+\subref{fig:rEEMSplots-example-new-eems-colors:RedBlue} The effective migration surface in the \keystring{RdBu} palette from the \keystring{RColorBrewer} package. 
+\subref{fig:rEEMSplots-example-new-eems-colors:Spectral} The effective migration surface in the \keystring{Spectral} palette from the \keystring{RColorBrewer} package.}
+\label{fig:rEEMSplots-example-new-eems-colors}
+\end{figure}
+\clearpage}
+
+%%%%%%%%%%%%%%%%%
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{tabular}{ccc}
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi01.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi02.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi03.png}\\
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi04.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi05.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi06.png}\\
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi07.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi08.png}&
+\includegraphics[height=2.7in]{EEMS-example-rEEMSplots-default-mvoronoi09.png}\\
+\end{tabular}
+
+\caption[Voronoi diagrams drawn from the posterior]{Voronoi diagrams drawn from the posterior distribution of the effective migration rates $m$, generated by \keystring{eems.voronoi}.}
+\label{fig:rEEMSplots-voronoi-diagrams}
+\end{figure}
+
 \clearpage}
 
 \afterpage{
@@ -334,41 +845,32 @@ eems.plots(mcmcpath,plotpath,longlat,
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\includegraphics[height=2.4in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-qrates01.png}
+\includegraphics[height=3in]{EEMS-example-rEEMSplots-default-rdist01.png}
 \caption{}
+\label{fig:observed-vs-fitted-dissimilarities:between-demes}
 \end{subfigure}
 
 \vspace{20pt}
 
 \begin{subfigure}[t]{\textwidth}
 \centering
-\includegraphics[height=2.4in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-qrates02.png}
+\includegraphics[height=3in]{EEMS-example-rEEMSplots-default-rdist02.png}
 \caption{}
+\label{fig:observed-vs-fitted-dissimilarities:within-figs}
 \end{subfigure}
 
-\caption{EEMS analysis of a ``barrier to migration`` simulation. (a) Estimated effective diversity surface. (b) (Relative) Variance of the posterior mean diversity surface.}
+\caption[Observed vs fitted genetic dissimilarities]{Observed vs fitted genetic dissimilarities, between and within demes. The observed genetic dissimilarities between individuals, $D_{ij}$, are averaged so that $D_{\alpha\beta}=\frac{1}{n_{\alpha\beta}}\sum_{\delta(i)=\alpha,\delta(j)=\beta}D_{ij}$ where $n_{\alpha\beta}$ is the number of pairs $(i,j)$ such that $\delta(i)=\alpha$, $\delta(j)=\beta$, i.e., sample $i$ is assigned to deme $\alpha$, sample $j$ is assigned to deme $\beta$, and $i,j$ are distinct individuals. Singleton demes (those with a single sample) are excluded from both scatterplots.
+\subref{fig:observed-vs-fitted-dissimilarities:between-demes} Dissimilarities between demes: the fitted values $B_{\alpha\beta} := \Delta_{\alpha\beta}-(\Delta_{\alpha\alpha}+\Delta_{\beta\beta})/2$ comprise the between-demes component of the genetic dissimilarity, $B$, which is modeled by the effective migration rates: $B = f(m)$. 
+\subref{fig:observed-vs-fitted-dissimilarities:within-figs} Dissimilarities within demes: the fitted values $W_\alpha := \Delta_{\alpha\alpha}$ comprise the within-demes component of the genetic dissimilarity, $W$, which is modeled by the effective diversity rates: $W = g(q)$. If the EEMS model fits the data well (after the MCMC chain has converged), we expect to see a strong linear relationship between the observed and fitted values in both scatterplots. See Section \ref{sec:obsr-vs-fitted-dist} for more details.}
+\label{fig:observed-vs-fitted-dissimilarities}
 \end{figure}
 \clearpage}
 
-\afterpage{
-\begin{figure}[!]
+\newpage
 
-\begin{subfigure}[t]{\textwidth}
-\centering
-\includegraphics[height=3in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-rdist01.png}
-\caption{}
-\end{subfigure}
 
-\vspace{20pt}
+\bibliographystyle{apalike}
+\bibliography{EEMS-biblio}
 
-\begin{subfigure}[t]{\textwidth}
-\centering
-\includegraphics[height=3in]{barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes153-simno1_3-rdist02.png}
-\caption{}
-\end{subfigure}
-
-\caption{Observed vs fitted genetic dissimilarities. The genetic differences are averaged so that in the scatterplot there is one point for each pair of sampled demes (with at least two samples): $D_{\alpha\beta}=(1/P_{\alpha\beta})\sum_{(i,j) \in P_{\alpha\beta}}D_{ij}$ where $D_{ij}$ is the average genetic dissimilarity between samples $i$ and $j$, and $P_{\alpha\beta}$ is the set of all pairs such that $\delta(i)=\alpha,\delta(j)=\beta$, i.e., sample $i$ is assigned to deme $\alpha$, sample $j$ is assigned to deme $\beta$. (a) Dissimilarities between demes: $D_{\alpha\beta}-(D_{\alpha\alpha}+D_{\beta\beta})/2$. (b) Dissimilarities within demes: $D_{\alpha\alpha}$. The between-demes and within-deme dissimilarities are plotted separately because the between-demes dissimilarities are modeled by the effective migration rates, while the within-deme dissimilarities are modeled by the effective diversity rates.}
-\end{figure}
-\clearpage}
 
 \end{document}

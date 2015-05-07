@@ -61,33 +61,33 @@ int main(int argc, char** argv)
 
       switch ( eems.choose_move_type( ) ) {
       case Q_VORONOI_BIRTH_DEATH:
-	eems.birthdeath_qVoronoi(proposal);
+	eems.propose_birthdeath_qVoronoi(proposal);
 	break;
       case M_VORONOI_BIRTH_DEATH:
-	eems.birthdeath_mVoronoi(proposal);
+	eems.propose_birthdeath_mVoronoi(proposal);
 	break;
       case Q_VORONOI_POINT_MOVE:
-	eems.move_qVoronoi(proposal);
+	eems.propose_move_one_qtile(proposal);
 	break;
       case M_VORONOI_POINT_MOVE:
-	eems.move_mVoronoi(proposal);
+	eems.propose_move_one_mtile(proposal);
 	break;
       case Q_VORONOI_RATE_UPDATE:
-	eems.propose_qEffcts(proposal);
+	eems.propose_rate_one_qtile(proposal);
 	break;
       case M_VORONOI_RATE_UPDATE:
-	eems.propose_mEffcts(proposal);
+	eems.propose_rate_one_mtile(proposal);
 	break;
       case M_MEAN_RATE_UPDATE:
-	eems.propose_mrateMu(proposal);
+	eems.propose_overall_mrate(proposal);
 	break;
       default:
 	cerr << "[RunEEMS] Unknown move type" << endl;
 	return(EXIT_FAILURE);
       }
 
-      mcmc.add_to_total_moves(proposal.type);
-      if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves(proposal.type); }
+      mcmc.add_to_total_moves(proposal.move);
+      if (eems.accept_proposal(proposal)) { mcmc.add_to_okay_moves(proposal.move); }
       if (params.testing) { eems.check_ll_computation( ); }
       
       eems.update_sigma2( );

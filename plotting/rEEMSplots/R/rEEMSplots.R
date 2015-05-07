@@ -394,7 +394,7 @@ voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,is.mrates) {
             }
             filled.countour.axes(mcmcpath,longlat,plot.params)
         }
-        points(now.seeds,pch=4,col="red")
+        points(now.seeds,pch=4,lwd=2)
         count <- count + now.tiles
     }
     return(list(colors=eems.colors,levels=eems.levels))    
@@ -495,8 +495,10 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
     cnts <- minSize[upper.tri(minSize,diag=FALSE)]
     plot(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)],
-         xlab=expression(paste("Fitted dissimilarity between demes  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
-         ylab=expression(paste("Observed dissimilarity between demes  ",D[ab]," - (",D[aa],"+",D[bb],")/2",sep="")))
+         xlab=expression(paste("Fitted dissimilarity between demes  ",
+             Delta[alpha*beta]," - (",Delta[alpha*alpha],"+",Delta[beta*beta],")/2",sep="")),
+         ylab=expression(paste("Observed dissimilarity between demes  ",
+             D[alpha*beta]," - (",D[alpha*alpha],"+",D[beta*beta],")/2",sep="")))
     if (remove.singletons) {
         title(main="Dissimilarities between demes\nSingleton demes, if any, excluded from plot (not from EEMS)")
     } else {
@@ -505,16 +507,16 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE) {
     ypts <- Wobs
     xpts <- What
     plot(xpts,ypts,col=c("black","gray60")[1+1*(Sizes==1)],
-         xlab=expression(paste("Fitted dissimilarity within demes  ",hat(D)[aa],sep="")),
-         ylab=expression(paste("Observed dissimilarity within demes  ",D[aa],sep="")))
+         xlab=expression(paste("Fitted dissimilarity within demes  ",Delta[alpha*alpha],sep="")),
+         ylab=expression(paste("Observed dissimilarity within demes  ",D[alpha*alpha],sep="")))
     if (remove.singletons) {
         title(main="Dissimilarities within demes\nSingleton demes, if any, excluded from plot (not from EEMS)")
     } else {
         title(main="Dissimilarities within demes\nGray means a has a single individual sampled from")
     }
 }
-## By default, all figures are saved as bitmap png images. However,
-## it is straightforward to use another format (Here the alternative is pdf)
+## By default, all figures are saved as bitmap PNG images. However,
+## it is straightforward to use another format (Here the alternative is PDF)
 save.graphics <- function(plotpath,plot.params) {
     if (plot.params$out.png) {
         bitmap(paste(plotpath,'%02d.png',sep=''),type='png16m',res=plot.params$res,
@@ -616,32 +618,40 @@ load.required.package <- function(package,required.by) {
     }
 }
 
-#' A function to plot EEMS results
+#' A function to plot effective migration and diversity surfaces from EEMS output
 #'
-#' Given a list of EEMS output directories, this function generates five figures to visualize EEMS results.
-#' @param mcmcpath A list of EEMS output directories, for the same dataset.
-#' @param plotpath The name of the graphics files to generate. There are five output figures: plotpath-mrates01 (effective migration surface), plotpath-qrates01 (effective diversity surface), plotpath-rdist01 (between-demes component of genetic dissimilarity), plotpath-rdist02 (within-demes component of genetic dissimilarity), plotpath-pilogl01 (posterior probability trace).
+#' Given a vector of EEMS output directories, this function generates five figures to visualize EEMS results:
+#' \itemize{
+#'  \item \code{plotpath}-mrates01 (effective migration surface)
+#'  \item \code{plotpath}-qrates01 (effective diversity surface)
+#'  \item \code{plotpath}-rdist01 (between-demes component of genetic dissimilarity)
+#'  \item \code{plotpath}-rdist02 (within-demes component of genetic dissimilarity)
+#'  \item \code{plotpath}-pilogl01 (posterior probability trace)
+#' }
+#' The three latter figures are helpful in checking that the MCMC sampler has converged (the trace plot) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
+#' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
+#' @param plotpath The full path and the file name for the graphics to be generated. 
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
 #' @param plot.width,plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.
-#' @param out.png A logical value indicating whether to generate png files or pdf graphics files.
-#' @param res Resolution, in dots per inch; used only if out.png is set to TRUE. The default is 600.
-#' @param xpd A logical value indicating whether to clip plotting to the figure region (xpd = TRUE, which is the default) or clip plotting to the plot region (xpd = FALSE).
+#' @param out.png A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.
+#' @param res Resolution, in dots per inch; used only if \code{out.png} is set to TRUE. The default is 600.
+#' @param xpd A logical value indicating whether to clip plotting to the figure region (\code{xpd} = TRUE, which is the default) or clip plotting to the plot region (\code{xpd} = FALSE).
 #' @param add.grid A logical value indicating whether to add the population grid or not.
-#' @param col.grid The color of the population grid. Defaults to 'gray80'.
+#' @param col.grid The color of the population grid. Defaults to \code{gray80}.
 #' @param lwd.grid The line width of the population grid. Defaults to 1.
 #' @param add.outline A logical value indicating whether to add the habitat outline or not.
-#' @param col.outline The color of the habitat outline. Defaults to 'white'.
+#' @param col.outline The color of the habitat outline. Defaults to \code{white}.
 #' @param lwd.outline The line width of the habitat outline. Defaults to 2.
 #' @param add.demes A logical value indicating whether to add the observed demes or not.
-#' @param col.demes The color of the demes. Defaults to 'black'.
+#' @param col.demes The color of the demes. Defaults to \code{black}.
 #' @param pch.demes The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 19.
-#' @param min.cex.demes,max.cex.demes The minimum and the maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If max.cex.demes > min.cex.demes, then demes with more samples also have bigger size: the deme with the fewest samples has size 'min.cex.demes' and the deme with the most samples has size 'max.cex.demes'.
-#' @param projection.in,projection.out The input and the output cartographic projections, specified as a PROJ.4 string. Require the 'rgdal' package.
-#' @param add.map A logical value indicating whether to add a high-resolution geographic map. Requires the 'rworldmap' and 'rworldxtra' packages. It also requires that 'projection.in' is specified.
-#' @param col.map The color of the geographic map. Default is 'gray60'.
+#' @param min.cex.demes,max.cex.demes The minimum and the maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.
+#' @param projection.in,projection.out The input and the output cartographic projections, each specified as a PROJ.4 string. Requires the \code{rgdal} package.
+#' @param add.map A logical value indicating whether to add a high-resolution geographic map. Requires the \code{rworldmap} and \code{rworldxtra} packages. It also requires that \code{projection.in} is specified.
+#' @param col.map The color of the geographic map. Default is \code{gray60}.
 #' @param lwd.map The line width of the geographic map. Defaults to 2.
-#' @param eems.colors A list of colors to use as the EEMS color scheme, ordered from low to high. Only a divergent palette makes sense. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white and six blue shades.
-#' @keywords rEEMSplots
+#' @param eems.colorsh The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.
+#' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
 #' @examples
 #'
@@ -660,7 +670,7 @@ load.required.package <- function(package,required.by) {
 #'            plotpath = paste(name.figures.to.save,"-axes-flipped",sep=""),
 #'            longlat = FALSE)
 #'
-#' ## Generate EEMS figures as png files with height 9 inches, width 8 inches
+#' ## Generate PNG figures with height 9 inches, width 8 inches
 #' ## and resolution 600 dots per inch.
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-demes-and-edges",sep=""),
@@ -670,8 +680,8 @@ load.required.package <- function(package,required.by) {
 #'            res = 600,
 #'            out.png = TRUE)
 #'
-#' ## Generate EEMS figures as pdf files with height 9 inches and width 8 inches.
-#' ## The resolution option, res, will be ignored.
+#' ## Generate PDF figures with height 9 inches and width 8 inches.
+#' ## The resolution option, res, is ignored.
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-output-PDFs",sep=""),
 #'            longlat = TRUE,
@@ -680,7 +690,7 @@ load.required.package <- function(package,required.by) {
 #'            res = 600,
 #'            out.png = FALSE)
 #' 
-#' ## Choose somewhat impractical colors for the outline, the grid and the demes.
+#' ## Choose somewhat impractical colors and shapes for the outline, the grid and the demes.
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-demes-and-edges",sep=""),
 #'            longlat = TRUE,
@@ -720,18 +730,14 @@ load.required.package <- function(package,required.by) {
 #'
 #' library(RColorBrewer)
 #'
-#' ## Use a divergent Red to Blue color scheme from the 'RColorBrewer' package
+#' ## Use a divergent Red to Blue color scheme from the RColorBrewer package
 #' ## instead of the default DarkOrange to Blue color scheme.
-#' ## In 'RColorBrewer', the palette runs from Dark Red to Dark Blue but it is
-#' ## more intuitive to use shades of blue for lower-than-average rates and
-#' ## shades of red for higher-than-average rates, so the "RdBu" theme is
-#' ## reversed to a "BuRd" theme, with the 'rev' function.
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-new-eems-colors",sep=""),
 #'            longlat = TRUE,
 #'            projection.in = "+proj=longlat +datum=WGS84",
 #'            projection.out = "+proj=merc +datum=WGS84",
-#'            eems.colors = rev(brewer.pal(11,"RdBu")))
+#'            eems.colors = brewer.pal(11,"RdBu"))
 
 eems.plots <- function(mcmcpath,plotpath,longlat,
                        plot.width=7,plot.height=7,out.png=TRUE,res=600,xpd=TRUE,
@@ -816,27 +822,28 @@ eems.plots <- function(mcmcpath,plotpath,longlat,
 
     ## Plot scatter plots of observed vs fitted genetic differences
     save.graphics(paste(plotpath,'-rdist',sep=''),save.params)
-    par(las=1,font.main=1)
+    par(las=1,font.main=1,c(5, 5, 4, 2) + 0.1)
     dist.scatterplot(mcmcpath)
     dev.off( )
     ## Plot trace plot of posterior probability to check convergence
     save.graphics(paste(plotpath,'-pilogl',sep=''),save.params)
-    par(las=0,font.main=1)
+    par(las=0,font.main=1,c(5, 5, 4, 2) + 0.1)
     plot.logposterior(mcmcpath)
     dev.off( )
     
 }
 
-#' A function to plot Voronoi diagrams of migration and diversity rates
-#' 
-#' @param mcmcpath An EEMS output directory. If mcmcpath is a list of directories, then only the first (existing) directory in the list is used.
-#' @param plotpath The name of the graphics files to generate. The output is a series of posterior Voronoi diagrams, one series for the migration rates and another for the diversity rates, with two figures for each saved MCMC iteration (after the burn-in and thinning). Warning: Potentially generates a largen number of figures.
+#' A function to plot Voronoi diagrams of effective migration and diversity rates
+#'
+#' Given one EEMS output directory, this function produces a series of Voronoi diagrams drawn from the posterior distribution of the rate parameters. There is one series of tessellations for the effective migration rates and another series for the effective diversity rates. Both series contain one figure for each saved MCMC iteration, after burn-in and thinning. Warning: \code{eems.voronoi} potentially generates a large number of figures.
+#' @param mcmcpath An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.
+#' @param plotpath The full path and the file name for the graphics to be generated.
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
 #' @param plot.width,plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.
-#' @param out.png A logical value indicating whether to generate png files or pdf graphics files.
-#' @param res Resolution, in dots per inch; used only if out.png is set to TRUE. The default is 600.
-#' @param eems.colors A list of colors to use as the EEMS color scheme, ordered from low to high. Only a divergent palette makes sense. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white and six blue shades.
-#' @keywords rEEMSplots
+#' @param out.png A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.
+#' @param res Resolution, in dots per inch; used only if \code{out.png} is set to TRUE. The default is 600.
+#' @param eems.colorsh The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.
+#' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
 #' @examples
 #' 
@@ -845,24 +852,27 @@ eems.plots <- function(mcmcpath,plotpath,longlat,
 #' name.figures.to.save= "EEMS-example-rEEMSplots"
 #'
 #' library(deldir)
-#' 
-#' voronoi.plots(mcmcpath = eems.results.to.plot,
-#'               plotpath = paste(name.figures.to.save,"-voronoi-diagrams",sep=""),
-#'               longlat = TRUE)
+#'
+#' ## Plot a series of Voronoi diagrams for the EEMS model parameters:
+#' ## the effective migration rates (m) and the effective diversity rates (q).
+#' eems.voronoi(mcmcpath = eems.results.to.plot,
+#'             plotpath = paste(name.figures.to.save,"-voronoi-diagrams",sep=""),
+#'             longlat = TRUE)
 
-voronoi.plots <- function(mcmcpath,plotpath,longlat,
-                          plot.width=7,plot.height=7,out.png=TRUE,res=600,
-                          eems.colors=NULL) {
-
+eems.voronoi <- function(mcmcpath,plotpath,longlat,
+                         plot.width=7,plot.height=7,out.png=TRUE,res=600,
+                         eems.colors=NULL) {
+    
     if (is.null(eems.colors)) {
         eems.colors = default.eems.colors( )
     }   
 
-    load.required.package(package='deldir',required.by='voronoi.plots')
+    load.required.package(package='deldir',required.by='eems.voronoi')
 
     standardize <- TRUE
     plot.params <- list(standardize=standardize,
-                        add.map=FALSE,add.demes=FALSE,add.grid=FALSE,add.outline=FALSE,
+                        add.map=FALSE,add.demes=FALSE,add.grid=FALSE,
+                        add.outline=TRUE,lwd.outline=2,col="black",
                         eems.colors=eems.colors)
 
     mcmcpath1 <- character()
