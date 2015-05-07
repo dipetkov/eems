@@ -51,7 +51,7 @@ Params::Params(const string &params_file, const long seed_from_command_line) {
   mrateScale_2 /= 2.0;
   qrateScale_2 /= 2.0;
   sigmaScale_2 /= 2.0;
-  testing = true;
+  testing = false;
   mEffctHalfInterval = 2.0;
   qEffctHalfInterval = 0.1;
   mrateMuHalfInterval = 2.4771; // log10(300)
