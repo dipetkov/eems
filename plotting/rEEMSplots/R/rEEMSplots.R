@@ -207,8 +207,7 @@ filled.countour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
     ## The filledContour fills a rectangular plot; now color the habitat exterior white.
     boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(outer, hole = FALSE)),"1")))
     boundary <- sp::SpatialPolygonsDataFrame(boundary,data.frame(id="1"))
-    exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)
-    
+    exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)    
     if (!is.null(exterior)) {
         plot(exterior,col="white",border="white",add=TRUE)
     }
@@ -249,11 +248,13 @@ filled.countour.axes.proj.known <- function(mcmcpath,longlat,plot.params) {
                                     proj4string=CRS(plot.params$proj.in))
     boundary <- sp::SpatialPolygonsDataFrame(boundary,data.frame(id="1"))
     exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)
-    exterior <- sp::spTransform(exterior,CRSobj=CRS(plot.params$proj.out))
     boundary <- sp::spTransform(boundary,CRSobj=CRS(plot.params$proj.out))
-    ##exterior <- rgeos::gDifference(exterior,boundary)
-
     if (!is.null(exterior)) {
+        ## The exterior can be NULL and then sp::spTransform throws the following
+        ## uninformative error message:
+        ## Error in sp::spTransform(exterior, CRSobj = CRS(plot.params$proj.out)) :
+        ##      load package rgdal for spTransform methods
+        exterior <- sp::spTransform(exterior,CRSobj=CRS(plot.params$proj.out))
         plot(exterior,col="white",border="white",add=TRUE)
     }
     if (plot.params$add.map) {
@@ -615,6 +616,8 @@ myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,
 load.required.package <- function(package,required.by) {
     if (!requireNamespace(package, quietly = TRUE)) {
         stop(paste("'",required.by,"' requires the '",package,"' package. Please install it first.",sep=""))
+    } else {
+        writeLines(paste("Loading ",package," (required by ",required.by,")",sep=""))
     }
 }
 
