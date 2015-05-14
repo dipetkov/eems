@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
 	    << "  Dij = (1/|Mtot|) sum_{m in Mtot} (z*_{im} - z*_{jm})^2" << std::endl
 	    << "  where Mtot is the set of all SNPs and" << std::endl
 	    << "  z*_{im} = z_{im} if sample i is called at marker m" << std::endl
-	    << "          = pbar_m (the average genotype at m) otherwise" << std::endl
+	    << "          = zbar_m (the average genotype at m) otherwise" << std::endl
 	    << std::endl;
    
   Data data(bfilepath,nthreads);

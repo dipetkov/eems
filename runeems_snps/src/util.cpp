@@ -53,7 +53,15 @@ Params::Params(const string &params_file, const long seed_from_command_line) {
   sigmaScale_2 /= 2.0;
   dfProposalS2 = sqrt(nSites);
   dfmin = nIndiv;
-  dfmax = nSites;    
+  dfmax = nSites;
+  /*
+    There are two functions for testing whether the prior and the likelihood are computed correctly:
+    * test_prior(parameters) + test_likelihood(parameters)
+    * eval_prior() + eval_likelihood(), which use the current parameter values
+    If testing = true, then the function check_ll_computation() will be called after each MCMC iteration,
+    and it will check that the current prior, nowpi, is the same as test_prior(current parameters)
+    as well as that the currrent likelihood, nowll, is the same as test_likelihood(current parameters)
+   */
   testing = false;
   mEffctHalfInterval = 2.0;
   qEffctHalfInterval = 0.1;

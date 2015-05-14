@@ -1,18 +1,19 @@
 ## bed2diffs
 
-`bed2diffs` is a small program that reads the genotypes in plink binary format (i.e., from a set of bed/bim/fam files) and computes the average pairwise differences.
+`bed2diffs` is a small program that reads genetic data in plink binary format (i.e., from a set of bed/bim/fam files) and computes the average genetic dissimilarity matrix.
 
 ### Installation
 
-`bed2diffs` uses the `libplinkio` C library to read plink binary data. The library can be downloaded here: https://github.com/fadern/libplinkio.
+`bed2diffs` requires `libplinkio` and OpenMP.
 
-`bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences `diffs`. Multithreading is useful if the data contains millions of SNPs.
+* `bed2diffs` uses the `libplinkio` C library to read genotypes in plink binary format. The library can be downloaded here: https://github.com/fadern/libplinkio.
+* `bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences `diffs`. Multithreading is useful if the data contains millions of SNPs.
 
 After obtaining `libplinkio`, update the path to PLINKIO in the Makefile and run `make linux`. (I have tested `bed2diffs` only on a linux machine.)
 
 ### Usage
 
-You must specify a plink dataset, and optionally, the number of threads.
+You must specify the name of a binary plink file, and optionally, the number of threads.
 ```
 ./bed2diffs_v1
 ```

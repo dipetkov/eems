@@ -31,28 +31,27 @@ ostream& operator<<(ostream& out, const MCMC& mcmc) {
     out << setprecision(2) << "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for type ";
     switch (i) {
     case Q_VORONOI_RATE_UPDATE:
-      out << "\"qTileRate\"" << endl;
+      out << "\"qTileRate\",\t\t with proposal var qEffctProposalS2" << endl;
       break;
     case Q_VORONOI_POINT_MOVE:
-      out << "\"qTileMove\"" << endl;
+      out << "\"qTileMove\",\t\t with proposal var qSeedsProposalS2" << endl;
       break;
     case Q_VORONOI_BIRTH_DEATH:
       out << "\"qBirthDeath\"" << endl;
       break;
     case M_VORONOI_RATE_UPDATE:
-      out << "\"mTileRate\"" << endl;
+      out << "\"mTileRate\",\t\t with proposal var mEffctProposalS2" << endl;
       break;
     case M_MEAN_RATE_UPDATE:
-      out << "\"mMeanRate\"" << endl;
+      out << "\"mMeanRate\",\t\t with proposal var mrateMuProposalS2" << endl;
       break;
     case M_VORONOI_POINT_MOVE:
-      out << "\"mTileMove\"" << endl;
+      out << "\"mTileMove\",\t\t with proposal var mSeedsProposalS2" << endl;
       break;
     case M_VORONOI_BIRTH_DEATH:
       out << "\"mBirthDeath\"" << endl;
       break;
     case DF_UPDATE:
-      out << "\"d.f.\"" << endl;
       break;
     default:
       cerr << "[RJMCMC] Unknown move type" << endl;

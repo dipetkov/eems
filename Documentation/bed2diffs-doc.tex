@@ -62,7 +62,7 @@
   commentstyle=\color{YellowGreen},
   stringstyle=\color{ForestGreen},
   escapeinside={\#\%*}{*)},
-  mathescape=true,
+  mathescape=false,
   alsoletter={.},
   morecomment=[l]{//},
   morecomment=[s]{/*}{*/},
@@ -124,16 +124,16 @@ This short document explains the important difference between \keystring{bed2dif
 
 \section{bed2diffs-v1}
 
-Here the average difference between two samples, $i$ and $j$, is given by
+The average genetic dissimilarity between two samples, $i$ and $j$, can be computed as
 \begin{align}
 D_{ij} = \frac{1}{\big|M_{ij}\big|}\sum_{m\in M_{ij}}\big(z_{im} - z_{jm}\big)^2,
 \end{align}
-where $M_{ij}$ is the set of SNPs where both $i$ and $j$ are called, and $z_{im}$, $z_{jm}$ are the genotypes of individuals $i,j$ at marker $m$.
+where $M_{ij}$ is the set of SNPs where both $i$ and $j$ are called, and $z_{im}$ is the genotype of individual $i$ at marker $m$.
 
-In practice, this computation is not guaranteed to produce an Euclidean distance matrix -- a nonnegative matrix with 0s on the diagonal, with exactly one positive eigenvalue \cite{Gower:1982fk} -- especially, if genotypes are not missing at random.
+In practice, this formula is not guaranteed to produce an Euclidean distance matrix -- a nonnegative matrix with 0s on the diagonal, with exactly one positive eigenvalue \cite{Gower:1982fk} -- especially, if genotypes are not missing at random.
 
 \section{bed2diffs-v2}
-Alternatively,
+Alternatively, the average genetic dissimilarity between two samples, $i$ and $j$, can be computed as
 \begin{align}
 D_{ij} = \frac{1}{\big|M_{tot}\big|}\sum_{m\in M_{tot}}\big(z^*_{im} - z^*_{jm}\big)^2,
 \end{align}
@@ -146,7 +146,7 @@ z_{im} & \text{if $z_{im}$ is called,}\\
 \end{align}
 where $\bar{z}_m$ is the average genotype at marker $m$.
 
-This would produce an Euclidean distance matrix. Setting $z_{im}$ to the observed average at the marker $m$ is similar to the ``imputation'' often used before principal component analysis \cite{Price:2006kx}.
+This formula will produce an Euclidean distance matrix, whether there is missing data or not. Setting $z_{im}$ to the observed average at the marker $m$ is similar to the ``imputation'' often used before principal component analysis \cite{Price:2006kx}.
 
 \bibliographystyle{apalike}
 \bibliography{EEMS-biblio}

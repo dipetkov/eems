@@ -848,6 +848,7 @@ double EEMS::test_prior(const MatrixXd &mSeeds, const VectorXd &mEffcts, const d
   bool inrange = true;
   int qtiles = qEffcts.size();
   int mtiles = mEffcts.size();
+  // First check that all parameters fall into their support range
   for ( int i = 0 ; i < qtiles ; i++ ) {
     if (!habitat.in_point(qSeeds(i,0),qSeeds(i,1))) { inrange = false; }
   }
@@ -859,6 +860,7 @@ double EEMS::test_prior(const MatrixXd &mSeeds, const VectorXd &mEffcts, const d
   if (abs(mrateMu)>params.mrateMuHalfInterval) { inrange = false; }
   if ((df<params.dfmin) || (df>params.dfmax)) { inrange = false; }
   if (!inrange) { return (-Inf); }
+  // Then compute the prior, on the log scale
   double logpi = - log(df)
     + dnegbinln(mtiles,params.negBiSize,params.negBiProb)
     + dnegbinln(qtiles,params.negBiSize,params.negBiProb)
