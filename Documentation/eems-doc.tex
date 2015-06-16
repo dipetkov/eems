@@ -240,118 +240,6 @@ For microsatellite data on $n$ individuals at $L$ loci, the input files are:
 
 \newpage
 
-\section{Input parameters}
-
-There are a number of program parameters that can be set by the user. First, there are several parameters that have to be specified (they have no default values):
-\begin{itemize}
-  \item \keystring{datapath}: path to the input data. For SNP data, EEMS expects three files: a matrix of average pairwise differences, \keystring{datapath.diffs}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath.outer}. For microsatellite data, EEMS also expects three files: a matrix of allele copies, \keystring{datapath.sites}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath.outer}.
-  \item \keystring{mcmcpath}: path to the output directory. EEMS creates this directory and saves all results there. There is an accompanying R package which parses the output files and generates several figures to visualize the EEMS results. See \Cref{sec:plotting-eems}.
-  \item \keystring{nIndiv} and \keystring{nSites}: number of samples and number of markers. For SNP data, the \keystring{diffs} matrix is \keystring{nIndiv}$\times$\keystring{nIndiv} but the input data files do not otherwise contain information about \keystring{nSites}. For microsatellite data, the \keystring{sites} matrix is \keystring{nIndiv}$\times$\keystring{nSites} if the species is haploid, and \keystring{nIndiv}$\times$\keystring{2nSites} is the species is diploid.
-  \item \keystring{numMCMCIter}, \keystring{numBurnIter}, \keystring{numThinIter}: number of MCMC iterations, number of burn-in iterations to discard at the start, and number of iterations to thin between two writing steps.
-  \item \keystring{nDemes}: the (approximate) number of demes in the population graph. If the habitat is irregular, the actual number of demes in the grid might not be exactly equal to the specified number of demes. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}. Alternatively, instead of \keystring{nDemes}, specify \keystring{gridpath} where the file \keystring{gridpath.demes} is a list of demes, the file \keystring{gridpath.edges} is a list of edges and \keystring{gridpath.ipmap} is a mapping which assigns samples to demes. See \Cref{sec:pop-grid}.
-\end{itemize}
-
-EEMS assumes that the samples come from a diploid species [\keystring{diploid = true}, which is the default] or a haploid species [\keystring{diploid = false}]. The difference is only in how the matrix of expected genetic dissimilarity is scaled. See Section S1.2 in the supplement of the EEMS paper.
-
-Further, there are several extra parameters that can be specified optionally (they have default values but modifying those values could improve convergence).
-
-\begin{itemize}
-\item Variances for the proposal distributions of migration parameters:
-\begin{itemize}
-  \item \keystring{mEffctProposalS2}: proposal variance for the migration cell effects, $e_1,\ldots,e_{C_m}$. Defaults to 0.1.
-  \item \keystring{mSeedsProposalS2}: proposal variance for the migration cell locations, $s_1,\ldots,s_{C_m}$. Defaults to 0.01.
-  \item \keystring{mrateMuProposalS2}: proposal variance for the overall migration rate $\mu$ (on the $\log_{10}$ scale). Defaults to 0.01.
-\end{itemize}
-\item Variances for the proposal distributions of diversity parameters:
-\begin{itemize}
-  \item \keystring{qEffctProposalS2}: proposal variance for the diversity cell effects, $f_1,\ldots,f_{C_q}$. Defaults to 0.001.
-  \item \keystring{qSeedsProposalS2}: proposal variance for the diversity cell locations, $t_1,\ldots,t_{C_q}$. Defaults to 0.1.
-\end{itemize}
-\item Variance for the proposal distribution on the degrees of freedom:
-\begin{itemize}
-  \item \keystring{dfProposalS2}: only relevant for SNP data and thus only used in \keystring{runeems\_snps}. The default value is the square root of the number of markers \keystring{nSites}. For microsatellite data, the degrees of freedom are equal to the number of loci.
-\end{itemize}
-\item Hyperparameters:
-\begin{itemize}
-  \item \keystring{mrateShape,mrateScale}: (inverse gamma) hyperparameters for the variance $\omega_m^2$ of the migration effects. Default to 0.001 and 1, respectively.
-  \item \keystring{qrateShape,qrateScale}: (inverse gamma) hyperparameters for the variance $\omega_q^2$ of the diversity effects. Default to 0.001 and 1, respectively.
-  \item \keystring{s2locShape,s2locShape}: (inverse gamma) hyperparameters for the scale parameters $\sigma_1^2,\ldots,\sigma_p^2$. Default to 0.001 and 1, respectively.
-  \item \keystring{negBiSize}: number of failures for the Negative-Binomial prior on the number of Voronoi tiles. Defaults to 10.
-  \item \keystring{negBiProb}: success probability for the Negative-Binomial prior on the number of Voronoi tiles. Defaults to 0.67.
-\end{itemize}
-\end{itemize}
-
-For all datasets analyzed in the EEMS paper, we used the default hyperparameter values and we tuned the proposal variances. Choosing values for the proposal variances is something of a dark art -- the goal is to choose the parameters so that proposals are accepted about $20\%-30\%$ of the time. In practice, it seems to be sufficient to choose the variances so that proposals are not accepted too rarely (less than $10\%$ of the time) or too often (more than $40\%$ of the time).
-
-Suppose that we run EEMS (say, with the default values for all proposal distributions) and at the end EEMS reports the following information about the frequency of accepting proposals of different types.
-
-\begin{lstlisting}[style=Cppcode]
-(2050/2593) = 79.06% for type "qTileRate"            ## change the rate of one tile in the diversity tessellation
-(1414/2478) = 57.06% for type "qTileMove"            ## move the seed of one tile in the diversity tessellation
-(1047/2494) = 41.98% for type "qBirthDeath"          ## add/remove one tile in the diversity tessellation
-(20625/47530) = 43.39% for type "mTileRate"          ## change the rate of one tile in the migration tessellation
-(15486/50098) = 30.91% for type "mMeanRate"          ## change the overall log10 migration rate
-(22352/47532) = 47.03% for type "mTileMove"          ## move the seed of one tile in the migration tessellation
-(26305/47275) = 55.64% for type "mBirthDeath"        ## add/remove one tile in the migration tessellation
-\end{lstlisting}
-
-It seems that the \keystring{qTileRate} and \keystring{qTileMove} are accepted too often. So it might be a good idea to increase \keystring{qEffctProposalS2} and \keystring{qSeedsProposalS2}. [If the proposal variance is higher, then bigger changes/moves will be proposed and hence the updates will be accepted less often.]
-
-Finally, the parameter \keystring{qVoronoiPr} specifies how often to propose updating the diversity Voronoi tessellation. Its default value is 0.05, which means that about 5\% of the time the proposals are about the diversity tessellation and about 95\% of the time the proposals are about the migration tessellation.
-
-\subsection{Population grid}\label{sec:pop-grid}
-
-The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, \keystring{nDemes}, and EEMS constructs a grid with about the same number of demes which fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries) and it might be helpful to iterate between refining the habitat specification and the density argument \keystring{nDemes}, to choose a satisfactory grid. [Or even better, since the assignment of samples to demes changes with the grid, run EEMS with slightly different grids to investigates how/whether this changes the results.] See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice} for an illustration. Furthermore, there exists a convenient online tool to draw polygons with Google Maps API, available at \url{http://www.birdtheme.org/useful/v3tool.html}, that might be useful for outlining an irregularly shaped habitat, in longitude and latitude coordinates.
-
-Alternatively, EEMS can read in the population graph. In this case, there are three necessary files:
-\begin{itemize}
-  \item \keystring{gridpath.demes}: list of demes, two coordinates per deme, one deme per row.
-  \item \keystring{gridpath.edges}: list of connected pairs of demes, two indices per edge, one edge per row. Demes are indexed from 1 to $d$ (where $d$ is the number of demes in the grid), in the order implied by \keystring{gridpath.demes}, i.e., the deme with index 1 has the coordinates on the 1st row in \keystring{gridpath.demes}.
-  \item \keystring{gridpath.ipmap}: list of deme indices which indicate the deme each sample is assigned to. There should be $n$ rows (where $n$ is the number of samples), with one row for each sample in \keystring{datapath.coord}, in the same order.
-\end{itemize}
-
-The sample and habitat coordinates can be specified either latitude first or longitude first as long as the files \keystring{datapath.coord} and \keystring{datapath.outer} use the same convention. However, the ordering of the coordinates must be specified when plotting the results; see Section \ref{sec:plotting-eems}.
-
-Finally, the vertices of the population graph (the demes) fall inside the habitat by construction. However, EEMS does not check that the sampling locations fall inside the habitat -- instead, each sample is assigned to the closest deme. Therefore, the user should specify a habitat that is sufficiently large to cover all sampling locations.
-
-\afterpage{
-\begin{figure}[!]
-
-\begin{subfigure}[t]{0.47\textwidth}
-\centering
-\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes100-chain0-mrates01.png}
-\caption{\keystring{nDemes = 100} (There are 75 vertices.)}
-\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes100}
-\end{subfigure}
-\begin{subfigure}[t]{0.47\textwidth}
-\centering
-\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes400-chain0-mrates01.png}
-\caption{\keystring{nDemes = 400} (There are 358 vertices.)}
-\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes400}
-\end{subfigure}
-
-\vspace{20pt}
-
-\begin{subfigure}[t]{0.47\textwidth}
-\centering
-\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes700-chain0-mrates01.png}
-\caption{\keystring{nDemes = 700} (There are 651 vertices.)}
-\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes700}
-\end{subfigure}
-\begin{subfigure}[t]{0.47\textwidth}
-\centering
-\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes1000-chain0-mrates01.png}
-\caption{\keystring{nDemes = 1000} (There are 927 vertices.)}
-\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes1000}
-\end{subfigure}
-
-\caption[The triangular grid -- an example]{Given the grid density parameter, \keystring{nDemes}, EEMS automatically generates a triangular grid, which is contained entirely inside the habitat. Then EEMS assigns each sample to its closest deme. Here the habitat is outlined in red. [The outline was created, as a ``\textit{polyline}'', with a convenient online tool from Google, available at \url{http://www.birdtheme.org/useful/v3tool.html}.] A higher value for \keystring{nDemes} produces a denser grid, and a denser grid means a more flexible EEMS model because, with more vertices and edges, there are more rate parameters in the model. However, the computational cost of running EEMS increases as well.}
-\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}
-\end{figure}
-\clearpage}
-
-\newpage 
-
 \section{Running the EEMS program}\label{sec:running-eems}
 
 This example shows how to run EEMS on a small simulated dataset (one of the ``barrier to migration'' datasets used for Figure 2 in the EEMS paper.)
@@ -368,9 +256,9 @@ nIndiv = 300
 nSites = 3000
 nDemes = 200
 diploid = false
-numMCMCIter = 1500000
-numBurnIter = 500000
-numThinIter = 2999
+numMCMCIter = 2000000
+numBurnIter = 1000000
+numThinIter = 9999
 \end{lstlisting}
 
 \noindent params-chain2.ini:
@@ -381,9 +269,9 @@ nIndiv = 300
 nSites = 3000
 nDemes = 200
 diploid = false
-numMCMCIter = 1500000
-numBurnIter = 500000
-numThinIter = 2999
+numMCMCIter = 2000000
+numBurnIter = 1000000
+numThinIter = 9999
 \end{lstlisting}
 
 \noindent params-chain3.ini:
@@ -394,9 +282,9 @@ nIndiv = 300
 nSites = 3000
 nDemes = 200
 diploid = false
-numMCMCIter = 1500000
-numBurnIter = 500000
-numThinIter = 2999
+numMCMCIter = 2000000
+numBurnIter = 1000000
+numThinIter = 9999
 \end{lstlisting}
 
 Then run EEMS (on the command line) with three different random seeds. The argument \keystring{--seed} is optional; it can be specified in the parameter file as well, and if not specified, the seed is randomly assigned.
@@ -466,7 +354,7 @@ nDemes = 200
 diploid = false
 numMCMCIter = 1000000
 numBurnIter = 0
-numThinIter = 2999
+numThinIter = 9999
 \end{lstlisting}
 
 If \keystring{mcmcpath} is different from \keystring{prevpath}, then the previous results will not be overwritten.
@@ -481,7 +369,7 @@ nDemes = 200
 diploid = false
 numMCMCIter = 1000000
 numBurnIter = 0
-numThinIter = 2999
+numThinIter = 9999
 \end{lstlisting}
 
 After running EEMS (either \keystring{runeems\_snps} for SNP data or \keystring{runeems\_sats} for microsatellite data), the next step to visualize the results.
@@ -692,50 +580,162 @@ eems.voronoi(mcmcpath = eems.results.to.plot,
 
 \newpage 
 
-\section{Observed vs fitted distances} \label{sec:obsr-vs-fitted-dist}
+\section{Input parameters}
 
-EEMS aims to model the genetic differentiation between individuals in space. To achieve this, EEMS constructs a triangular grid, assigns each sample to its closest vertex (deme) and estimates a migration rate for every edge and a diversity rate for every vertex in the grid. %\textcolor{red}{Add a figure similar to Figure 1 in the EEMS paper but with diversity parameters as well.}
+There are a number of program parameters that can be set by the user. First, there are several parameters that have to be specified (they have no default values):
+\begin{itemize}
+  \item \keystring{datapath}: path to the input data. For SNP data, EEMS expects three files: a matrix of average pairwise differences, \keystring{datapath.diffs}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath.outer}. For microsatellite data, EEMS also expects three files: a matrix of allele copies, \keystring{datapath.sites}; a list of sample coordinates, \keystring{datapath.coord}; a list of habitat boundary points, \keystring{datapath.outer}.
+  \item \keystring{mcmcpath}: path to the output directory. EEMS creates this directory and saves all results there. There is an accompanying R package which parses the output files and generates several figures to visualize the EEMS results. See \Cref{sec:plotting-eems}.
+  \item \keystring{nIndiv} and \keystring{nSites}: number of samples and number of markers. For SNP data, the \keystring{diffs} matrix is \keystring{nIndiv}$\times$\keystring{nIndiv} but the input data files do not otherwise contain information about \keystring{nSites}. For microsatellite data, the \keystring{sites} matrix is \keystring{nIndiv}$\times$\keystring{nSites} if the species is haploid, and \keystring{nIndiv}$\times$\keystring{2nSites} is the species is diploid.
+  \item \keystring{numMCMCIter}, \keystring{numBurnIter}, \keystring{numThinIter}: number of MCMC iterations, number of burn-in iterations to discard at the start, and number of iterations to thin between two writing steps.
+  \item \keystring{nDemes}: the (approximate) number of demes in the population graph. If the habitat is irregular, the actual number of demes in the grid might not be exactly equal to the specified number of demes. See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}. Alternatively, instead of \keystring{nDemes}, specify \keystring{gridpath} where the file \keystring{gridpath.demes} is a list of demes, the file \keystring{gridpath.edges} is a list of edges and \keystring{gridpath.ipmap} is a mapping which assigns samples to demes. See \Cref{sec:pop-grid}.
+\end{itemize}
 
-To be specific, consider two different demes $\alpha$ and $\beta$. Suppose that individual $i$ is assigned to deme $\alpha$, which we denote by $\delta(i) = \alpha$. Similarly, suppose that $\delta(i^\prime) = \alpha$ but $i$ and $i^\prime$ are distinct individuals, that $\delta(j) = \beta$ and $\delta(j^\prime) = \beta$ but $j$ and $j^\prime$ are distinct individuals. [Of course, $i$ and $j$ are distinct individuals because they come from different demes.]
+EEMS assumes that the samples come from a diploid species [\keystring{diploid = true}, which is the default] or a haploid species [\keystring{diploid = false}]. The difference is only in how the matrix of expected genetic dissimilarity is scaled. See Section S1.2 in the supplement of the EEMS paper.
+
+Further, there are several extra parameters that can be specified optionally (they have default values but modifying those values could improve convergence).
+
+\begin{itemize}
+\item Variances for the proposal distributions of migration parameters:
+\begin{itemize}
+  \item \keystring{mEffctProposalS2}: proposal variance for the migration cell effects, $e_1,\ldots,e_{C_m}$. Defaults to 0.1.
+  \item \keystring{mSeedsProposalS2}: proposal variance for the migration cell locations, $s_1,\ldots,s_{C_m}$. Defaults to 0.01.
+  \item \keystring{mrateMuProposalS2}: proposal variance for the overall migration rate $\mu$ (on the $\log_{10}$ scale). Defaults to 0.01.
+\end{itemize}
+\item Variances for the proposal distributions of diversity parameters:
+\begin{itemize}
+  \item \keystring{qEffctProposalS2}: proposal variance for the diversity cell effects, $f_1,\ldots,f_{C_q}$. Defaults to 0.001.
+  \item \keystring{qSeedsProposalS2}: proposal variance for the diversity cell locations, $t_1,\ldots,t_{C_q}$. Defaults to 0.1.
+\end{itemize}
+\item Variance for the proposal distribution on the degrees of freedom:
+\begin{itemize}
+  \item \keystring{dfProposalS2}: only relevant for SNP data and thus only used in \keystring{runeems\_snps}. The default value is the square root of the number of markers \keystring{nSites}. For microsatellite data, the degrees of freedom are equal to the number of loci.
+\end{itemize}
+\item Hyperparameters:
+\begin{itemize}
+  \item \keystring{mrateShape,mrateScale}: (inverse gamma) hyperparameters for the variance $\omega_m^2$ of the migration effects. Default to 0.001 and 1, respectively.
+  \item \keystring{qrateShape,qrateScale}: (inverse gamma) hyperparameters for the variance $\omega_q^2$ of the diversity effects. Default to 0.001 and 1, respectively.
+  \item \keystring{s2locShape,s2locShape}: (inverse gamma) hyperparameters for the scale parameters $\sigma_1^2,\ldots,\sigma_p^2$. Default to 0.001 and 1, respectively.
+  \item \keystring{negBiSize}: number of failures for the Negative-Binomial prior on the number of Voronoi tiles. Defaults to 10.
+  \item \keystring{negBiProb}: success probability for the Negative-Binomial prior on the number of Voronoi tiles. Defaults to 0.67.
+\end{itemize}
+\end{itemize}
+
+For all datasets analyzed in the EEMS paper, we used the default hyperparameter values and we tuned the proposal variances. Choosing values for the proposal variances is something of a dark art -- the goal is to choose the parameters so that proposals are accepted about $20\%-30\%$ of the time. In practice, it seems to be sufficient to choose the variances so that proposals are not accepted too rarely (less than $10\%$ of the time) or too often (more than $40\%$ of the time).
+
+Suppose that we run EEMS (say, with the default values for all proposal distributions) and at the end EEMS reports the following information about the frequency of accepting proposals of different types.
+
+\begin{lstlisting}[style=Cppcode]
+(2050/2593) = 79.06% for type "qTileRate"            ## change the rate of one tile in the diversity tessellation
+(1414/2478) = 57.06% for type "qTileMove"            ## move the seed of one tile in the diversity tessellation
+(1047/2494) = 41.98% for type "qBirthDeath"          ## add/remove one tile in the diversity tessellation
+(20625/47530) = 43.39% for type "mTileRate"          ## change the rate of one tile in the migration tessellation
+(15486/50098) = 30.91% for type "mMeanRate"          ## change the overall log10 migration rate
+(22352/47532) = 47.03% for type "mTileMove"          ## move the seed of one tile in the migration tessellation
+(26305/47275) = 55.64% for type "mBirthDeath"        ## add/remove one tile in the migration tessellation
+\end{lstlisting}
+
+It seems that the \keystring{qTileRate} and \keystring{qTileMove} are accepted too often. So it might be a good idea to increase \keystring{qEffctProposalS2} and \keystring{qSeedsProposalS2}. [If the proposal variance is higher, then bigger changes/moves will be proposed and hence the updates will be accepted less often.]
+
+Finally, the parameter \keystring{qVoronoiPr} specifies how often to propose updating the diversity Voronoi tessellation. Its default value is 0.05, which means that about 5\% of the time the proposals are about the diversity tessellation and about 95\% of the time the proposals are about the migration tessellation.
+
+\subsection{Population grid}\label{sec:pop-grid}
+
+The population graph is a triangular grid contained entirely inside the habitat. The user specifies its density as a number of demes, \keystring{nDemes}, and EEMS constructs a grid with about the same number of demes which fills the habitat. This procedure is not necessarily optimal (i.e., it might not cover as much area as possible near the boundaries) and it might be helpful to iterate between refining the habitat specification and the density argument \keystring{nDemes}, to choose a satisfactory grid. [Or even better, since the assignment of samples to demes changes with the grid, run EEMS with slightly different grids to investigates how/whether this changes the results.] See \Cref{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice} for an illustration. Furthermore, there exists a convenient online tool to draw polygons with Google Maps API, available at \url{http://www.birdtheme.org/useful/v3tool.html}, that might be useful for outlining an irregularly shaped habitat, in longitude and latitude coordinates.
+
+Alternatively, EEMS can read in the population graph. In this case, there are three necessary files:
+\begin{itemize}
+  \item \keystring{gridpath.demes}: list of demes, two coordinates per deme, one deme per row.
+  \item \keystring{gridpath.edges}: list of connected pairs of demes, two indices per edge, one edge per row. Demes are indexed from 1 to $d$ (where $d$ is the number of demes in the grid), in the order implied by \keystring{gridpath.demes}, i.e., the deme with index 1 has the coordinates on the 1st row in \keystring{gridpath.demes}.
+  \item \keystring{gridpath.ipmap}: list of deme indices which indicate the deme each sample is assigned to. There should be $n$ rows (where $n$ is the number of samples), with one row for each sample in \keystring{datapath.coord}, in the same order.
+\end{itemize}
+
+The sample and habitat coordinates can be specified either latitude first or longitude first as long as the files \keystring{datapath.coord} and \keystring{datapath.outer} use the same convention. However, the ordering of the coordinates must be specified when plotting the results; see Section \ref{sec:plotting-eems}.
+
+Finally, the vertices of the population graph (the demes) fall inside the habitat by construction. However, EEMS does not check that the sampling locations fall inside the habitat -- instead, each sample is assigned to the closest deme. Therefore, the user should specify a habitat that is sufficiently large to cover all sampling locations.
+
+\afterpage{
+\begin{figure}[!]
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes100-chain0-mrates01.png}
+\caption{\keystring{nDemes = 100} (There are 75 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes100}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes400-chain0-mrates01.png}
+\caption{\keystring{nDemes = 400} (There are 358 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes400}
+\end{subfigure}
+
+\vspace{20pt}
+
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes700-chain0-mrates01.png}
+\caption{\keystring{nDemes = 700} (There are 651 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes700}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\includegraphics[height=2.5in]{wang_etal2012-nIndiv314-irregular-habitat-nDemes1000-chain0-mrates01.png}
+\caption{\keystring{nDemes = 1000} (There are 927 vertices.)}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice:nDemes1000}
+\end{subfigure}
+
+\caption[The triangular grid -- an example]{Given the grid density parameter, \keystring{nDemes}, EEMS automatically generates a triangular grid, which is contained entirely inside the habitat. Then EEMS assigns each sample to its closest deme. Here the habitat is outlined in red. [The outline was created, as a ``\textit{polyline}'', with a convenient online tool from Google, available at \url{http://www.birdtheme.org/useful/v3tool.html}.] A higher value for \keystring{nDemes} produces a denser grid, and a denser grid means a more flexible EEMS model because, with more vertices and edges, there are more rate parameters in the model. However, the computational cost of running EEMS increases as well.}
+\label{fig:wang_etal2012-nIndiv314-irregular-habitat:nDemes-choice}
+\end{figure}
+\clearpage}
+
+\newpage 
+
+\section{Observed vs fitted dissimilarities} \label{sec:obsr-vs-fitted-dist}
+
+EEMS aims to model the genetic differentiation between individuals in space. To achieve this, EEMS constructs a triangular grid, assigns each sample to its closest vertex (deme) and estimates a migration rate for every edge and a diversity rate for every vertex in the grid. %Add a figure similar to Figure 1 in the EEMS paper but with diversity parameters as well.
+
+To be specific, consider two different demes $\alpha$ and $\beta$. Suppose that individual $i$ is assigned to deme $\alpha$, which we denote by $\delta(i) = \alpha$. Similarly, suppose that $\delta(i^*) = \alpha$ but $i$ and $i^*$ are distinct individuals, that $\delta(j) = \beta$ and $\delta(j^*) = \beta$ but $j$ and $j^*$ are distinct individuals. Of course, $i$ and $j$ are distinct because they come from different demes.
 
 In EEMS, the observed genetic dissimilarity is the average squared genetic difference, across $p$ markers:
 \begin{align}
-D_{ij}&=\frac{1}{p}\sum_{k=1}^p\big(Z_{ik}-Z_{jk}\big)^2,
+D_{ij} = \frac{1}{p} \sum_{k=1}^p \big(Z_{ik} - Z_{jk}\big)^2,
 \end{align}
-where $Z_{ik},Z_{ik}$ are the genotypes of individuals $i,j$ at marker $k$. There are various other ways to define genetic (dis)similarity -- for example, fineSTRUCTURE uses a statistic called ``coancestry'' which is a measure of genetic similarity. Proportion of the genome shared identical by descent (IBD fraction) is another statistic informative about recent population structure. %\textcolor{red}{Some discussion of modeling similarities vs dissimilarities?}
+where $Z_{ik},Z_{ik}$ are the genotypes of individuals $i,j$ at marker $k$. There are various other ways to define genetic (dis)similarity -- for example, fineSTRUCTURE uses a statistic called ``coancestry'' which is a measure of genetic similarity. Proportion of the genome shared identical by descent (IBD fraction) is another statistic informative about recent population structure. %Some discussion of modeling similarities vs dissimilarities?
 
-EEMS assumes that individuals in the same deme are exchangeable. Since $\delta(i) = \delta(i^\prime) = \alpha$ and $\delta(j) = \delta(j^\prime) = \beta$, exchangeability implies that:
+EEMS assumes that individuals in the same deme are exchangeable. Since $\delta(i) = \delta(i^*) = \alpha$ and $\delta(j) = \delta(j^*) = \beta$, exchangeability implies that:
 \begin{align}
-\E\big\{D_{ij}\big\} = \Delta_{\alpha\beta},&&
-\E\big\{D_{ii^\prime}\big\} = \Delta_{\alpha\beta},&&
-\E\big\{D_{jj^\prime}\big\} = \Delta_{\beta\beta}.
+\E\small\{D_{ij}\small\} = \E\small\{D_{ij^*}\small\} = \E\small\{D_{i^*j}\small\} = \E\small\{D_{i^*j^*}\small\} = \Delta_{\alpha\beta},&&
+\E\small\{D_{ii^*}\small\} = \Delta_{\alpha\alpha},&&
+\E\small\{D_{jj^*}\small\} = \Delta_{\beta\beta}.
 \end{align}
-That is, the expected genetic dissimilarity between two distinct individuals depends only on their locations. [In other words, EEMS is a spatially explicit model.] In matrix notation, the observed data is the matrix of average squared genetic differences, $D=(D_{ij})$, which is modeled by a \textit{block} matrix of expected genetic dissimilarities, $\Delta=\big(\Delta_{\delta(i)\delta(j)}\big)=(\Delta_{\alpha\beta})$. [Both matrices have a main diagonal of 0s because self-dissimilarity is 0.]
+That is, the expected genetic dissimilarity between two distinct individuals depends only on their locations. In matrix notation, the observed data is the matrix of average squared genetic differences, $D = (D_{ij})$, which is modeled by a \textit{block} matrix of expected genetic dissimilarities, $\Delta = (\Delta_{\delta(i)\delta(j)}) = (\Delta_{\alpha\beta})$. Both matrices have a main diagonal of 0s because self-dissimilarity is 0.
 
-We might want a spatially explicit model to be consistent with the following ideas: We expect that $(i,j)$ are more dissimilar than either $(i,i^\prime)$ or $(j,j^\prime)$ because $i,j$ come from different locations. However, in general, we can't expect $(i,i^\prime)$ to be as dissimilar as $(j,j^\prime)$ -- there might be some differences in local genetic diversity. And to model the genetic dissimilarity due to migration in space we need to take into account any differences in local diversity. For this reason, EEMS decomposes the genetic dissimilarity into two components: between demes and within demes:
+EEMS is a spatially explicit model and it is consistent with the following idea: We can expect that $\langle i,j\rangle$ are more dissimilar than either $\langle i,i^*\rangle$ or $\langle j,j^*\rangle$ because $i$ and $j$ come from different locations. However, in general, we can't expect $\langle i,i^*\rangle$ to be as dissimilar as $\langle j,j^*\rangle$ -- there might be some differences in local genetic diversity. And to model the genetic dissimilarity due to migration in space we need to take into account any local variation in genetic diversity. For this reason, EEMS decomposes the genetic dissimilarity into two components, between demes and within demes:
 \begin{align}
 \Delta_{\alpha\beta} = \underbrace{\Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}_{\text{between demes}} + \underbrace{\big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}_{\text{within demes}}.
 \end{align}
-The within-demes component, $W$, characterizes the expected genetic dissimilarity between two distinct individuals from the same deme and is a function of the effective diversity rates:
+The within-demes component, $w$, characterizes the expected genetic dissimilarity between two distinct individuals from the same deme and is a function of the effective diversity rates:
 \begin{align}
-W_\alpha = \Delta_{\alpha\alpha} = {\color{red} g(q)_\alpha}.
+w_\alpha = \Delta_{\alpha\alpha} = {\color{red} g(q_\alpha)}.
 \end{align}
-[Here $g(q)$ is a vector and $g(q)_\alpha$ is the element that corresponds to deme $\alpha$.]
+Here $q$ is a vector of effective diversity rates and $q_\alpha$ is the element that corresponds to deme $\alpha$. The function $g$ is the identity.
 
 The between-demes component, $B$, characterizes the expected genetic dissimilarity between two individuals from distinct demes, \textit{after} correcting for the local differences in genetic diversity, and is a function of the effective migration rates: 
 \begin{align}
 B_{\alpha\beta} = \Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2 = {\color{red} f(m)_{\alpha\beta}}.
 \end{align}
-[Here $f(m)$ is a matrix and $f(m)_{\alpha\beta}$ is the element that corresponds to the pair of demes $(\alpha,\beta)$.]
+Here $m$ is a sparse matrix that represents an undirected, connected, weighted grid, with weights equal to the effective migration rates between adjacent demes. The function $f$ return the effective resistance distances between vertices in the grid, as a dense matrix, and $f(m)_{\alpha\beta}$ is the element that corresponds to the pair of demes $\alpha$ and $\beta$.
 
 Therefore, EEMS models expected genetic dissimilarity as:
 \begin{align}
 \Delta_{\alpha\beta} & = \underbrace{\Delta_{\alpha\beta} - \big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2} ~+~ \underbrace{\big(\Delta_{\alpha\alpha}+\Delta_{\beta\beta}\big)/2}\\
-&= \phantom{\Delta_{\alpha\beta} -\big(}B_{\alpha\beta}\phantom{\big(+\Delta_{\beta\beta}\big)/2} ~+~ \big(W_\alpha ~+~ W_\beta\big)/2.
+&= \phantom{\Delta_{\alpha\beta} -\big(}B_{\alpha\beta}\phantom{\big(+\Delta_{\beta\beta}\big)/2} ~+~ \big(w_\alpha ~+~ w_\beta\big)/2.
 \end{align}
 The between-demes component of the genetic dissimilarity is plotted in \keystring{plotpath-rdist01}, as a scatterplot of observed vs fitted values. The within-demes component of the genetic dissimilarity is plotted in \keystring{plotpath-rdist02}. See \Cref{fig:observed-vs-fitted-dissimilarities} for an example. If the EEMS model fits the data well (after the MCMC chain has converged), we expect to see a strong linear relationship between the observed and fitted values in both scatterplots. Therefore, these scatterplots are useful for model-checking diagnostics.
 
-However, once we are reasonably convinced that the EEMS model is appropriate for the data being analyzed, the parameters of the model are of greater interest than the expected dissimilarities: i.e., $m$ and $q$ are more interesting than $f(m)$ and $g(q)$. The rate parameters are visualized in the colored contour plots: the effective migration rates $m$ are plotted in \keystring{plotpath-mrates01}, the effective diversity rates $q$ are plotted in \keystring{plotpath-qrates01}, in both cases on the $\log_{10}$ scale and after some normalization. [The function $f$, which takes the migration rates $m$ and returns a matrix of expected between-demes dissimilarities, is the effective resistance distance in an undirected, connected graph. The function $g$, which takes the diversity rates and returns a vector of expected within-demes dissimilarities, is the identity.]
+However, once we are reasonably convinced that the EEMS model is appropriate for the data being analyzed, the parameters of the model are of greater interest than the expected dissimilarities, i.e., $m$ and $q$ are more interesting than the deterministic functions $f(m)$ and $g(q)$. The rate parameters are visualized in the colored contour plots: the effective migration rates $m$ are plotted in \keystring{plotpath-mrates01}, the effective diversity rates $q$ are plotted in \keystring{plotpath-qrates01}, in both cases on the $\log_{10}$ scale and after some normalization. 
 
 \afterpage{
 \begin{figure}[!]
@@ -964,7 +964,7 @@ However, once we are reasonably convinced that the EEMS model is appropriate for
 
 \caption[Observed vs fitted genetic dissimilarities]{Observed vs fitted genetic dissimilarities, between and within demes. The observed genetic dissimilarities between individuals, $D_{ij}$, are averaged so that $D_{\alpha\beta}=\frac{1}{n_{\alpha\beta}}\sum_{\delta(i)=\alpha,\delta(j)=\beta}D_{ij}$ where $n_{\alpha\beta}$ is the number of pairs $(i,j)$ such that $\delta(i)=\alpha$, $\delta(j)=\beta$, i.e., sample $i$ is assigned to deme $\alpha$, sample $j$ is assigned to deme $\beta$, and $i,j$ are distinct individuals. Singleton demes (those with a single sample) are excluded from both scatterplots.
 \subref{fig:observed-vs-fitted-dissimilarities:between-demes} Dissimilarities between demes: the fitted values $B_{\alpha\beta} := \Delta_{\alpha\beta}-(\Delta_{\alpha\alpha}+\Delta_{\beta\beta})/2$ comprise the between-demes component of the genetic dissimilarity, $B$, which is modeled by the effective migration rates: $B = f(m)$. 
-\subref{fig:observed-vs-fitted-dissimilarities:within-figs} Dissimilarities within demes: the fitted values $W_\alpha := \Delta_{\alpha\alpha}$ comprise the within-demes component of the genetic dissimilarity, $W$, which is modeled by the effective diversity rates: $W = g(q)$. If the EEMS model fits the data well (after the MCMC chain has converged), we expect to see a strong linear relationship between the observed and fitted values in both scatterplots. See Section \ref{sec:obsr-vs-fitted-dist} for more details.}
+\subref{fig:observed-vs-fitted-dissimilarities:within-figs} Dissimilarities within demes: the fitted values $w_\alpha := \Delta_{\alpha\alpha}$ comprise the within-demes component of the genetic dissimilarity, $w$, which is modeled by the effective diversity rates: $w = g(q)$. If the EEMS model fits the data well (after the MCMC chain has converged), we expect to see a strong linear relationship between the observed and fitted values in both scatterplots. See Section \ref{sec:obsr-vs-fitted-dist} for more details.}
 \label{fig:observed-vs-fitted-dissimilarities}
 \end{figure}
 \clearpage}

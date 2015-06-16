@@ -4,8 +4,51 @@
 \alias{eems.voronoi}
 \title{A function to plot Voronoi diagrams of effective migration and diversity rates}
 \usage{
-eems.voronoi(mcmcpath, plotpath, longlat, plot.width = 7, plot.height = 7,
-  out.png = TRUE, res = 600, eems.colors = NULL)
+eems.voronoi(            mcmcpath,
+                         plotpath,
+                         longlat,
+
+                         ## Properties of the figures to generate
+                         plot.width = 7,
+                         plot.height = 7,
+                         out.png = TRUE,
+                         res = 600,
+
+                         ## Properties of the population grid
+                         add.grid = FALSE,
+                         col.grid = "gray80",
+                         lwd.grid = 1,
+                         
+                         ## Properties of the habitat outline
+                         add.outline = TRUE,
+                         col.outline = "gray80",
+                         lwd.outline = 2,
+                         
+                         ## Properties of the graph vertices
+                         add.demes = FALSE,
+                         col.demes = "gray80",
+                         pch.demes = 19,
+                         cex.demes = 1,
+
+                         ## Properties of the Voronoi seeds
+                         add.seeds = TRUE,
+                         col.seeds = "#8AE234",
+                         pch.seeds = 4,
+                         cex.seeds = 1,
+                         
+                         ## Color palette
+                         eems.colors = NULL,
+                         
+                         ## MCMC iterations to plot
+                         mcmc.iters = NULL,
+
+                         ## Properties of the color key
+                         add.colbar = TRUE,
+                         m.colscale = NULL,
+                         q.colscale = NULL,
+                         
+                         ## Extra options
+                         add.title = TRUE)
 }
 \arguments{
 \item{mcmcpath}{An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.}
@@ -20,7 +63,45 @@ eems.voronoi(mcmcpath, plotpath, longlat, plot.width = 7, plot.height = 7,
 
 \item{res}{Resolution, in dots per inch; used only if \code{out.png} is set to TRUE. The default is 600.}
 
-\item{eems.colorsh}{The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.}
+\item{add.grid}{A logical value indicating whether to add the population grid or not.}
+
+\item{col.grid}{The color of the population grid. Defaults to \code{gray80}.}
+
+\item{lwd.grid}{The line width of the population grid. Defaults to 1.}
+
+\item{add.outline}{A logical value indicating whether to add the habitat outline or not.}
+
+\item{col.outline}{The color of the habitat outline. Defaults to \code{gray80}.}
+
+\item{lwd.outline}{The line width of the habitat outline. Defaults to 2.}
+
+\item{add.demes}{A logical value indicating whether to add the graph demes or not.}
+
+\item{col.demes}{The color of the demes. Defaults to \code{gray80}.}
+
+\item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 1.}
+
+\item{cex.demes}{The size of the deme symbol/character. Defaults to 1.}
+
+\item{add.seeds}{A logical value indicating whether to add the Voronoi seeds or not.}
+
+\item{col.seeds}{The color of the Voronoi seeds. Defaults to \code{green}.}
+
+\item{pch.seeds}{The symbol, specified as an integer, or the character to be used for plotting the Voronoi seeds. Defaults to 4.}
+
+\item{cex.seeds}{The size of the symbol/character used for plotting the Voronoi seeds. Defaults to 1.}
+
+\item{eems.colors}{The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.}
+
+\item{mcmc.iters}{The indices of the Voronoi diagrams to be plotted. By default, \code{eems.voronoi} generates two diagrams -- one for the migration rates and the other for the diversity rates -- for each save MCMC iteration, after burn-in and thinning.}
+
+\item{add.colbar}{A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.}
+
+\item{m.colscale,q.colscale}{A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+
+\item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
+
+\item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
 }
 \description{
 Given one EEMS output directory, this function produces a series of Voronoi diagrams drawn from the posterior distribution of the rate parameters. There is one series of tessellations for the effective migration rates and another series for the effective diversity rates. Both series contain one figure for each saved MCMC iteration, after burn-in and thinning. Warning: \code{eems.voronoi} potentially generates a large number of figures.
@@ -36,7 +117,7 @@ library(deldir)
 ## the effective migration rates (m) and the effective diversity rates (q).
 eems.voronoi(mcmcpath = eems.results.to.plot,
             plotpath = paste(name.figures.to.save,"-voronoi-diagrams",sep=""),
-            longlat = TRUE)
+            longlat = TRUE,mcmc.iters = seq(9))
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
