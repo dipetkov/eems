@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     }
         
     Proposal proposal;
-    
+
     while (!mcmc.finished) {
       
       switch ( eems.choose_move_type( ) ) {

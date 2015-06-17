@@ -243,13 +243,16 @@ double mvgammaln(const double a, const int p) {
   finds the row/point in X that is closest to the first row/point in Y
  */
 MatrixXd euclidean_dist(const MatrixXd &X, const MatrixXd &Y) {
+  assert (X.cols()==Y.cols());
   return (  X.rowwise().squaredNorm().eval().replicate(1,Y.rows())
-	    + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
-	    - 2.0*X*Y.transpose() );
+	  + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
+	  - 2.0*X*Y.transpose() );
 }
 // Great circle distance, up to a constant of proportionality equal to 2*R
 // where R is the earth's radius
 MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y) {
+  assert(X.cols()==2);
+  assert(Y.cols()==2);
   int nr = X.rows();
   int nc = Y.rows();
   MatrixXd lon1 = X.col(0).replicate(1,nc) * pi_180;
@@ -273,6 +276,9 @@ MatrixXd pairwise_distance(const MatrixXd &X, const MatrixXd &Y) {
   }
 }
 MatrixXd resistance_distance(const MatrixXd &M, const int o) {
+  assert(M.minCoeff()>=0);
+  assert(M.cols()==M.rows());
+  assert(M.cols()>=o);
   MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum();
   Hinv.array() += 1.0;
   MatrixXd H = Hinv.inverse().topLeftCorner(o,o);
@@ -317,6 +323,7 @@ MatrixXd readMatrixXd(const string &filename) {
       return (MatrixXd::Zero(0,0));
     }
   }
+  instrm.close();
   return(mat);
 }
 double trace_AxB(const MatrixXd &A, const MatrixXd &B) {
@@ -369,6 +376,7 @@ void insertElem(VectorXd &vec, const double &elem)
 }
 void insertRow(MatrixXd &mat, const VectorXd &row)
 {
+  assert(mat.cols() == row.size());
   int rows = mat.rows();
   int cols = mat.cols();
   mat.noalias() = (MatrixXd(rows+1,cols) << mat, row.transpose()).finished();
@@ -430,25 +438,25 @@ double dtrnormln(const double x, const double mu, const double sigma2, const dou
   return (pln);
 }
 VectorXd slice(const VectorXd &A, const VectorXi &I) {
-  int elems = I.size();
-  VectorXd B(elems);
   assert(I.minCoeff() >= 0);
   assert(I.maxCoeff() < A.size());
-  for ( int i = 0 ; i < elems ; i++ ) {
+  int size = I.size();
+  VectorXd B(size);
+  for ( int i = 0 ; i < size ; i++ ) {
     B(i) = A(I(i));
   }
   return (B);
 }
 MatrixXd slice(const MatrixXd &A, const VectorXi &R, const VectorXi &C) {
-  int rows = R.size();
-  int cols = C.size();
-  MatrixXd B(rows,cols);
   assert(R.minCoeff() >= 0);
   assert(C.minCoeff() >= 0);
   assert(R.maxCoeff() < A.rows());
   assert(C.maxCoeff() < A.cols());
+  int rows = R.size();
+  int cols = C.size();
+  MatrixXd B(rows,cols);
   for ( int i = 0 ; i < rows ; i++ ) {
-  for ( int j = 0 ; j< cols ; j++ ) {
+  for ( int j = 0 ; j < cols ; j++ ) {
     B(i,j) = A(R(i),C(j));
   } }
   return (B);

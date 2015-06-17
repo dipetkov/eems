@@ -228,14 +228,21 @@ double EEMS::eval_prior( ) {
   if (abs(nowmrateMu)>params.mrateMuHalfInterval) { inrange = false; }
   if ((nowdf<params.dfmin) || (nowdf>params.dfmax)) { inrange = false; }
   if (!inrange) { return (-Inf); }
+  // Use the normal pdf with mean mu and standard deviation sigma to compute
+  // normalizing constant for a truncated normal pdf with mean mu, standard
+  // deviation sigma and support [lower bound, upper bound].
+  boost::math::normal nowmrateNorm(0.0,sqrt(nowmrateS2));
+  boost::math::normal nowqrateNorm(0.0,sqrt(nowqrateS2));
   nowpi = - log(nowdf)
     + lgamma(params.negBiSize+nowmtiles) - lgamma(nowmtiles+1.0) + nowmtiles*log(params.negBiProb)
     + lgamma(params.negBiSize+nowqtiles) - lgamma(nowqtiles+1.0) + nowqtiles*log(params.negBiProb)
     - (params.mrateShape_2+1.0)*log(nowmrateS2) - params.mrateScale_2/nowmrateS2
     - (params.qrateShape_2+1.0)*log(nowqrateS2) - params.qrateScale_2/nowqrateS2
+    - (params.sigmaShape_2+1.0)*log(nowsigma2) - params.sigmaScale_2/nowsigma2
     - (nowmtiles/2.0)*log(nowmrateS2) - nowmEffcts.squaredNorm()/(2.0*nowmrateS2)
     - (nowqtiles/2.0)*log(nowqrateS2) - nowqEffcts.squaredNorm()/(2.0*nowqrateS2)
-    - (params.sigmaShape_2+1.0)*log(nowsigma2) - params.sigmaScale_2/nowsigma2;
+    - nowmtiles * log(cdf(nowmrateNorm,params.mEffctHalfInterval) - cdf(nowmrateNorm,-params.mEffctHalfInterval))
+    - nowqtiles * log(cdf(nowqrateNorm,params.qEffctHalfInterval) - cdf(nowqrateNorm,-params.qEffctHalfInterval));
   return (nowpi);
 }
 double EEMS::eval_likelihood( ) {
@@ -406,18 +413,20 @@ void EEMS::propose_rate_one_qtile(Proposal &proposal) {
   // Choose a tile at random to update
   int qtile = draw.runif_int(0,nowqtiles-1);
   // Make a random-walk proposal, i.e., add small offset to current value
-  double curqEffct = nowqEffcts(qtile);
-  double newqEffct = draw.rnorm(curqEffct,params.qEffctProposalS2);
+  double nowqEffct = nowqEffcts(qtile);
+  double newqEffct = draw.rnorm(nowqEffct,params.qEffctProposalS2);
   proposal.move = Q_VORONOI_RATE_UPDATE;
   proposal.newqEffcts = nowqEffcts;
   proposal.newqEffcts(qtile) = newqEffct;
   // The prior distribution on the tile effects is truncated normal
   // So first check whether the proposed value is in range
   // Then update the prior and evaluate the new likelihood
-  //  + (curqEffct*curqEffct) / (2.0*qrateS2) : old prior component associated with this tile
-  //  - (newqEffct*newqEffct) / (2.0*qrateS2) : new prior component associated with this tile
+  //  - dtrnormln(nowqEffct,0.0,nowqrateS2,params.qEffctHalfInterval) : old prior component associated with this tile
+  //  + dtrnormln(newqEffct,0.0,nowqrateS2,params.qEffctHalfInterval) : new prior component associated with this tile
   if ( abs(newqEffct) < params.qEffctHalfInterval ) {
-    proposal.newpi = nowpi + (curqEffct*curqEffct - newqEffct*newqEffct) / (2.0*nowqrateS2);
+    proposal.newpi = nowpi
+      - dtrnormln(nowqEffct,0.0,nowqrateS2,params.qEffctHalfInterval)
+      + dtrnormln(newqEffct,0.0,nowqrateS2,params.qEffctHalfInterval);
     proposal.newll = eval_proposal_rate_one_qtile(proposal);
   } else {
     proposal.newpi = -Inf;
@@ -428,18 +437,15 @@ void EEMS::propose_rate_one_mtile(Proposal &proposal) {
   // Choose a tile at random to update
   int mtile = draw.runif_int(0,nowmtiles-1);
   // Make a random-walk proposal, i.e., add small offset to current value
-  double curmEffct = nowmEffcts(mtile);
-  double newmEffct = draw.rnorm(curmEffct,params.mEffctProposalS2);
+  double nowmEffct = nowmEffcts(mtile);
+  double newmEffct = draw.rnorm(nowmEffct,params.mEffctProposalS2);
   proposal.move = M_VORONOI_RATE_UPDATE;
   proposal.newmEffcts = nowmEffcts;
   proposal.newmEffcts(mtile) = newmEffct;
-  // The prior distribution on the tile effects is truncated normal
-  // So first check whether the proposed value is in range
-  // Then update the prior and evaluate the new likelihood
-  //  + (curmEffct*curmEffct) / (2.0*mrateS2) : old prior component associated with this tile
-  //  - (newmEffct*newmEffct) / (2.0*mrateS2) : new prior component associated with this tile
   if ( abs(newmEffct) < params.mEffctHalfInterval ) {
-    proposal.newpi = nowpi + (curmEffct*curmEffct - newmEffct*newmEffct) / (2.0*nowmrateS2);
+    proposal.newpi = nowpi
+      - dtrnormln(nowmEffct,0.0,nowmrateS2,params.mEffctHalfInterval)
+      + dtrnormln(newmEffct,0.0,nowmrateS2,params.mEffctHalfInterval);
     proposal.newll = eval_proposal_rate_one_mtile(proposal);
   } else {
     proposal.newpi = -Inf;
@@ -505,7 +511,6 @@ void EEMS::propose_birthdeath_qVoronoi(Proposal &proposal) {
   double u = draw.runif();
   double pBirth = 0.5;
   double pDeath = 0.5;
-  boost::math::normal pnorm(0.0,sqrt(nowqrateS2));
   proposal.newqEffcts = nowqEffcts;
   proposal.newqSeeds = nowqSeeds;
   // If there is exactly one tile, rule out a death proposal
@@ -522,10 +527,10 @@ void EEMS::propose_birthdeath_qVoronoi(Proposal &proposal) {
     insertElem(proposal.newqEffcts,newqEffct);
     // Compute log(proposal ratio) and log(prior ratio)
     proposal.newratioln = log(pDeath/pBirth)
-      - dtrnormln(newqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval)
-      - log(cdf(pnorm,params.qEffctHalfInterval) - cdf(pnorm,-params.qEffctHalfInterval));
-    proposal.newpi = nowpi + log((nowqtiles+params.negBiSize)/(newqtiles/params.negBiProb))
-      - 0.5 * log(nowqrateS2) - 0.5 * newqEffct*newqEffct/nowqrateS2;
+      - dtrnormln(newqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval);
+    proposal.newpi = nowpi
+      + log((nowqtiles+params.negBiSize)/(newqtiles/params.negBiProb))
+      + dtrnormln(newqEffct,0.0,nowqrateS2,params.qEffctHalfInterval);
   } else {                      // Propose death
     if (nowqtiles==2) { pBirth = 1.0; }
     newqtiles--;
@@ -538,10 +543,10 @@ void EEMS::propose_birthdeath_qVoronoi(Proposal &proposal) {
     double oldqEffct = nowqEffcts(qtileToRemove);
     // Compute log(prior ratio) and log(proposal ratio)
     proposal.newratioln = log(pBirth/pDeath)
-      + dtrnormln(oldqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval)
-      + log(cdf(pnorm,params.qEffctHalfInterval) - cdf(pnorm,-params.qEffctHalfInterval));
-    proposal.newpi = nowpi + log((nowqtiles/params.negBiProb)/(newqtiles+params.negBiSize))
-      + 0.5 * log(nowqrateS2) + 0.5 * oldqEffct*oldqEffct/nowqrateS2;
+      + dtrnormln(oldqEffct,nowqEffct,params.qEffctProposalS2,params.qEffctHalfInterval);
+    proposal.newpi = nowpi
+      + log((nowqtiles/params.negBiProb)/(newqtiles+params.negBiSize))
+      - dtrnormln(oldqEffct,0.0,nowqrateS2,params.qEffctHalfInterval);
   }
   proposal.move = Q_VORONOI_BIRTH_DEATH;
   proposal.newqtiles = newqtiles;
@@ -552,7 +557,7 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
   double u = draw.runif();
   double pBirth = 0.5;
   double pDeath = 0.5;
-  boost::math::normal pnorm(0.0,sqrt(nowmrateS2));
+  //boost::math::normal pnorm(0.0,sqrt(nowmrateS2));
   proposal.newmEffcts = nowmEffcts;
   proposal.newmSeeds = nowmSeeds;
   if ((nowmtiles==1) || (u<0.5)) { // Propose birth
@@ -567,10 +572,10 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
     insertElem(proposal.newmEffcts,newmEffct);
     // Compute log(prior ratio) and log(proposal ratio)
     proposal.newratioln = log(pDeath/pBirth)
-      - dtrnormln(newmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval)
-      - log(cdf(pnorm,params.mEffctHalfInterval) - cdf(pnorm,-params.mEffctHalfInterval));
-    proposal.newpi = nowpi + log((nowmtiles+params.negBiSize)/(newmtiles/params.negBiProb))
-      - 0.5 * log(nowmrateS2) - 0.5 * newmEffct*newmEffct/nowmrateS2;
+      - dtrnormln(newmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval);
+    proposal.newpi = nowpi
+      + log((nowmtiles+params.negBiSize)/(newmtiles/params.negBiProb))
+      + dtrnormln(newmEffct,0.0,nowmrateS2,params.mEffctHalfInterval);
   } else {                      // Propose death
     if (nowmtiles==2) { pBirth = 1.0; }
     newmtiles--;
@@ -583,10 +588,10 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
     double oldmEffct = nowmEffcts(mtileToRemove);
     // Compute log(prior ratio) and log(proposal ratio)
     proposal.newratioln = log(pBirth/pDeath)
-      + dtrnormln(oldmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval)      
-      + log(cdf(pnorm,params.mEffctHalfInterval) - cdf(pnorm,-params.mEffctHalfInterval));
-    proposal.newpi = nowpi + log((nowmtiles/params.negBiProb)/(newmtiles+params.negBiSize))
-      + 0.5 * log(nowmrateS2) + 0.5 * oldmEffct*oldmEffct/nowmrateS2;
+      + dtrnormln(oldmEffct,nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval);
+    proposal.newpi = nowpi
+      + log((nowmtiles/params.negBiProb)/(newmtiles+params.negBiSize))
+      - dtrnormln(oldmEffct,0.0,nowmrateS2,params.mEffctHalfInterval);
   }
   proposal.move = M_VORONOI_BIRTH_DEATH;
   proposal.newmtiles = newmtiles;
@@ -595,16 +600,9 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
 void EEMS::update_hyperparams( ) {
   double SSq = nowqEffcts.squaredNorm();
   double SSm = nowmEffcts.squaredNorm();
-  nowpi += (params.mrateShape_2+1.0)*log(nowmrateS2) + params.mrateScale_2/nowmrateS2
-    +      (params.qrateShape_2+1.0)*log(nowqrateS2) + params.qrateScale_2/nowqrateS2
-    + (nowmtiles/2.0)*log(nowmrateS2) + SSm/(2.0*nowmrateS2)
-    + (nowqtiles/2.0)*log(nowqrateS2) + SSq/(2.0*nowqrateS2);
   nowqrateS2 = draw.rinvgam(params.qrateShape_2 + 0.5 * nowqtiles, params.qrateScale_2 + 0.5 * SSq);
   nowmrateS2 = draw.rinvgam(params.mrateShape_2 + 0.5 * nowmtiles, params.mrateScale_2 + 0.5 * SSm);
-  nowpi -= (params.mrateShape_2+1.0)*log(nowmrateS2) + params.mrateScale_2/nowmrateS2
-    +      (params.qrateShape_2+1.0)*log(nowqrateS2) + params.qrateScale_2/nowqrateS2
-    + (nowmtiles/2.0)*log(nowmrateS2) + SSm/(2.0*nowmrateS2)
-    + (nowqtiles/2.0)*log(nowqrateS2) + SSq/(2.0*nowqrateS2);
+  this->eval_prior();
 }
 bool EEMS::accept_proposal(Proposal &proposal) {
   double u = draw.runif( );
@@ -835,7 +833,9 @@ bool EEMS::output_results(const MCMC &mcmc) const {
 void EEMS::check_ll_computation( ) const {
   double pi0 = test_prior(nowmSeeds,nowmEffcts,nowmrateMu,nowqSeeds,nowqEffcts,nowdf,nowsigma2,nowmrateS2,nowqrateS2);
   double ll0 = test_likelihood(nowmSeeds,nowmEffcts,nowmrateMu,nowqSeeds,nowqEffcts,nowdf,nowsigma2);
-  if ((abs(nowpi-pi0)/abs(pi0)>1e-12)||
+  if (!isfinite(nowpi) || !isfinite(pi0) ||
+      !isfinite(nowll) || !isfinite(ll0) ||
+      (abs(nowpi-pi0)/abs(pi0)>1e-12) ||
       (abs(nowll-ll0)/abs(ll0)>1e-12)) {
     cerr << "[EEMS::testing]   |ll0-ll|/|ll0| = " << abs(nowll - ll0)/abs(ll0) << endl;
     cerr << "[EEMS::testing]   |pi0-pi|/|pi0| = " << abs(nowpi - pi0)/abs(pi0) << endl;
@@ -866,9 +866,13 @@ double EEMS::test_prior(const MatrixXd &mSeeds, const VectorXd &mEffcts, const d
     + dnegbinln(qtiles,params.negBiSize,params.negBiProb)
     + dinvgamln(mrateS2,params.mrateShape_2,params.mrateScale_2)
     + dinvgamln(qrateS2,params.qrateShape_2,params.qrateScale_2)
-    + dmvnormln(mEffcts,VectorXd::Zero(mtiles),mrateS2*MatrixXd::Identity(mtiles,mtiles))
-    + dmvnormln(qEffcts,VectorXd::Zero(qtiles),qrateS2*MatrixXd::Identity(qtiles,qtiles))
-    + dinvgamln(sigma2,params.sigmaShape_2,params.sigmaScale_2);
+    + dinvgamln( sigma2,params.sigmaShape_2,params.sigmaScale_2);
+  for (int i = 0 ; i < qtiles ; i++) {
+    logpi += dtrnormln(qEffcts(i),0.0,qrateS2,params.qEffctHalfInterval);
+  }
+  for (int i = 0 ; i < mtiles ; i++) {
+    logpi += dtrnormln(mEffcts(i),0.0,mrateS2,params.mEffctHalfInterval);
+  }
   return (logpi);
 }
 double EEMS::test_likelihood(const MatrixXd &mSeeds, const VectorXd &mEffcts, const double mrateMu,

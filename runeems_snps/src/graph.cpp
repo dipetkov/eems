@@ -260,6 +260,17 @@ bool Graph::read_input_grid(const string &datapath, MatrixXd &DemeCoord, MatrixX
   // Read the connected pairs of demes
   MatrixXd tempi = readMatrixXd(datapath + ".edges");
   if (tempi.cols()!=2) { exit(1); }
+  // Remove duplicated rows, i.e., keep one of (alpha,beta) and (beta,alpha)
+  // Since the edges are undirected, it is not necessary to duplicate rows.
+  int nEdges = tempi.rows();
+  for (int e2 = nEdges-1 ; e2 > 0 ; e2--) {
+    for (int e1 = 0 ; e1 < e2 ; e1++) {
+      if (((tempi(e2,0) == tempi(e1,0)) &&
+	   (tempi(e2,1) == tempi(e1,1)))||
+	  ((tempi(e2,0) == tempi(e1,1)) &&
+	   (tempi(e2,1) == tempi(e1,0)))) { removeRow(tempi,e2); }
+    }
+  }
   DemePairs = tempi.cast<int>();
   DemePairs = DemePairs.array() - 1;
   int nDemes = DemeCoord.rows();

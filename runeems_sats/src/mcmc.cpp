@@ -6,7 +6,7 @@ MCMC::MCMC(const Params &params) {
   numBurnIter = params.numBurnIter;
   numThinIter = params.numThinIter;
   currIter = 0;
-  numTypes = 8;
+  numTypes = 7;
   finished = false;
   okayMoves = vector<double>(numTypes,0);
   totalMoves = vector<double>(numTypes,0);
@@ -28,25 +28,25 @@ ostream& operator<<(ostream& out, const MCMC& mcmc) {
   for ( int i = 0 ; i < mcmc.numTypes ; i++ ) {
     double a = mcmc.okayMoves.at(i);
     double A = mcmc.totalMoves.at(i);
-    out << setprecision(2) << "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for type ";
+    out << setprecision(2) << "\t(" << (int)a << "/" << (int)A << ") = " << 100.0*(a/A) << "% for proposal type ";
     switch (i) {
     case Q_VORONOI_RATE_UPDATE:
-      out << "\"qTileRate\",\t\t with proposal var qEffctProposalS2" << endl;
+      out << "\"qTileRate\",\t\t with proposal variance \"qEffctProposalS2\"" << endl;
       break;
     case Q_VORONOI_POINT_MOVE:
-      out << "\"qTileMove\",\t\t with proposal var qSeedsProposalS2" << endl;
+      out << "\"qTileMove\",\t\t with proposal variance \"qSeedsProposalS2\"" << endl;
       break;
     case Q_VORONOI_BIRTH_DEATH:
       out << "\"qBirthDeath\"" << endl;
       break;
     case M_VORONOI_RATE_UPDATE:
-      out << "\"mTileRate\",\t\t with proposal var mEffctProposalS2" << endl;
+      out << "\"mTileRate\",\t\t with proposal variance \"mEffctProposalS2\"" << endl;
       break;
     case M_MEAN_RATE_UPDATE:
-      out << "\"mMeanRate\",\t\t with proposal var mrateMuProposalS2" << endl;
+      out << "\"mMeanRate\",\t\t with proposal variance \"mrateMuProposalS2\"" << endl;
       break;
     case M_VORONOI_POINT_MOVE:
-      out << "\"mTileMove\",\t\t with proposal var mSeedsProposalS2" << endl;
+      out << "\"mTileMove\",\t\t with proposal variance \"mSeedsProposalS2\"" << endl;
       break;
     case M_VORONOI_BIRTH_DEATH:
       out << "\"mBirthDeath\"" << endl;
