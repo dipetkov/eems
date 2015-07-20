@@ -3,6 +3,7 @@
 export(eems.plots)
 export(eems.voronoi)
 import(RcppEigen)
+import(geosphere)
 import(raster)
 import(rgeos)
 import(sp)

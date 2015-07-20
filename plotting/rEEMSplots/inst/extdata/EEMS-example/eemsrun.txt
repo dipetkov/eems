@@ -1,2 +1,40 @@
 Input parameter values:
-	       distance = euclidean
+               datapath = /Users/petkova/Documents/School/Classes/migration/ElephantsProject/DistanceAnalysis/eemscpp/V3b-nohyb-nIndiv1124
+               mcmcpath = /Users/petkova/Documents/School/Classes/migration/ElephantsProject/DistanceAnalysis/eemscpp/V3b-nohyb-nIndiv1124-nDemes360-chain0
+               prevpath = 
+               gridpath = 
+               distance = euclidean
+                 nIndiv = 1124
+                 nSites = 16
+                 nDemes = 360
+                   seed = 1431462873
+            numMCMCIter = 2000000
+            numBurnIter = 1000000
+            numThinIter = 9999
+              negBiSize = 10
+              negBiProb = 0.670000
+             qVoronoiPr = 0.050000
+             mrateShape = 0.001000
+             qrateShape = 0.001000
+             sigmaShape = 0.001000
+             qrateScale = 1.000000
+             mrateScale = 1.000000
+             sigmaScale = 1.000000
+       mSeedsProposalS2 = 0.100000
+       qSeedsProposalS2 = 0.100000
+       mEffctProposalS2 = 2.000000
+       qEffctProposalS2 = 0.001000
+      mrateMuProposalS2 = 0.100000
+
+Acceptance proportions:
+	(4649/24874) = 18.69% for type "qTileRate"
+	(8854/24993) = 35.43% for type "qTileMove"
+	(2074/25184) = 8.24% for type "qBirthDeath"
+	(104412/475285) = 21.97% for type "mTileRate"
+	(70681/500395) = 14.13% for type "mMeanRate"
+	(125398/473939) = 26.46% for type "mTileMove"
+	(90243/475330) = 18.99% for type "mBirthDeath"
+	(0/0) = nan% for type "d.f."
+
+Final log prior: -8.86
+Final log llike: -144359.95

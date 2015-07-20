@@ -1,6 +1,6 @@
 
 #' @useDynLib rEEMSplots
-#' @import raster rgeos sp RcppEigen
+#' @import raster rgeos sp geosphere RcppEigen
 #' @importFrom Rcpp evalCpp
 
 default.eems.colors <- function( ) {
@@ -120,13 +120,15 @@ check.plot.params <- function(params) {
     return(params)
 }
 eems.colscale <- function(Zvals,num.levels,colscale) {
+
     maxZ <- abs(Zvals)
     maxZ <- ceiling(maxZ*1000)/1000
     maxZ <- max(c(maxZ,0.001))
     minZ <- -maxZ
     ## Check whether the range of values should be fixed so that
     ## migration rates are always plotted on the same scale
-    if ( is.numeric(colscale) &&
+    
+    if (is.numeric(colscale)  &&
         (minZ >= colscale[1]) &&
         (maxZ <= colscale[2])) {
         minZ <- colscale[1]
@@ -262,21 +264,18 @@ read.graph <- function(path,longlat) {
         coord <- matrix(coord,ncol=2,byrow=TRUE)
         outer <- matrix(outer,ncol=2,byrow=TRUE)
         edges <- NULL
-        if (1==2) {
-            ## In this case each sample is its own "deme"
-            ## Samples with exactly the same location are overplotted
-            ipmap <- seq(nrow(coord))
-            demes <- coord
-        } else {
-            ## In this case the two sampling coordinates are combined
-            ## to define a "deme", with the maximum possible precision
-            ipmap <- factor(paste(coord[,1],coord[,2],sep="x"))
-            demes <- levels(ipmap)
-            index <- match(demes,ipmap)
-            o <- length(index)
-            demes <- coord[index,]
-            ipmap <- (1:o)[ipmap]
-        }
+        ## In this case each sample is its own "deme"
+        ## Samples with exactly the same location are overplotted
+        #ipmap <- seq(nrow(coord))
+        #demes <- coord
+        ## In this case the two sampling coordinates are combined
+        ## to define a "deme", with the maximum possible precision
+        ipmap <- factor(paste(coord[,1],coord[,2],sep="x"))
+        demes <- levels(ipmap)
+        index <- match(demes,ipmap)
+        o <- length(index)
+        demes <- coord[index,]
+        ipmap <- (1:o)[ipmap]
         ## "Close" the outline if the first row is not the same as the last row
         if (sum(head(outer,1) != tail(outer,1))) {
             outer = rbind(outer, head(outer,1))
@@ -357,6 +356,20 @@ filled.contour.points <- function(mcmcpath,longlat,plot.params,highlight) {
            pch=highlight$pch[index2highlight],
            lwd=highlight$lwd[index2highlight])
 }
+filled.contour.map <- function(mcmcpath,longlat,plot.params) {
+    if (!is.null(plot.params$proj.in) && plot.params$add.map) {
+        map <- rworldmap::getMap(resolution="high")
+        map <- sp::spTransform(map,CRSobj=CRS(plot.params$proj.out))
+        plot(map,col=NA,border=plot.params$col.map,lwd=plot.params$lwd.map,add=TRUE)
+    }
+}
+filled.contour.exterior <- function(mcmcpath,longlat,plot.params) {
+    if (is.null(plot.params$proj.in)) {
+        filled.contour.exterior.proj.unknown(mcmcpath,longlat,plot.params)
+    } else {
+        filled.contour.exterior.proj.known(mcmcpath,longlat,plot.params)
+    }
+}
 filled.contour.axes <- function(mcmcpath,longlat,plot.params) {
     if (is.null(plot.params$proj.in)) {
         filled.contour.axes.proj.unknown(mcmcpath,longlat,plot.params)
@@ -364,7 +377,7 @@ filled.contour.axes <- function(mcmcpath,longlat,plot.params) {
         filled.contour.axes.proj.known(mcmcpath,longlat,plot.params)
     }
 }
-filled.contour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
+filled.contour.exterior.proj.unknown <- function(mcmcpath,longlat,plot.params) {
     graph <- read.graph(mcmcpath,longlat)
     ## The filledContour fills a rectangular plot; now color the habitat exterior white.
     boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(graph$outer,hole=FALSE)),"1")))
@@ -372,6 +385,26 @@ filled.contour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
     if (!is.null(exterior)) {
         plot(exterior,col="white",border="white",add=TRUE)
     }
+    if (plot.params$add.outline) {
+        plot(boundary,col=NA,border=plot.params$col.outline,lwd=plot.params$lwd.outline,add=TRUE)
+    }
+}
+filled.contour.exterior.proj.known <- function(mcmcpath,longlat,plot.params) {
+    graph <- read.graph(mcmcpath,longlat)
+    ## The filledContour fills a rectangular plot; now color the habitat exterior white.
+    boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(graph$outer,hole=FALSE)),"1")),
+                                    proj4string=CRS(plot.params$proj.in))
+    boundary <- sp::spTransform(boundary,CRSobj=CRS(plot.params$proj.out))
+    exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)
+    if (!is.null(exterior)) {
+        plot(exterior,col="white",border="white",add=TRUE)
+    }
+    if (plot.params$add.outline) {
+        plot(boundary,col=NA,border=plot.params$col.outline,lwd=plot.params$lwd.outline,add=TRUE)
+    }
+}
+filled.contour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
+    graph <- read.graph(mcmcpath,longlat)
     if (plot.params$add.grid) {
         segments <- list()
         for (e in 1:nrow(graph$edges)) {
@@ -379,9 +412,6 @@ filled.contour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
         }
         segments <- sp::SpatialLines(list(Lines(segments,ID="a")))
         lines(segments,col=plot.params$col.grid,lwd=plot.params$lwd.grid)
-    }
-    if (plot.params$add.outline) {
-        plot(boundary,col=NA,border=plot.params$col.outline,lwd=plot.params$lwd.outline,add=TRUE)
     }
     if (plot.params$all.demes) {
         all.demes <- sp::SpatialPoints(graph$demes)
@@ -400,20 +430,6 @@ filled.contour.axes.proj.unknown <- function(mcmcpath,longlat,plot.params) {
 }
 filled.contour.axes.proj.known <- function(mcmcpath,longlat,plot.params) {
     graph <- read.graph(mcmcpath,longlat)
-    ## The filledContour fills a rectangular plot; now color the habitat exterior white.
-    boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(graph$outer,hole=FALSE)),"1")),
-                                    proj4string=CRS(plot.params$proj.in))
-    exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)
-    boundary <- sp::spTransform(boundary,CRSobj=CRS(plot.params$proj.out))    
-    if (!is.null(exterior)) {
-        exterior <- sp::spTransform(exterior,CRSobj=CRS(plot.params$proj.out))
-        plot(exterior,col="white",border="white",add=TRUE)
-    }
-    if (plot.params$add.map) {
-        map <- rworldmap::getMap(resolution="high")
-        map <- sp::spTransform(map,CRSobj=CRS(plot.params$proj.out))
-        plot(map,col=NA,border=plot.params$col.map,lwd=plot.params$lwd.map,add=TRUE)
-    }
     if (plot.params$add.grid) {
         segments <- list()
         for (e in 1:nrow(graph$edges)) {
@@ -422,9 +438,6 @@ filled.contour.axes.proj.known <- function(mcmcpath,longlat,plot.params) {
         segments <- sp::SpatialLines(list(Lines(segments,ID="a")),proj4string=CRS(plot.params$proj.in))
         segments <- sp::spTransform(segments,CRSobj=CRS(plot.params$proj.out))
         lines(segments,col=plot.params$col.grid,lwd=plot.params$lwd.grid)
-    }
-    if (plot.params$add.outline) {
-        plot(boundary,col=NA,border=plot.params$col.outline,lwd=plot.params$lwd.outline,add=TRUE)
     }
     if (plot.params$all.demes) {
         all.demes <- sp::SpatialPoints(graph$demes[graph$alpha,],proj4string=CRS(plot.params$proj.in))
@@ -444,50 +457,42 @@ filled.contour.axes.proj.known <- function(mcmcpath,longlat,plot.params) {
     }
 }
 one.eems.contour <- function(mcmcpath,dimns,Zmean,longlat,plot.params,is.mrates,
-                             highlight.samples=NULL) {
+                             plot.xy = NULL,highlight.samples = NULL) {
     eems.colors <- plot.params$eems.colors
     num.levels <- length(eems.colors)
     if (is.mrates) {
         eems.levels <- eems.colscale(Zmean,num.levels,plot.params$m.colscale)
         main.title <- "Effective migration rates m : posterior mean"
-        var.title <- "Effective migration rates m : posterior variance"
-        key.title <- "m"
+        key.title <- expression(paste(log,"(",italic(m),")",sep=""))
     } else {
         eems.levels <- eems.colscale(Zmean,num.levels,plot.params$q.colscale)
         main.title <- "Effective diversity rates q : posterior mean"
-        var.title <- "Effective diversity rates q : posterior variance"
-        key.title <- "q"
+        key.title <- expression(paste(log,"(",italic(q),")",sep=""))
     }
-    if (!plot.params$add.title) { main.title = "" }
     rr <- flip(raster::raster(t(Zmean),
-                      xmn=dimns$xlim[1],xmx=dimns$xlim[2],
-                      ymn=dimns$ylim[1],ymx=dimns$ylim[2]),direction='y')
+                              xmn=dimns$xlim[1],xmx=dimns$xlim[2],
+                              ymn=dimns$ylim[1],ymx=dimns$ylim[2]),direction='y')
     if (!is.null(plot.params$proj.in)) {
         raster::projection(rr) <- CRS(plot.params$proj.in)
         rr <- raster::projectRaster(rr,crs=CRS(plot.params$proj.out))
     }
-    if (plot.params$add.colbar) {
-        myfilledContour(rr,
-                        main=main.title,font.main=1,asp=1,
-                        col=eems.colors,levels=eems.levels,frame.plot=FALSE,
-                        key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex.axis=1.5),
-                        key.title = mtext(key.title,side=3,cex=1.5,line=1.5,font=1),
-                        plot.axes = {
-                            filled.contour.axes(mcmcpath,longlat,plot.params);
-                            filled.contour.points(mcmcpath,longlat,plot.params,highlight.samples);
-                        })
-    } else {
-        myfilledContour(rr,
-                        main=main.title,font.main=1,asp=1,add.key = FALSE,
-                        col=eems.colors,levels=eems.levels,frame.plot=FALSE,
-                        plot.axes = {
-                            filled.contour.axes(mcmcpath,longlat,plot.params);
-                            filled.contour.points(mcmcpath,longlat,plot.params,highlight.samples);
-                        })
-    }
+    myfilledContour(rr,col = eems.colors,levels = eems.levels,asp=1,
+                    add.key = plot.params$add.colbar,
+                    key.axes = axis(4,tick=FALSE,hadj=1,line=3,cex.axis=1.5),
+                    key.title = mtext(key.title,side=3,cex=1.5,line=1.5,font=1),
+                    add.title = plot.params$add.title,
+                    plot.title = mtext(text=main.title,side=3,line=0,cex=1.5),
+                    plot.axes = {
+                        filled.contour.exterior(mcmcpath,longlat,plot.params);
+                        filled.contour.map(mcmcpath,longlat,plot.params);
+                        plot.xy;
+                        filled.contour.axes(mcmcpath,longlat,plot.params);
+                        filled.contour.points(mcmcpath,longlat,plot.params,highlight.samples);
+                    })
+    return (list(eems.colors=eems.colors,eems.levels=eems.levels))
 }
 average.eems.contours <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,
-                                  highlight.samples=NULL) {
+                                  plot.xy = NULL,highlight.samples = NULL) {
     mcmcpath1 <- character( )
     if (is.mrates) {
         writeLines('Plotting effective migration surface (posterior mean of m rates)')
@@ -516,8 +521,9 @@ average.eems.contours <- function(mcmcpath,dimns,longlat,plot.params,is.mrates,
         niters <- niters + rslt$niters
     }
     Zmean <- Zmean/niters
-    one.eems.contour(mcmcpath[1],dimns,Zmean,longlat,plot.params,is.mrates,
-                     highlight.samples=highlight.samples)
+    rates.raster <- one.eems.contour(mcmcpath[1],dimns,Zmean,longlat,plot.params,is.mrates,
+                                     plot.xy=plot.xy,highlight.samples=highlight.samples)
+    return(rates.raster)
 }
 ## This function is mainly for testing purposes and will create on Voronoi diagram for each saved MCMC iteration
 voronoi.diagram <- function(mcmcpath,dimns,longlat,plot.params,mcmc.iters=NULL,is.mrates=TRUE) {
@@ -627,7 +633,18 @@ plot.logposterior <- function(mcmcpath) {
     legend("topright",legend=1:nchains,col=colors[1:nchains],
            lty=ltypes[1:nchains],lwd=2,bty="n",inset=c(-0.12,0),cex=0.5)
 }
-dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
+geo.distm <- function(coord,longlat,plot.params) {
+    if (longlat) {
+        coord <- coord[,c(2,1)]
+    }
+    if (!is.null(plot.params$proj.in)) {
+        coord <- sp::SpatialPoints(coord,proj4string=CRS(plot.params$proj.in))
+        coord <- sp::spTransform(coord,CRSobj=CRS("+proj=longlat +datum=WGS84"))
+    }
+    return(distm(coord,fun=distHaversine)/1000)
+}
+dist.scatterplot <- function(mcmcpath,longlat,plot.params,
+                             remove.singletons=TRUE,highlight=NULL,add.abline=FALSE) {
     writeLines('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -639,42 +656,39 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
     }
     mcmcpath <- mcmcpath1
     nchains <- length(mcmcpath)
-    if (nchains==0) { return(0) }
+    if (nchains==0) { return(NULL) }
     ## List of observed demes, with number of samples taken collected
     ## Each row specifies: x coordinate, y coordinate, n samples
     oDemes <- scan(paste(mcmcpath[1],'/rdistoDemes.txt',sep=''),quiet=TRUE)
     oDemes <- matrix(oDemes,ncol=3,byrow=TRUE)
-    if (nchains>1) {
-        for (simno in 2:nchains) {
-            path <- mcmcpath[simno]
-            oDemes2 <- scan(paste(path,'/rdistoDemes.txt',sep=''),quiet=TRUE)
-            oDemes2 <- matrix(oDemes2,ncol=3,byrow=TRUE)
-            if (nrow(oDemes2)!=nrow(oDemes) || sum(oDemes2!=oDemes)) {
-                stop('dist.scatterplot: mcmc results for different population graphs')
-            }
-        }
-    }
+    Distm <- geo.distm(oDemes[,1:2],longlat,plot.params)
     sizes <- oDemes[,3]
     nPops <- nrow(oDemes)
-    alpha <- seq(nPops)
+    demes <- seq(nPops)
     JtDobsJ <- matrix(0,nPops,nPops)
     JtDhatJ <- matrix(0,nPops,nPops)
     for (path in mcmcpath) {
         writeLines(path)
-        JtDobsJ <- JtDobsJ + as.matrix(read.table(paste(path,'/rdistJtDobsJ.txt',sep=''),header=FALSE))
-        JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
+        JtDobsJ1 <- as.matrix(read.table(paste(path,'/rdistJtDobsJ.txt',sep=''),header=FALSE))
+        JtDhatJ1 <- as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
+        if (nrow(JtDobsJ1)!=nPops) {
+            writeLines('dist.scatterplot: mcmc results for different population graphs')
+            return(NULL)
+        }
+        JtDobsJ <- JtDobsJ + JtDobsJ1
+        JtDhatJ <- JtDhatJ + JtDhatJ1
     }
     JtDobsJ <- JtDobsJ/nchains
     JtDhatJ <- JtDhatJ/nchains
-    colnames(JtDobsJ) <- alpha
-    rownames(JtDobsJ) <- alpha
-    colnames(JtDhatJ) <- alpha
-    rownames(JtDhatJ) <- alpha
+    colnames(JtDobsJ) <- demes
+    rownames(JtDobsJ) <- demes
+    colnames(JtDhatJ) <- demes
+    rownames(JtDhatJ) <- demes
     ## There should be NAs on the main diagonal of JtDobsJ -- these elements correspond to demes with
     ## a single observed sample. And since there is a single sample taken, the average dissimilarity
     ## between two distinct individuals from such demes cannot be observed.
     obsW <- diag(JtDobsJ)
-    obsW[sizes==1] <- NA
+    obsW[sizes==1] <- NA    
     ## Instead, I will use the average within dissimilarity, W, across the demes with multiple samples.
     ## This is make a difference only if remove.singletons = FALSE, which is not the default option.
     aveW <- mean(obsW,na.rm=TRUE)
@@ -682,21 +696,26 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
     if (sum(sizes>1)<2) {
         ypts <- JtDobsJ[upper.tri(JtDobsJ,diag=FALSE)]
         xpts <- JtDhatJ[upper.tri(JtDhatJ,diag=FALSE)]
-        plot(xpts,ypts,
+        plot(xpts,ypts,type="n",
              xlab=expression(paste("Fitted dissimilarity between individuals  ",Delta[i*j],sep="")),
              ylab=expression(paste("Observed dissimilarity between individuals  ",D[i*j],sep="")))
+        if (add.abline) {
+            abline(a=0,b=1,col="red",lwd=2)
+        }
+        points(xpts,ypts)
         mtext(side=3,line=1.5,cex=1.3,text="There should be at least two observed demes to plot pairwise dissimilarities")
         writeLines('There should be at least two observed demes to plot pairwise dissimilarities')
-        return (0)
+        return (NULL)
     }    
     if (remove.singletons) {
         remove <- which(sizes<=1)
         if (length(remove)) {
             JtDobsJ <- JtDobsJ[-remove,-remove]
             JtDhatJ <- JtDhatJ[-remove,-remove]
+            Distm <- Distm[-remove,-remove]
             sizes <- sizes[-remove]
-            alpha <- alpha[-remove]
-            nPops <- length(alpha)
+            demes <- demes[-remove]
+            nPops <- length(demes)
         }
     }
     Wobs <- diag(JtDobsJ)
@@ -706,16 +725,16 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2
     diag(Bobs) <- NA
     diag(Bhat) <- NA
-    Deme1 <- matrix(alpha,nrow=nPops,ncol=nPops)
+    Deme1 <- matrix(demes,nrow=nPops,ncol=nPops)
     Deme2 <- t(Deme1)
     tempi <- matrix(sizes,nPops,nPops)
     Small <- pmin(tempi,t(tempi))
     means <- apply(Bobs,1,median,na.rm=TRUE)
     ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
-    ind1 <- Deme1[upper.tri(Deme1,diag=FALSE)]
-    ind2 <- Deme2[upper.tri(Deme2,diag=FALSE)]
-    cnts <- Small[upper.tri(Small,diag=FALSE)]
+    alpha <- Deme1[upper.tri(Deme1,diag=FALSE)]
+    beta <- Deme2[upper.tri(Deme2,diag=FALSE)]
+    cnts <- Small[upper.tri(Small,diag=FALSE)]    
     if (!is.null(highlight) && !is.null(highlight$index)) {
         add.highlight = TRUE
         pch = 19
@@ -740,38 +759,43 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
             ## are -- on average -- more differentiated than
             ## the group of demes with the same color as beta
             ## means[alpha] is the average of Bobs[alpha,beta] for all beta != alpha
-            mu1 = means[as.character(ind1)]
-            mu2 = means[as.character(ind2)]
-            tempi2 = ifelse(mu1<mu2,ind1,ind2)
-            tempi1 = ifelse(mu1<mu2,ind2,ind1)
-            ind1 = tempi1
-            ind2 = tempi2
+            mu1 = means[as.character(alpha)]
+            mu2 = means[as.character(beta)]
+            pair.alpha = ifelse(mu1<mu2,alpha,beta)
+            pair.beta  = ifelse(mu1<mu2,beta,alpha)
 
             ## 2. If one deme is to be highlighted but the other not,
             ## order (alpha,beta) so that alpha is the deme to highlight
-            ind1highlight = match(ind1,highlight$index)
-            ind2highlight = match(ind2,highlight$index)
-            bool1 = is.na(ind1highlight)
-            bool2 = is.na(ind2highlight)
-            tempi2 = ifelse((bool1==TRUE&bool2==FALSE),ind1,ind2)
-            tempi1 = ifelse((bool1==TRUE&bool2==FALSE),ind2,ind1)
-            ind1 = tempi1
-            ind2 = tempi2
-
+            pair1highlight = match(pair.alpha,highlight$index)
+            pair2highlight = match(pair.beta ,highlight$index)
+            bool1 = is.na(pair1highlight)
+            bool2 = is.na(pair2highlight)
+            tempi2 = ifelse((bool1==TRUE&bool2==FALSE),pair.alpha,pair.beta)
+            tempi1 = ifelse((bool1==TRUE&bool2==FALSE),pair.beta,pair.alpha)
+            pair.alpha = tempi1
+            pair.beta  = tempi2
+            
             ## Suppose there are oDemes (o) observed demes in the graph
             ## dist.scatterplot assumes that they are indexed from 1 to o,
             ## in the order implied by the "rdistoDemes.txt" file
             ## Match these indices to the indices in the highlight data.frame
-            ind1highlight = match(ind1,highlight$index)
-            ind2highlight = match(ind2,highlight$index)
-            ind1 = which(!is.na(ind1highlight))
-            ind2 = which(!is.na(ind2highlight))
-            ind1highlight = ind1highlight[ind1]
-            ind2highlight = ind2highlight[ind2]
-            
-            alpha2highlight = match(alpha,highlight$index)
-            alpha = which(!is.na(alpha2highlight))
-            alpha2highlight = alpha2highlight[alpha]
+            pair1highlight = match(pair.alpha,highlight$index)
+            pair2highlight = match(pair.beta ,highlight$index)
+
+            if (!sum(!is.na(pair1highlight)) ||
+                !sum(!is.na(pair2highlight))) {
+                add.highlight = FALSE
+                pch = 1
+                cex = 1
+            } else {
+                pair.alpha = which(!is.na(pair1highlight))
+                pair.beta  = which(!is.na(pair2highlight))
+                pair1highlight = pair1highlight[pair.alpha]
+                pair2highlight = pair2highlight[pair.beta]
+                deme2highlight = match(demes,highlight$index)
+                deme.alpha = which(!is.na(deme2highlight))
+                deme2highlight = deme2highlight[deme.alpha]
+            }
         }
     } else {
         add.highlight = FALSE
@@ -780,106 +804,162 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE,highlight=NULL) {
     }
     col = c("black","gray60")[1+1*(cnts==1)]
     ord = rev(sort.list(col))
-    B.component <- data.frame(alpha.x = oDemes[,1][ind1],
-                              alpha.y = oDemes[,2][ind1],
-                              beta.x = oDemes[,1][ind2],
-                              beta.y = oDemes[,2][ind2],
+
+    B.component <- data.frame(alpha.x = oDemes[,1][alpha],
+                              alpha.y = oDemes[,2][alpha],
+                              beta.x = oDemes[,1][beta],
+                              beta.y = oDemes[,2][beta],
                               Bfitted = xpts,
                               Bobsrvd = ypts,
                               size = cnts, col = col,
                               stringsAsFactors = FALSE)
-    plot(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex,
+    plot(xpts,ypts,type="n",
          xlab=expression(paste("Fitted dissimilarity between demes:   ",
              Delta[alpha*beta]," - (",Delta[alpha*alpha],"+",Delta[beta*beta],")/2",sep="")),
          ylab=expression(paste("Observed dissimilarity between demes:   ",
              D[alpha*beta]," - (",D[alpha*alpha],"+",D[beta*beta],")/2",sep="")))
+    if (add.abline) {
+        abline(a=0,b=1,col="red",lwd=2)
+    }
+    points(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex)
     if (remove.singletons) {
         mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
         mtext(side=3,line=0.5,cex=1,text="Singleton demes, if any, are excluded from this plot (but not from EEMS)")
     } else {
-        mtext(side=3,line=2,cex=1.5,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+        mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
         mtext(side=3,line=0.5,cex=1,text=expression(paste("Gray means that a single individual is sampled from either ",alpha," or ",beta,sep="")))
     }
     if (add.highlight) {
-        highlight.x = xpts[ind1]
-        highlight.y = ypts[ind1]
-        highlight.c = highlight$col[ind1highlight]
-        ord2 = rev(sort.list(highlight.c))
-        points(highlight.x[ord2],
-               highlight.y[ord2],
-               cex=highlight$cex[ind1highlight][ord2],
-               col=highlight$col[ind1highlight][ord2],
-               pch=highlight$pch[ind1highlight][ord2],
-               lwd=highlight$lwd[ind1highlight][ord2])
-        plot(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex,
+        ord2 = rev(sort.list(highlight$col[pair1highlight]))
+        points(xpts[pair.alpha][ord2],
+               ypts[pair.alpha][ord2],
+               cex=highlight$cex[pair1highlight][ord2],
+               col=highlight$col[pair1highlight][ord2],
+               pch=highlight$pch[pair1highlight][ord2],
+               lwd=highlight$lwd[pair1highlight][ord2])
+        plot(xpts,ypts,type="n",
              xlab=expression(paste("Fitted dissimilarity between demes:   ",
                  Delta[alpha*beta]," - (",Delta[alpha*alpha],"+",Delta[beta*beta],")/2",sep="")),
              ylab=expression(paste("Observed dissimilarity between demes:   ",
                  D[alpha*beta]," - (",D[alpha*alpha],"+",D[beta*beta],")/2",sep="")))
+        if (add.abline) {
+            abline(a=0,b=1,col="red",lwd=2)
+        }
+        points(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex)
         if (remove.singletons) {
             mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
             mtext(side=3,line=0.5,cex=1,text="Singleton demes, if any, are excluded from this plot (but not from EEMS)")
         } else {
-            mtext(side=3,line=2,cex=1.5,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+            mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
             mtext(side=3,line=0.5,cex=1,text=expression(paste("Gray means that a single individual is sampled from either ",alpha," or ",beta,sep="")))
         }
-        highlight.x = xpts[ind2]
-        highlight.y = ypts[ind2]
-        highlight.c = highlight$col[ind2highlight]
-        ord2 = rev(sort.list(highlight.c))
-        points(highlight.x[ord2],
-               highlight.y[ord2],
-               cex=highlight$cex[ind2highlight][ord2],
-               col=highlight$col[ind2highlight][ord2],
-               pch=highlight$pch[ind2highlight][ord2],
-               lwd=highlight$lwd[ind2highlight][ord2])
-        B.component$highlight.col = NA
-        B.component$highlight.cex = NA
-        B.component$highlight.pch = NA
-        B.component$highlight.col1[ind1] = highlight$col[ind1highlight]
-        B.component$highlight.cex1[ind1] = highlight$cex[ind1highlight]
-        B.component$highlight.pch1[ind1] = highlight$pch[ind1highlight]
-        B.component$highlight.col2[ind2] = highlight$col[ind2highlight]
-        B.component$highlight.cex2[ind2] = highlight$cex[ind2highlight]
-        B.component$highlight.pch2[ind2] = highlight$pch[ind2highlight]
+        ord2 = rev(sort.list(highlight$col[pair2highlight]))
+        points(xpts[pair.beta][ord2],
+               ypts[pair.beta][ord2],
+               cex=highlight$cex[pair2highlight][ord2],
+               col=highlight$col[pair2highlight][ord2],
+               pch=highlight$pch[pair2highlight][ord2],
+               lwd=highlight$lwd[pair2highlight][ord2])
+        B.component$highlight.col1 = NA
+        B.component$highlight.cex1 = NA
+        B.component$highlight.pch1 = NA
+        B.component$highlight.col2 = NA
+        B.component$highlight.cex2 = NA
+        B.component$highlight.pch2 = NA
+        B.component$highlight.col1[pair.alpha] = highlight$col[pair1highlight]
+        B.component$highlight.cex1[pair.alpha] = highlight$cex[pair1highlight]
+        B.component$highlight.pch1[pair.alpha] = highlight$pch[pair1highlight]
+        B.component$highlight.col2[pair.beta] = highlight$col[pair2highlight]
+        B.component$highlight.cex2[pair.beta] = highlight$cex[pair2highlight]
+        B.component$highlight.pch2[pair.beta] = highlight$pch[pair2highlight]
     }
     col <- c("black","gray60")[1+1*(sizes==1)]
-    W.component <- data.frame(alpha.x = oDemes[,1][alpha],
-                              alpha.y = oDemes[,2][alpha],
+    W.component <- data.frame(alpha.x = oDemes[,1][demes],
+                              alpha.y = oDemes[,2][demes],
                               Wfitted = What,
                               Wobsrvd = Wobs,
                               size = sizes,col = col,
                               stringsAsFactors = FALSE)
     ypts <- Wobs
     xpts <- What
-    plot(xpts,ypts,col=col,pch=pch,cex=cex,
+    plot(xpts,ypts,type="n",
          xlab=expression(paste("Fitted dissimilarity within demes:   ",Delta[alpha*alpha],sep="")),
          ylab=expression(paste("Observed dissimilarity within demes:   ",D[alpha*alpha],sep="")))
+    if (add.abline) {
+        abline(a=0,b=1,col="red",lwd=2)
+    }
+    points(xpts,ypts,col=col,pch=pch,cex=cex)
     if (remove.singletons) {
-        mtext(side=3,line=2,cex=1.5,text=expression(paste("Dissimilarities within sampled demes ",alpha,sep="")))
+        mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities within sampled demes ",alpha,sep="")))
         mtext(side=3,line=0.5,cex=1,text="Singleton demes, if any, are excluded from this plot (but not from EEMS)")
     } else {
-        mtext(side=3,line=2,cex=1.5,text=expression(paste("Dissimilarities within sampled demes ",alpha,sep="")))
+        mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities within sampled demes ",alpha,sep="")))
         mtext(side=3,line=0.5,cex=1,text=expression(paste("Gray means that a single individual is sampled from ",alpha,sep="")))
     }
     if (add.highlight) {
-        highlight.x = xpts[alpha]
-        highlight.y = ypts[alpha]
-        highlight.c = highlight$col[alpha2highlight]
-        ord2 = rev(sort.list(highlight.c))
-        points(highlight.x[ord2],
-               highlight.y[ord2],
-               cex=highlight$cex[alpha2highlight][ord2],
-               col=highlight$col[alpha2highlight][ord2],
-               pch=highlight$pch[alpha2highlight][ord2],
-               lwd=highlight$lwd[alpha2highlight][ord2])
+        ord2 = rev(sort.list(highlight$col[deme2highlight]))
+        points(xpts[demes][ord2],
+               ypts[demes][ord2],
+               cex=highlight$cex[deme2highlight][ord2],
+               col=highlight$col[deme2highlight][ord2],
+               pch=highlight$pch[deme2highlight][ord2],
+               lwd=highlight$lwd[deme2highlight][ord2])
         W.component$highlight.col = NA
         W.component$highlight.cex = NA
         W.component$highlight.pch = NA
-        W.component$highlight.col[alpha] = highlight$col[alpha2highlight]
-        W.component$highlight.cex[alpha] = highlight$cex[alpha2highlight]
-        W.component$highlight.pch[alpha] = highlight$pch[alpha2highlight]
+        W.component$highlight.col[deme.alpha] = highlight$col[deme2highlight]
+        W.component$highlight.cex[deme.alpha] = highlight$cex[deme2highlight]
+        W.component$highlight.pch[deme.alpha] = highlight$pch[deme2highlight]
     }
+    ## Under pure isolation by distance, we expect the genetic dissimilarities
+    ## between demes increase with the geographic distance separating them
+    ypts = Bobs[upper.tri(Bobs,diag=FALSE)]
+    xpts = Distm[upper.tri(Distm,diag=FALSE)]
+    col = c("black","gray60")[1+1*(cnts==1)]
+    ord = rev(sort.list(col))
+    plot(xpts,ypts,type="n",xlab="Great circle distance between demes (km)",
+         ylab=expression(paste("Observed dissimilarity between demes:   ",
+             D[alpha*beta]," - (",D[alpha*alpha],"+",D[beta*beta],")/2",sep="")))
+    points(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex)
+    if (remove.singletons) {
+        mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+        mtext(side=3,line=0.5,cex=1,text="Singleton demes, if any, are excluded from this plot (but not from EEMS)")
+    } else {
+        mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+        mtext(side=3,line=0.5,cex=1,text=expression(paste("Gray means that a single individual is sampled from either ",alpha," or ",beta,sep="")))
+    }
+    if (add.highlight) {
+        ord2 = rev(sort.list(highlight$col[pair1highlight]))
+        points(xpts[pair.alpha][ord2],
+               ypts[pair.alpha][ord2],
+               cex=highlight$cex[pair1highlight][ord2],
+               col=highlight$col[pair1highlight][ord2],
+               pch=highlight$pch[pair1highlight][ord2],
+               lwd=highlight$lwd[pair1highlight][ord2])
+        plot(xpts,ypts,type="n",
+             xlab=expression(paste("Fitted dissimilarity between demes:   ",
+                 Delta[alpha*beta]," - (",Delta[alpha*alpha],"+",Delta[beta*beta],")/2",sep="")),
+             ylab=expression(paste("Observed dissimilarity between demes:   ",
+                 D[alpha*beta]," - (",D[alpha*alpha],"+",D[beta*beta],")/2",sep="")))
+        if (add.abline) {
+            abline(a=0,b=1,col="red",lwd=2)
+        }
+        points(xpts[ord],ypts[ord],col=col[ord],pch=pch,cex=cex)
+        if (remove.singletons) {
+            mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+            mtext(side=3,line=0.5,cex=1,text="Singleton demes, if any, are excluded from this plot (but not from EEMS)")
+        } else {
+            mtext(side=3,line=2,cex=1.3,text=expression(paste("Dissimilarities between pairs of sampled demes (",alpha,",",beta,")",sep="")))
+            mtext(side=3,line=0.5,cex=1,text=expression(paste("Gray means that a single individual is sampled from either ",alpha," or ",beta,sep="")))
+        }
+        ord2 = rev(sort.list(highlight$col[pair2highlight]))
+        points(xpts[pair.beta][ord2],
+               ypts[pair.beta][ord2],
+               cex=highlight$cex[pair2highlight][ord2],
+               col=highlight$col[pair2highlight][ord2],
+               pch=highlight$pch[pair2highlight][ord2],
+               lwd=highlight$lwd[pair2highlight][ord2])
+    }    
     return (list(B.component = B.component,W.component = W.component))
 }
 ## By default, all figures are saved as bitmap PNG images. However,
@@ -907,16 +987,20 @@ myfilledContour <- function (x, y = 1, maxpixels = 1e+05, add.key = TRUE, ...) {
     X <- xFromCol(x, 1:ncol(x))
     Y <- yFromRow(x, nrow(x):1)
     Z <- t(matrix(getValues(x), ncol = x@ncols, byrow = TRUE)[nrow(x):1,])
-    myfilled.contour(x = X, y = Y, z = Z, add.key = add.key, ...)
+    myfilled.contour(x = X, y = Y, z = Z, add.key = add.key,
+                     axes = FALSE, frame.plot = FALSE, ...)
 }
 ## I have only changed the legend/bar to remove the black border.
 myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,length.out = ncol(z)), z,
                               xlim = range(x, finite = TRUE),
-                              ylim = range(y, finite = TRUE), zlim = range(z, finite = TRUE),
+                              ylim = range(y, finite = TRUE),
+                              zlim = range(z, finite = TRUE),
                               levels = pretty(zlim, nlevels), nlevels = 20, color.palette = cm.colors,
                               col = color.palette(length(levels) - 1), plot.title, plot.axes,
                               key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1,
-                              axes = TRUE, frame.plot = axes, add.key = TRUE, ...) {
+                              axes = TRUE, frame.plot = axes, add.title = FALSE, add.key = TRUE,
+                              ...) {
+
     if (missing(z)) {
         if (!missing(x)) {
             if (is.list(x)) {
@@ -950,7 +1034,8 @@ myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,
     par(mar = mar)
     if (add.key) {
         plot.new()
-        ## Change here: added 'border = NA' and removed 'box()'
+        par(plt = c(0,0.3,0.1,0.9))
+        ## Change: add 'border = NA' and remove 'box()'
         plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i",yaxs = "i")
         rect(0, levels[-length(levels)], 1, levels[-1L], col = col, border = NA)
         if (missing(key.axes)) {
@@ -966,6 +1051,13 @@ myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,
     mar[4L] <- 1
     par(mar = mar)
     plot.new()
+    ## Change: make the plot region almost as big as the figure region
+    ##         but leave space for the main title
+    if (add.title) {
+        par(plt = c(0.02,0.98,0.02,0.95))
+    } else {
+        par(plt = c(0.02,0.98,0.02,0.98))
+    }
     plot.window(xlim, ylim, "", xaxs = xaxs, yaxs = yaxs, asp = asp)
     .filled.contour(x, y, z, levels, col)
     if (missing(plot.axes)) {
@@ -978,10 +1070,31 @@ myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,
     else plot.axes
     if (frame.plot)
         box()
-    if (missing(plot.title))
-        title(...)
-    else plot.title
+    if (add.title) {
+        if (missing(plot.title))
+            title(...)
+        else plot.title
+    }
     invisible()
+}
+myfilled.legend <-
+    function (levels = pretty(zlim, nlevels), nlevels = 20, color.palette = cm.colors, 
+              col = color.palette(length(levels) - 1), plot.title, plot.axes, 
+              key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+              axes = TRUE, frame.plot = axes, ...) 
+{
+
+    plot.new( )
+    plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i",yaxs = "i")
+    rect(0, levels[-length(levels)], 1, levels[-1L], col = col, border = NA)
+    if (!missing(key.axes)) {
+        key.axes
+    } else {
+        axis(4, col.axis = fg.col, tick = FALSE)
+    }
+    if (!missing(key.title)) {
+        key.title
+    }
 }
 load.required.package <- function(package,required.by) {
     if (!requireNamespace(package, quietly = TRUE)) {
@@ -999,9 +1112,10 @@ load.required.package <- function(package,required.by) {
 #'  \item \code{plotpath}-qrates01 (effective diversity surface)
 #'  \item \code{plotpath}-rdist01 (between-demes component of genetic dissimilarity)
 #'  \item \code{plotpath}-rdist02 (within-demes component of genetic dissimilarity)
+#'  \item \code{plotpath}-rdist03 (between-demes dissimilarities vs geographic distances)
 #'  \item \code{plotpath}-pilogl01 (posterior probability trace)
 #' }
-#' The three latter figures are helpful in checking that the MCMC sampler has converged (the trace plot) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
+#' The latter figures are helpful in checking that the MCMC sampler has converged (the trace plot \code{pilogl01}) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities \code{rdist0*}). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
 #' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
 #' @param plotpath The full path and the file name for the graphics to be generated. 
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
@@ -1026,6 +1140,8 @@ load.required.package <- function(package,required.by) {
 #' @param eems.colors The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.
 #' @param m.colscale,q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.
 #' @param add.colbar A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.
+#' @param remove.singletons Remove demes with a single observation from the diagnostic scatterplots. Defaults to TRUE.
+#' @param add.abline Add the line \code{y = x} to the diagnostic scatterplots of observed vs fitted genetic dissimilarities.
 #' @param add.title A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
@@ -1051,8 +1167,8 @@ load.required.package <- function(package,required.by) {
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-demes-and-edges",sep=""),
 #'            longlat = TRUE,
-#'            plot.height = 9,
-#'            plot.width = 8,
+#'            plot.height = 8,
+#'            plot.width = 7,
 #'            res = 600,
 #'            out.png = TRUE)
 #'
@@ -1061,8 +1177,8 @@ load.required.package <- function(package,required.by) {
 #' eems.plots(mcmcpath = eems.results.to.plot,
 #'            plotpath = paste(name.figures.to.save,"-output-PDFs",sep=""),
 #'            longlat = TRUE,
-#'            plot.height = 9,
-#'            plot.width = 8,
+#'            plot.height = 8,
+#'            plot.width = 7,
 #'            res = 600,
 #'            out.png = FALSE)
 #' 
@@ -1168,9 +1284,17 @@ eems.plots <- function(mcmcpath,
                        add.colbar = TRUE,
                        m.colscale = NULL,
                        q.colscale = NULL,
-                       
+
+                       ## Remove demes with a single observation
+                       remove.singletons = TRUE,
+
+                       ## Add the line y = x to scatter plots
+                       add.abline = FALSE,
+
                        ## Extra options
-                       add.title = TRUE) {
+                       add.title = TRUE,
+                       m.plot.xy = NULL,
+                       q.plot.xy = NULL) {
     
     plot.params <- list(eems.colors=eems.colors,m.colscale=m.colscale,q.colscale=q.colscale,
                         add.map=add.map,add.grid=add.grid,add.outline=add.outline,add.demes=add.demes,
@@ -1190,41 +1314,70 @@ eems.plots <- function(mcmcpath,
     }
 
     dimns <- read.dimns(mcmcpath[1],longlat)
+    
     save.params <- list(height=plot.height,width=plot.width,res=res,out.png=out.png)
 
     writeLines('Processing the following EEMS output directories :')
     writeLines(mcmcpath)
-
+    
     ## Plot filled contour of estimated effective migration rates
     save.graphics(paste(plotpath,'-mrates',sep=''),save.params)
     par(las=1,font.main=1,xpd=xpd)
-    average.eems.contours(mcmcpath,dimns,longlat,plot.params,is.mrates=TRUE)
+    mrates.raster = average.eems.contours(mcmcpath,dimns,longlat,plot.params,
+        is.mrates = TRUE,plot.xy = m.plot.xy)
     dev.off( )
-    
+
     ## Plot filled contour of estimated effective diversity rates
     save.graphics(paste(plotpath,'-qrates',sep=''),save.params)
     par(las=1,font.main=1,xpd=xpd)
-    average.eems.contours(mcmcpath,dimns,longlat,plot.params,is.mrates=FALSE)
+    qrates.raster = average.eems.contours(mcmcpath,dimns,longlat,plot.params,
+        is.mrates = FALSE,plot.xy = q.plot.xy)
     dev.off( )
+
+    if (!add.colbar) {
+
+        if (out.png) {
+            save.params$height = 6
+            save.params$width = 1.5
+        } else {
+            save.params$height = 12
+            save.params$width = 3
+        }
+        
+        save.graphics(paste(plotpath,'-mkey',sep=''),save.params)
+        par(las=1,font.main=1,xpd=xpd,mar=c(0,1,5,8))
+        myfilled.legend(col = mrates.raster$eems.colors,
+                        levels = mrates.raster$eems.levels,
+                        key.axes = axis(4,tick=FALSE,hadj=1,line=4,cex.axis=2),
+                        key.title = mtext(expression(paste(log,"(",italic(m),")",sep="")),
+                            side=3,cex=2.5,line=1.5,font=1))
+        dev.off( )
+        save.graphics(paste(plotpath,'-qkey',sep=''),save.params)
+        par(las=1,font.main=1,xpd=xpd,mar=c(0,1,5,8))
+        myfilled.legend(col = qrates.raster$eems.colors,
+                        levels = qrates.raster$eems.levels,
+                        key.axes = axis(4,tick=FALSE,hadj=1,line=6,cex.axis=2),
+                        key.title = mtext(expression(paste(log,"(",italic(q),")",sep="")),
+                            side=3,cex=2.5,line=1.5,font=1))
+        dev.off( )
+
+    }
     
     save.params$height = 6
     save.params$width = 6.5
 
     ## Plot scatter plots of observed vs fitted genetic differences
-    save.graphics(paste(plotpath,'-remove.singletons',TRUE,'-rdist',sep=''),save.params)
+    save.graphics(paste(plotpath,'-rdist',sep=''),save.params)
     par(las=1,font.main=1,mar=c(5, 5, 4, 2) + 0.1)
-    dist.scatterplot(mcmcpath,remove.singletons=TRUE)
+    B.and.W = dist.scatterplot(mcmcpath,longlat,plot.params,
+                               remove.singletons=remove.singletons,add.abline=add.abline)
     dev.off( )
 
-    ## Plot scatter plots of observed vs fitted genetic differences
-    save.graphics(paste(plotpath,'-remove.singletons',FALSE,'-rdist',sep=''),save.params)
-    par(las=1,font.main=1,mar=c(5, 5, 4, 2) + 0.1)
-    B.and.W = dist.scatterplot(mcmcpath,remove.singletons=FALSE)
-    dev.off( )
-    
-    B.component = B.and.W$B.component
-    W.component = B.and.W$W.component
-    save(B.component,W.component,file = paste(plotpath,'-remove.singletons',FALSE,'-rdist.RData',sep=''))
+    if (!is.null(B.and.W)) {
+        B.component = B.and.W$B.component
+        W.component = B.and.W$W.component
+        save(B.component,W.component,file = paste(plotpath,'-rdist.RData',sep=''))
+    }
     
     ## Plot trace plot of posterior probability to check convergence
     save.graphics(paste(plotpath,'-pilogl',sep=''),save.params)
