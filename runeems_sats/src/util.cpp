@@ -70,6 +70,7 @@ ostream& operator<<(ostream& out, const Params& params) {
       << "               prevpath = " << params.prevpath << endl
       << "               gridpath = " << params.gridpath << endl    
       << "               distance = " << params.distance << endl
+      << "                diploid = " << params.diploid << endl
       << "                 nIndiv = " << params.nIndiv << endl
       << "                 nSites = " << params.nSites << endl
       << "                 nDemes = " << params.nDemes << endl

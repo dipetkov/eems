@@ -60,7 +60,7 @@ void EEMS::initialize_diffs( ) {
   Diffs = readMatrixXd(params.datapath + ".diffs");
   if ((Diffs.rows()!=n)||(Diffs.cols()!=n)) {
     cerr << "  Error reading dissimilarities matrix " << params.datapath + ".diffs" << endl
-	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);      
+	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);
   }
   cerr << "  Loaded dissimilarities matrix from " << params.datapath + ".diffs" << endl;
   if (!isdistmat(Diffs)) {
