@@ -22,6 +22,7 @@ Suggests:
     RColorBrewer (>= 1.1),
     deldir (>= 0.1),
     rgdal (>= 0.9),
+    dplyr (>= 0.4.2),
     rworldmap (>= 1.3),
     rworldxtra (>= 1.01)
 NeedsCompilation: yes

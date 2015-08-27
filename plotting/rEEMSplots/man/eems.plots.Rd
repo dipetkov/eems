@@ -148,8 +148,8 @@ eems.plots(mcmcpath = eems.results.to.plot,
 eems.plots(mcmcpath = eems.results.to.plot,
            plotpath = paste(name.figures.to.save,"-demes-and-edges",sep=""),
            longlat = TRUE,
-           plot.height = 9,
-           plot.width = 8,
+           plot.height = 8,
+           plot.width = 7,
            res = 600,
            out.png = TRUE)
 
@@ -158,8 +158,8 @@ eems.plots(mcmcpath = eems.results.to.plot,
 eems.plots(mcmcpath = eems.results.to.plot,
            plotpath = paste(name.figures.to.save,"-output-PDFs",sep=""),
            longlat = TRUE,
-           plot.height = 9,
-           plot.width = 8,
+           plot.height = 8,
+           plot.width = 7,
            res = 600,
            out.png = FALSE)
 
@@ -220,6 +220,23 @@ eems.plots(mcmcpath = eems.results.to.plot,
            col.outline = "gray",
            m.colscale = c(-3,3),
            q.colscale = c(-0.3,+0.3))
+
+## In the diagnostic scatter plots, highlight demes in the South in red
+## All demes in the population grid, as (longitude,latitude) pairs
+demes = read.table(paste(eems.results.to.plot,"/demes.txt",sep=""))
+demes.long = demes[,1]
+demes.lat = demes[,2]
+## The demes in the South, defined as the region below the 10th parallel south
+south = demes[demes.lat < -10,]
+highlight.demes = data.frame(
+    x = south[,1],
+    y = south[,2],
+    col = "red",
+    stringsAsFactors = FALSE)
+eems.plots(mcmcpath = eems.results.to.plot,
+           plotpath = paste(name.figures.to.save,"-highlight-demes",sep=""),
+           longlat = TRUE,
+           highlight.demes = highlight.demes)
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

@@ -9,6 +9,19 @@
 
 const double pi_180 = M_PI/180.0;
 
+// Compute the effective resistance matrix
+//
+// [[Rcpp::export]]
+Eigen::MatrixXd resistance_distance(const Eigen::MatrixXd &M) {
+  int d = M.rows();
+  Eigen::MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum(); Hinv.array() += 1.0;
+  Eigen::MatrixXd H = Hinv.inverse();
+  Eigen::MatrixXd R = - 2.0*H;
+  Eigen::VectorXd u_d = Eigen::VectorXd::Ones(d);
+  R.noalias() += H.diagonal()*u_d.transpose();
+  R.noalias() += u_d*H.diagonal().transpose();
+  return R;
+}
 // Squared Euclidean distance: Taking the square root is not necessary
 // because EEMS uses the distances to find closest points. For example,
 //   pairwise_distance(X,Y).col(0).minCoeff( &closest )

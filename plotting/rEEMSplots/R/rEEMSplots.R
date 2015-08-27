@@ -44,35 +44,51 @@ sub.axes.labels <- function() {
     return (list(JtDJ=JtDJ,Between=Between,Within=Within,GeoDist=GeoDist))
 }
 ## JtDJ, Between, Within, GeoDist
-dist.axes.labels <- function(dist.type,remove.singletons=TRUE) {
+dist.axes.labels <- function(dist.type,remove.singletons=TRUE,subtitle=NULL) {
     labels = sub.axes.labels()[[dist.type]]
     title(xlab=labels$xlab)
     title(ylab=labels$ylab)
     if (remove.singletons) {
         mtext(side=3,line=2,cex=1.3,text=labels$mainTRUE)
-        mtext(side=3,line=0.5,cex=1,text=labels$subTRUE)
+        if (is.null(subtitle)) {
+            mtext(side=3,line=0.5,cex=1,text=labels$subTRUE)
+        } else {
+            mtext(side=3,line=0.5,cex=1,text=subtitle)
+        }
     } else {
         mtext(side=3,line=2,cex=1.3,text=labels$mainFALSE)
-        mtext(side=3,line=0.5,cex=1,text=labels$subFALSE)
+        if (is.null(subtitle)) {
+            mtext(side=3,line=0.5,cex=1,text=labels$subFALSE)
+        } else {
+            mtext(side=3,line=0.5,cex=1,text=subtitle)
+        }
     }
 }
 sub.scattercols <- function(sizes) {
     return (c("black","gray60")[1+1*(sizes<2)])
 }
-sub.scatterplot <- function(dist.type,dist.data,remove.singletons,add.abline) {
-    if (is.null(dist.data$sizes)) { dist.data$sizes = 2 }
+sub.scatterplot <- function(dist.type,dist.data,remove.singletons,add.abline,subtitle=NULL,add=FALSE) {
+    if (is.null(dist.data$size)) { dist.data$size = 2 }
     if (remove.singletons) {
         dist.data = dist.data[dist.data$size>1,]
     }
     if (is.null(dist.data$pch)) { dist.data$pch = 1 }
     if (is.null(dist.data$cex)) { dist.data$cex = 1 }
     if (is.null(dist.data$col)) { dist.data$col = 1 }    
-    ord = sort.list(dist.data$col,decreasing = TRUE )
-    dist.data = dist.data[ord,]    
-    plot(dist.data$fitted,
-         dist.data$obsrvd,type="n",xlab="",ylab="")
-    dist.axes.labels(dist.type,remove.singletons)
-    if (add.abline) { abline(a=0,b=1,col="red",lwd=2) }
+
+    group = dist.data$col
+    ## It turns out sort.list sorts alphabetically by group name:
+    ##ord = sort.list(group,decreasing = TRUE)
+    ## The following works to sort by number of occurrences:
+    ord = sort.list(table(group)[group],decreasing = TRUE)
+    
+    dist.data = dist.data[ord,]
+    if (!add) {
+        plot(dist.data$fitted,
+             dist.data$obsrvd,type="n",xlab="",ylab="")
+        dist.axes.labels(dist.type,remove.singletons,subtitle)
+        if (add.abline) { abline(a=0,b=1,col="red",lwd=2) }
+    }
     points(dist.data$fitted,
            dist.data$obsrvd,
            col=dist.data$col,
@@ -739,6 +755,23 @@ plot.logposterior <- function(mcmcpath) {
     legend("topright",legend=1:nchains,col=colors[1:nchains],
            lty=ltypes[1:nchains],lwd=2,bty="n",inset=c(-0.12,0),cex=0.5)
 }
+pairwise.dist <- function(x,y,dist.metric,longlat,plot.params) {
+    if (!longlat) {
+        x <- x[,c(2,1)]
+        y <- y[,c(2,1)]
+    }
+    if (dist.metric == "greatcirc") {
+        if (!is.null(plot.params$proj.in)) {
+            x <- sp::SpatialPoints(x,proj4string=CRS(plot.params$proj.in))
+            y <- sp::SpatialPoints(y,proj4string=CRS(plot.params$proj.in))
+            x <- sp::spTransform(x,CRSobj=CRS("+proj=longlat +datum=WGS84"))
+            y <- sp::spTransform(y,CRSobj=CRS("+proj=longlat +datum=WGS84"))
+        }
+        return (geosphere::distm(x,y,fun=distHaversine)/1000)
+    } else {
+        return (.Call("rEEMSplots__euclidean_dist", PACKAGE = "rEEMSplots", x, y))
+    }
+}
 geo.distm <- function(coord,longlat,plot.params) {
     if (!longlat) {
         coord <- coord[,c(2,1)]
@@ -752,7 +785,8 @@ geo.distm <- function(coord,longlat,plot.params) {
     return(Dist)
 }
 dist.scatterplot <- function(mcmcpath,longlat,plot.params,
-                             remove.singletons=TRUE,add.abline=FALSE) {
+                             remove.singletons=TRUE,add.abline=FALSE,
+                             highlight=NULL) {
     writeLines('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -799,20 +833,7 @@ dist.scatterplot <- function(mcmcpath,longlat,plot.params,
     rownames(JtDobsJ) <- Demes
     colnames(JtDhatJ) <- Demes
     rownames(JtDhatJ) <- Demes
-    if (sum(Sizes>1)<2) {
-        X.component <- data.frame(fitted = JtDhatJ[upper.tri(JtDhatJ,diag=FALSE)],
-                                  obsrvd = JtDobsJ[upper.tri(JtDobsJ,diag=FALSE)],
-                                  stringsAsFactors = FALSE)
-        sub.scatterplot("JtDJ",X.component,remove.singletons,add.abline)
-        writeLines('There should be at least two observed demes to plot pairwise dissimilarities')
-        return (NULL)
-    }    
-    out1 = JtDJ2BandW(JtDobsJ,Sizes)
-    Wobs = out1$W
-    Bobs = out1$B
-    out2 = JtDJ2BandW(JtDhatJ)
-    What = out2$W
-    Bhat = out2$B
+    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
     Deme1 = matrix(Demes,nrow=nPops,ncol=nPops)
     Deme2 = t(Deme1)
     tempi = matrix(Sizes,nPops,nPops)
@@ -820,34 +841,188 @@ dist.scatterplot <- function(mcmcpath,longlat,plot.params,
     Small = Small[upper.tri(Small,diag=FALSE)]    
     alpha = Deme1[upper.tri(Deme1,diag=FALSE)]
     beta = Deme2[upper.tri(Deme2,diag=FALSE)]
-    col = sub.scattercols(Small)
+    ## Under pure isolation by distance, we expect the genetic dissimilarities
+    ## between demes increase with the geographic distance separating them
+    Dist = geo.distm(oDemes[,1:2],longlat,plot.params)
+    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##     
+    if (sum(Sizes>1)<2) {
+        ## Sizes(alpha)>1 means that there are at least two individuals assigned to deme alpha
+        JtDJ.component <- data.frame(alpha.x = oDemes[,1][alpha],
+                                     alpha.y = oDemes[,2][alpha],
+                                     beta.x = oDemes[,1][beta],
+                                     beta.y = oDemes[,2][beta],
+                                     size = Small,
+                                     col = sub.scattercols(Small),
+                                     fitted = JtDhatJ[upper.tri(JtDhatJ,diag=FALSE)],
+                                     obsrvd = JtDobsJ[upper.tri(JtDobsJ,diag=FALSE)],
+                                     stringsAsFactors = FALSE)
+        sub.scatterplot("JtDJ",JtDJ.component,remove.singletons,add.abline)
+        writeLines('There should be at least two observed demes to plot pairwise dissimilarities')
+        return (NULL)
+    }
+    out1 = JtDJ2BandW(JtDobsJ,Sizes)
+    Wobs = out1$W
+    Bobs = out1$B
+    out2 = JtDJ2BandW(JtDhatJ)
+    What = out2$W
+    Bhat = out2$B
     B.component <- data.frame(alpha.x = oDemes[,1][alpha],
                               alpha.y = oDemes[,2][alpha],
                               beta.x = oDemes[,1][beta],
                               beta.y = oDemes[,2][beta],
                               fitted = Bhat,
                               obsrvd = Bobs,
-                              size = Small, col = col,
+                              size = Small,
+                              col = sub.scattercols(Small),
                               stringsAsFactors = FALSE)
-    sub.scatterplot("Between",B.component,remove.singletons,add.abline)
-    col = sub.scattercols(Sizes)
     W.component <- data.frame(alpha.x = oDemes[,1][Demes],
                               alpha.y = oDemes[,2][Demes],
                               fitted = What,
                               obsrvd = Wobs,
-                              size = Sizes,col = col,
+                              size = Sizes,
+                              col = sub.scattercols(Sizes),
                               stringsAsFactors = FALSE)
-    sub.scatterplot("Within",W.component,remove.singletons,add.abline)
-    ## Under pure isolation by distance, we expect the genetic dissimilarities
-    ## between demes increase with the geographic distance separating them
-    Dist = geo.distm(oDemes[,1:2],longlat,plot.params)
-    col = sub.scattercols(Small)
-    G.component <- data.frame(fitted = Dist,
+    G.component <- data.frame(alpha.x = oDemes[,1][alpha],
+                              alpha.y = oDemes[,2][alpha],
+                              beta.x = oDemes[,1][beta],
+                              beta.y = oDemes[,2][beta],
+                              fitted = Dist,
                               obsrvd = Bobs,
-                              size = Small,col = col,
+                              size = Small,
+                              col = sub.scattercols(Small),
                               stringsAsFactors = FALSE)
-    sub.scatterplot("GeoDist",G.component,remove.singletons,add.abline)
+    highlight.demes = FALSE
+    if (!is.null(highlight) &&
+        !is.null(highlight$x) &&
+        !is.null(highlight$y)) {
+        ## Highligh some demes
+        if (is.null(highlight$col)) { highlight$col = "red" }
+        if (is.null(highlight$cex)) { highlight$cex = 1 }
+        if (is.null(highlight$pch)) { highlight$pch = 4 }
+        if (is.null(highlight$lwd)) { highlight$lwd = 2 }
+        ## In the between-deme component, each point is associated with two demes:
+        ## alpha and beta
+        highlight = dplyr::select(highlight, x, y, col, cex, pch, lwd)
+        highlight = dplyr::rename(highlight, alpha.col = col)
+        highlight = dplyr::rename(highlight, alpha.cex = cex)
+        highlight = dplyr::rename(highlight, alpha.pch = pch)
+        highlight = dplyr::rename(highlight, alpha.lwd = lwd)
+        B.component = dplyr::left_join(B.component,highlight,by = c("alpha.x" = "x", "alpha.y" = "y"))
+        W.component = dplyr::left_join(W.component,highlight,by = c("alpha.x" = "x", "alpha.y" = "y"))
+        G.component = dplyr::left_join(G.component,highlight,by = c("alpha.x" = "x", "alpha.y" = "y"))
+        highlight = dplyr::rename(highlight, beta.col = alpha.col)
+        highlight = dplyr::rename(highlight, beta.cex = alpha.cex)
+        highlight = dplyr::rename(highlight, beta.pch = alpha.pch)
+        highlight = dplyr::rename(highlight, beta.lwd = alpha.lwd)
+        B.component = dplyr::left_join(B.component,highlight,by = c("beta.x" = "x", "beta.y" = "y"))
+        G.component = dplyr::left_join(G.component,highlight,by = c("beta.x" = "x", "beta.y" = "y"))
+        if (sum(!is.na(B.component$alpha.col)) ||
+            sum(!is.na(B.component$beta.col))) { highlight.demes = TRUE }
+    }    
+    if (highlight.demes) {
+        B.component.alpha = dplyr::select(B.component, fitted, obsrvd, size, starts_with("alpha"))
+        B.component.beta = dplyr::select(B.component, fitted, obsrvd, size, starts_with("beta"))
+        B.component.alpha = dplyr::rename(B.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        B.component.beta = dplyr::rename(B.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
+        sub.scatterplot("Between",B.component,remove.singletons,add.abline,
+                        subtitle=expression(paste("Highlight ",alpha," in (",alpha,",",beta,")",sep="")))
+        sub.scatterplot("Between",B.component.alpha,remove.singletons,add.abline,add=TRUE)
+        sub.scatterplot("Between",B.component,remove.singletons,add.abline,
+                        subtitle=expression(paste("Highlight ",beta," in (",alpha,",",beta,")",sep="")))                        
+        sub.scatterplot("Between",B.component.beta,remove.singletons,add.abline,add=TRUE)
+    } else {
+        sub.scatterplot("Between",B.component,remove.singletons,add.abline)
+    }
+    if (highlight.demes) {
+        W.component.alpha = dplyr::select(W.component, fitted, obsrvd, size, starts_with("alpha"))
+        W.component.alpha = dplyr::rename(W.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        sub.scatterplot("Within",W.component,remove.singletons,add.abline)
+        sub.scatterplot("Within",W.component.alpha,remove.singletons,add.abline,add=TRUE)
+    } else {    
+        sub.scatterplot("Within",W.component,remove.singletons,add.abline)
+    }
+    if (highlight.demes) {
+        G.component.alpha = dplyr::select(G.component, fitted, obsrvd, size, starts_with("alpha"))
+        G.component.beta = dplyr::select(G.component, fitted, obsrvd, size, starts_with("beta"))
+        G.component.alpha = dplyr::rename(G.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        G.component.beta = dplyr::rename(G.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
+        sub.scatterplot("GeoDist",G.component,remove.singletons,add.abline = FALSE,
+                        subtitle=expression(paste("Highlight ",alpha," in (",alpha,",",beta,")",sep="")))
+        sub.scatterplot("GeoDist",G.component.alpha,remove.singletons,add = TRUE)
+        sub.scatterplot("GeoDist",G.component,remove.singletons,add.abline = FALSE,
+                        subtitle=expression(paste("Highlight ",beta," in (",alpha,",",beta,")",sep="")))
+        sub.scatterplot("GeoDist",G.component.beta,remove.singletons,add = TRUE)
+    } else {
+        sub.scatterplot("GeoDist",G.component,remove.singletons,add.abline = FALSE)
+    }
     return (list(B.component = B.component,W.component = W.component))
+}
+heatmap.resid <- function(datapath,mcmcpath) {
+    mcmcpath = mcmcpath
+    nchains = length(mcmcpath)
+    writeLines('Heatmap of n-by-n matrix of residuals (observed - fitted):')
+    Diffs = as.matrix(read.table(paste0(datapath,".diffs"),header=FALSE))
+    nIndiv = nrow(Diffs)
+    nChains = 0
+    Delta = matrix(0,nIndiv,nIndiv)
+    for (path in mcmcpath) {
+        if (file.exists(paste(path,'/rdistJtDobsJ.txt',sep=''))&&
+            file.exists(paste(path,'/rdistJtDhatJ.txt',sep=''))&&
+            file.exists(paste(path,'/rdistoDemes.txt',sep=''))) {
+            writeLines(path)
+            nChains = nChains + 1
+            ipmap = scan(paste0(path,"/ipmap.txt"),what=numeric(),quiet=TRUE)
+            Sizes = as.numeric(table(ipmap))
+            n = length(ipmap) ## number of samples
+            o = length(Sizes) ## number of observed demes
+            J = Matrix::spMatrix(n,o,i=seq(n),j=ipmap,x=rep(1,n)) ## indicator matrix
+            J = as.matrix(J)
+            JtDhatJ = as.matrix(read.table(paste0(path,'/rdistJtDhatJ.txt'),header=FALSE))
+            Delta = Delta + J %*% JtDhatJ %*% t(J)
+        }
+    }
+    if (nChains==0) { return(NULL) }
+    Delta = Delta / nChains
+    Delta = Delta - diag(diag(Delta))
+    resid = Diffs - Delta
+    diag(resid) = NA ## The diagonal entries would always be zero
+    return (resid)
+}
+mypalette <- function(colors = NULL, colscale = NULL, n = 299) {
+    if (!is.null(colors)) {
+        colors <- colorRampPalette(colors)(n = n)
+    } else {
+        ## Here colors = RColorBrewer::brewer.pal(9,"Reds")
+        colors <- colorRampPalette(c("#FFF5F0","#FEE0D2","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D"))(n = n)
+    }
+    if (!is.null(colscale)) {
+        if (length(colscale) != (n+1)) {
+            levels = seq(from=min(colscale),to=max(colscale),length.out=n+1)
+        } else {
+            levels = sort(colscale)
+        }
+    }
+    return(list(colors=colors,levels=levels))
+}
+myheatmap <- function(x,col = NULL,colscale = NULL) {
+    if (!is.matrix(x)) {
+        x = as.matrix(x)
+    }
+    r = nrow(x)
+    c = ncol(x)
+    if (c==1) {
+        x = matrix(rev(x[,1]),nrow=1)
+    } else if (r==1) {
+        x = matrix(rev(x[1,]),ncol=1)
+    } else {
+        x = t(x)[rev(seq(r)),]
+    }
+    if (is.null(colscale)) {
+        colscale = range(x,na.rm=TRUE)
+    }
+    palette = mypalette(colors=col,colscale=colscale)
+    image(x,col=palette$colors,breaks=palette$levels,axes=FALSE)
+    return (palette)
 }
 ## By default, all figures are saved as bitmap PNG images. However,
 ## it is straightforward to use another format (Here the alternative is PDF)
@@ -1126,6 +1301,23 @@ load.required.package <- function(package,required.by) {
 #'            col.outline = "gray",
 #'            m.colscale = c(-3,3),
 #'            q.colscale = c(-0.3,+0.3))
+#'
+#' ## In the diagnostic scatter plots, highlight demes in the South in red
+#' ## All demes in the population grid, as (longitude,latitude) pairs
+#' demes = read.table(paste(eems.results.to.plot,"/demes.txt",sep=""))
+#' demes.long = demes[,1]
+#' demes.lat = demes[,2]
+#' ## The demes in the South, defined as the region below the 10th parallel south
+#' south = demes[demes.lat < -10,]
+#' highlight.demes = data.frame(
+#'     x = south[,1],
+#'     y = south[,2],
+#'     col = "red",
+#'     stringsAsFactors = FALSE)
+#' eems.plots(mcmcpath = eems.results.to.plot,
+#'            plotpath = paste(name.figures.to.save,"-highlight-demes",sep=""),
+#'            longlat = TRUE,
+#'            highlight.demes = highlight.demes)
 
 eems.plots <- function(mcmcpath,
                        plotpath,
@@ -1178,6 +1370,9 @@ eems.plots <- function(mcmcpath,
                        ## Add the line y = x to scatter plots
                        add.abline = FALSE,
 
+                       ## Highlight some points
+                       highlight.demes = NULL,
+                       
                        ## Extra options
                        add.title = TRUE,
                        m.plot.xy = NULL,
@@ -1253,18 +1448,20 @@ eems.plots <- function(mcmcpath,
     save.params$height = 6
     save.params$width = 6.5
 
+    if (!is.null(highlight.demes)) {
+        load.required.package(package='dplyr',required.by='dist.scatterplot')
+    }
+
     ## Plot scatter plots of observed vs fitted genetic differences
     save.graphics(paste(plotpath,'-rdist',sep=''),save.params)
     par(las=1,font.main=1,mar=c(5, 5, 4, 2) + 0.1)
     B.and.W = dist.scatterplot(mcmcpath,longlat,plot.params,
-                               remove.singletons=remove.singletons,add.abline=add.abline)
+        remove.singletons=remove.singletons,add.abline=add.abline,highlight=highlight.demes)
     dev.off( )
 
-    if (!is.null(B.and.W)) {
-        B.component = B.and.W$B.component
-        W.component = B.and.W$W.component
-        save(B.component,W.component,file = paste(plotpath,'-rdist.RData',sep=''))
-    }
+    B.component = B.and.W$B.component
+    W.component = B.and.W$W.component
+    save(B.component,W.component,file = paste(plotpath,'-rdist.RData',sep=''))
     
     ## Plot trace plot of posterior probability to check convergence
     save.graphics(paste(plotpath,'-pilogl',sep=''),save.params)
@@ -1409,4 +1606,76 @@ eems.voronoi <- function(mcmcpath,
     voronoi.diagram(mcmcpath,dimns,longlat,plot.params,mcmc.iters=mcmc.iters,is.mrates=FALSE)
     dev.off( )
     
+}
+
+#' A function to plot a heatmap of the residual pairwise dissimilarities, abs(observed - fitted)
+#'
+#' Given a vector of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. It also saves the matrix of residuals to a file called \code{plotpath}-eems-resid.RData. In both the residual matrix and the corresponding heatmap, individuals are ordered according to the input \code{datapath}.coord and \code{datapath}.diffs. Applies only to the case of SNP data (when a Diffs matrix is computed).
+#' @param datapath The full path and the file name of the input Diffs matrix, which is not copied by \code{runeems} to the output directory.
+#' @param mcmcpath An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.
+#' @param plotpath The full path and the file name for the graphics to be generated.
+#' @param plot.width,plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.
+#' @param out.png A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.
+#' @param res Resolution, in dots per inch; used only if \code{out.png} is set to TRUE. The default is 600.
+#' @param heatmap.cols The heatmap color palette as a vector of colors, ordered from low to high. Defaults to the "Reds" divergent palette in the RColorBrewer package.
+#' @export
+#' @examples
+#'
+#' ## Use the provided example or supply the path to your own EEMS run
+#' eems.dataset.to.plot = paste(path.package("rEEMSplots"),"/extdata/EEMS-barrier",sep="")
+#' eems.results.to.plot = paste(path.package("rEEMSplots"),"/extdata/EEMS-barrier",sep="")
+#' name.figures.to.save = "EEMS-barrier"
+#'
+#' eems.resid.heatmap(datapath = eems.dataset.to.plot,
+#'                    mcmcpath = eems.results.to.plot,
+#'                    plotpath = name.figures.to.save,
+#'                    heatmap.cols = c("gray99","red"))
+
+eems.resid.heatmap <- function(datapath,
+                               mcmcpath,
+                               plotpath,
+
+                               ## Properties of the figure to generate
+                               plot.width = 7,
+                               plot.height = 7,
+                               out.png = TRUE,
+                               res = 600,
+
+                               ## (Divergent) color palette
+                               heatmap.cols = NULL,
+                               heatmap.colscale = NULL) {
+
+    save.params = list(height=plot.height,width=plot.width,res=res,out.png=out.png)
+    
+    ## A vector of EEMS output directories, for the same dataset.
+    ## Assume that if eemsrun.txt exists, then all EEMS output files exist.
+    mcmcpath <- mcmcpath[file.exists(paste(mcmcpath,'/eemsrun.txt',sep=''))]
+    if (!length(mcmcpath)) {
+        writeLines('Please provide one existing EEMS output directory, mcmcpath')
+        return(0)
+    }
+    writeLines('Processing the following EEMS output directories :')
+    writeLines(mcmcpath)
+
+    eems.resid = heatmap.resid(datapath,mcmcpath)
+    save(eems.resid,file = paste(plotpath,'-eems-resid.RData',sep=''))
+    save.graphics(paste(plotpath,'-eems-resid',sep=''),save.params)
+    par(las=1,font.main=1,mar=c(0,0,0,0)+0.1)
+    key = myheatmap(abs(eems.resid),col = heatmap.cols,colscale = heatmap.colscale)
+    dev.off( )
+
+    if (out.png) {
+        save.params$height = 6
+        save.params$width = 1.5
+    } else {
+        save.params$height = 12
+        save.params$width = 3
+    }
+    
+    save.graphics(paste(plotpath,'-eems-resid-key',sep=''),save.params)
+    par(las=1,font.main=1,mar=c(1,1,5,8))
+    myfilled.legend(col = key$colors,levels = key$levels,
+                    key.axes = axis(4,tick=FALSE,hadj=1,line=4,cex.axis=2),
+                    key.title = mtext("abs(r)",side=3,cex=2.5,line=1.5,font=1))
+    dev.off( )
 }

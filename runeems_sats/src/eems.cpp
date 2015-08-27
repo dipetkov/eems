@@ -232,7 +232,7 @@ bool EEMS::start_eems(const MCMC &mcmc) {
   int niters = mcmc.num_iters_to_save();
   mcmcmhyper = MatrixXd::Zero(niters,2);
   mcmcqhyper = MatrixXd::Zero(niters,2);
-  mcmcthetas = MatrixXd::Zero(niters,2);
+  mcmcthetas = MatrixXd::Zero(niters,p);
   mcmcpilogl = MatrixXd::Zero(niters,2);
   mcmcmtiles = VectorXd::Zero(niters);
   mcmcqtiles = VectorXd::Zero(niters);
@@ -386,9 +386,6 @@ void EEMS::calc_between(const VectorXi &mColors, const VectorXd &mEffcts, const 
   }
   // The constant is slightly different for haploid and diploid species 
   B = Bconst * Binv.inverse();
-  VectorXd h = B.diagonal();
-  B -= 0.5 * h.replicate(1,o);
-  B -= 0.5 * h.transpose().replicate(o,1);
 }
 /*
   This function implements the computations described in the Section S1.3 in the Supplementary Information,
@@ -758,7 +755,13 @@ void EEMS::save_iteration(const MCMC &mcmc) {
   for ( int t = 0 ; t < nowmtiles ; t++ ) {
     mcmcyCoord.push_back(nowmSeeds(t,1));
   }
-  JtDhatJ_allSites += nowB + 0.5 * nowW.replicate(1,o) + 0.5 * nowW.transpose().replicate(o,1);
+  MatrixXd B = nowB;
+  VectorXd h = B.diagonal();    // If B = -2H, then diag(B) = -2diag(H) = -2h
+  B -= 0.5 * h.replicate(1,o);  // Therefore 1h' + h1' - 2H = -1diag(B)'/2 - diag(B)1'/2 + B
+  B -= 0.5 * h.transpose().replicate(o,1);
+  B += 0.5 * nowW.replicate(1,o);
+  B += 0.5 * nowW.transpose().replicate(o,1);
+  JtDhatJ_allSites += B;   // Instead of JtDhatJ += nowsigma2 * B but this requires standardizing each locus by its sigma2_l.
 }
 bool EEMS::output_current_state( ) const {
   ofstream out; bool error = false;

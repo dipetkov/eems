@@ -715,8 +715,8 @@ void EEMS::save_iteration(const MCMC &mcmc) {
     mcmcyCoord.push_back(nowmSeeds(t,1));
   }
   MatrixXd B = nowBinv.inverse();
-  VectorXd h = B.diagonal();
-  B -= 0.5 * h.replicate(1,o);
+  VectorXd h = B.diagonal();    // If B = -2H, then diag(B) = -2diag(H) = -2h
+  B -= 0.5 * h.replicate(1,o);  // Therefore 1h' + h1' - 2H = -1diag(B)'/2 - diag(B)1'/2 + B
   B -= 0.5 * h.transpose().replicate(o,1);
   B += 0.5 * nowW.replicate(1,o);
   B += 0.5 * nowW.transpose().replicate(o,1);
