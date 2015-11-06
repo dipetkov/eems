@@ -15,14 +15,14 @@ void Graph::generate_grid(const string &datapath, const string &gridpath, const 
     make_triangular_grid(habitat,nDemeDensity);
     map_indiv_to_deme(datapath,nIndiv);
   } else {
-    cerr << "  Load population grid and sample assignment from " << datapath << endl;
+    cerr << "  Load population grid and sample assignment from " << gridpath << endl;
     // Read the population grid (demes and edges)
-    if (!read_input_grid(datapath,DemeCoord,DemePairs)) {
+    if (!read_input_grid(gridpath,DemeCoord,DemePairs)) {
       cerr << "  Error reading population grid." << endl;
       exit(1);
     }
     // Read the assignment of individuals to demes
-    if (!read_indiv_to_deme(datapath,DemeCoord.rows(),indiv2deme)) {
+    if (!read_indiv_to_deme(gridpath,DemeCoord.rows(),indiv2deme)) {
       cerr << "  Error reading sample assignment." << endl;
       exit(1);
     }
