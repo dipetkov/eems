@@ -468,10 +468,31 @@ filled.contour.axes <- function(mcmcpath,longlat,plot.params) {
         filled.contour.axes.proj.known(mcmcpath,longlat,plot.params)
     }
 }
-filled.contour.exterior.proj.unknown <- function(mcmcpath,longlat,plot.params) {
+check.habitat.outer.is.vald <- function(mcmcpath,longlat) {
     graph <- read.graph(mcmcpath,longlat)
+    outer <- graph$outer
+    ## Check that the geometry of the habitat outline is both Simple (gIsSimple)
+    ## and Closed (end points intersect).
+    x = outer[,1]
+    y = outer[,2]
+    l = readWKT( paste("LINESTRING(", paste(paste(x,y),collapse = ", "), ")") )
+    if (!rgeos::gIsRing(l,byid = FALSE)) {
+        writeLines(paste("Error (rgeos):\n",
+                         "The habitat geometry is not a valid ring (a ring is both simple and closed)\n",
+                         "Let the habitat be the rectangle defined by (xmin,ymin) and (xmax,yxmax)\n",
+                         "where xmin,xmax = range(longitude) and ymin,ymax = range(latitude)."))
+        xmin = min(outer[,1])
+        xmax = max(outer[,1])
+        ymin = min(outer[,2])
+        ymax = max(outer[,2])
+        outer = cbind(c(xmin,xmax,xmax,xmin,xmin),c(ymin,ymin,ymax,ymax,ymin))
+    }
+    return(outer)
+}
+filled.contour.exterior.proj.unknown <- function(mcmcpath,longlat,plot.params) {
+    outer <- check.habitat.outer.is.vald(mcmcpath,longlat)
     ## The filledContour fills a rectangular plot; now color the habitat exterior white.
-    boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(graph$outer,hole=FALSE)),"1")))
+    boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(outer,hole=FALSE)),"1")))
     exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary),boundary)    
     if (!is.null(exterior)) {
         plot(exterior,col="white",border="white",add=TRUE)
@@ -481,7 +502,7 @@ filled.contour.exterior.proj.unknown <- function(mcmcpath,longlat,plot.params) {
     }
 }
 filled.contour.exterior.proj.known <- function(mcmcpath,longlat,plot.params) {
-    graph <- read.graph(mcmcpath,longlat)
+    outer <- check.habitat.outer.is.vald(mcmcpath,longlat)
     ## The filledContour fills a rectangular plot; now color the habitat exterior white.
     boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(graph$outer,hole=FALSE)),"1")),
                                     proj4string=CRS(plot.params$proj.in))
