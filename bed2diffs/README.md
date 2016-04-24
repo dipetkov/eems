@@ -3,16 +3,13 @@
 
 `bed2diffs` is a small program that reads genetic data in plink binary format (i.e., from a set of bed/bim/fam files) and computes the average genetic dissimilarity matrix.
 
-It has been tested on a Linux machine only.
-
 ### Compilation
 
-`bed2diffs` requires `libplinkio` and OpenMP.
+`bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotypes in plink binary format.
 
-* `bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotypes in plink binary format.
-* `bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences `diffs`. Multithreading is useful if the data contains millions of SNPs.
+Optionally, `bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences `diffs`. Multithreading is useful if the data contains millions of SNPs. Choose the `src` directory to compile `bed2diffs` with OpenMP support; otherwise choose the `src-wout-openmp` directory.
 
-After obtaining `libplinkio`, update the path to PLINKIO in the Makefile and run `make linux`.
+After obtaining `libplinkio`, update the path to PLINKIO in the Makefile and run `make linux` on a Linux machine or `make darwin` on a Mac.
 
 ### Usage
 
@@ -92,7 +89,7 @@ cat ../test/example-sample-major-mode-transposed.diffs
 
 ### Output
 
-bed2diffs generates two files. The matrix of average pairwise differences is written to a text file without row names, column names or comments, with extension `diffs`. The size of the matrix is NxN where N is the number of samples; there are only 0s on the main diagonal. The order of the samples in the `diffs` matrix is the same as in the `fam` file, but in any case, the order is explicitly written to a text file with one sample per line, with extension `order`.
+`bed2diffs` generates two files. The matrix of average pairwise differences is written to a text file without row names, column names or comments, with extension `diffs`. The size of the matrix is NxN where N is the number of samples; there are only 0s on the main diagonal. The order of the samples in the `diffs` matrix is the same as in the `fam` file, but in any case, the order is explicitly written to a text file with one sample per line, with extension `order`.
 
 ### The two versions of bed2diffs
 
