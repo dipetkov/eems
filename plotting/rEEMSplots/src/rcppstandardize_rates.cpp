@@ -7,19 +7,19 @@
 //
 // [[Rcpp::depends(RcppEigen)]]
 
-const double pi_180 = M_PI/180.0;
+const double pi_180 = M_PI / 180.0;
+const double Earth_radiusX2 = 2.0 * 6378137.0;
 
 // Compute the effective resistance matrix
 //
 // [[Rcpp::export]]
 Eigen::MatrixXd resistance_distance(const Eigen::MatrixXd &M) {
-  int d = M.rows();
   Eigen::MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum(); Hinv.array() += 1.0;
   Eigen::MatrixXd H = Hinv.inverse();
-  Eigen::MatrixXd R = - 2.0*H;
-  Eigen::VectorXd u_d = Eigen::VectorXd::Ones(d);
-  R.noalias() += H.diagonal()*u_d.transpose();
-  R.noalias() += u_d*H.diagonal().transpose();
+  Eigen::MatrixXd R = - 2.0 * H;
+  Eigen::VectorXd u = Eigen::VectorXd::Ones(M.rows());
+  R.noalias() += H.diagonal() * u.transpose();
+  R.noalias() += u * H.diagonal().transpose();
   return R;
 }
 // Squared Euclidean distance: Taking the square root is not necessary
@@ -29,78 +29,90 @@ Eigen::MatrixXd resistance_distance(const Eigen::MatrixXd &M) {
 Eigen::MatrixXd euclidean_dist(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y) {
   return(  X.rowwise().squaredNorm().eval().replicate(1,Y.rows())
 	 + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
-	 - 2.0*X*Y.transpose() );
+	 - 2.0 * X * Y.transpose() );
 }
-// Great circle distance, up to a constant of proportionality equal to 2*R
-// where R is the earth's radius
+// Great circle distance, using the haversine formula
 Eigen::MatrixXd greatcirc_dist(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y) {
   int nr = X.rows();
   int nc = Y.rows();
-  Eigen::MatrixXd lon1 = X.col(0).replicate(1,nc) * pi_180;
-  Eigen::MatrixXd lat1 = X.col(1).replicate(1,nc) * pi_180;
-  Eigen::MatrixXd lon2 = Y.col(0).transpose().replicate(nr,1) * pi_180;
-  Eigen::MatrixXd lat2 = Y.col(1).transpose().replicate(nr,1) * pi_180;
-  Eigen::MatrixXd dlon = 0.5*(lon2 - lon1);
-  Eigen::MatrixXd dlat = 0.5*(lat2 - lat1);
-  Eigen::MatrixXd a = dlat.array().sin().square().matrix() +
-    (dlon.array().sin().square() * lat1.array().cos() * lat2.array().cos()).matrix();
-  Eigen::MatrixXd c = (a.array()<1.0).select(a.array().sqrt(),Eigen::MatrixXd::Ones(nr,nc)).array().asin();
-  return (c); // Instead of (2*R*c) where R = 6378137 is the Earth's radius.
+  // Convert from degrees to radians
+  Eigen::ArrayXXd lon1 = X.col(0).replicate(1, nc).array() * pi_180;
+  Eigen::ArrayXXd lat1 = X.col(1).replicate(1, nc).array() * pi_180;
+  Eigen::ArrayXXd lon2 = Y.col(0).transpose().replicate(nr, 1).array() * pi_180;
+  Eigen::ArrayXXd lat2 = Y.col(1).transpose().replicate(nr, 1).array() * pi_180;
+  // The haversine function is hav(theta) = (1 - cos(theta)) / 2
+  Eigen::ArrayXXd hav_lon = 0.5 * (1.0 - (lon2 - lon1).cos());
+  Eigen::ArrayXXd hav_lat = 0.5 * (1.0 - (lat2 - lat1).cos());
+  Eigen::ArrayXXd h = hav_lat + hav_lon * lat1.cos() * lat2.cos();
+  // The great circle distance d is given by d = 2 * radius * arcsine( sqrt(h) )
+  Eigen::MatrixXd d = (h < 1.0).select(h.sqrt(), 1.0).asin(); // Avoid numerical issues by ensuring h <= 1.0
+  return (Earth_radiusX2 * d);
 }
 // Compute pairwise distances between the rows of X and the rows of Y.
 // Choose either Euclidean or great circle distance
 Eigen::MatrixXd pairwise_dist(const Eigen::MatrixXd &X, const Eigen::MatrixXd &Y, const std::string &distm) {
   if (!distm.compare("greatcirc")) {
-    return (greatcirc_dist(X,Y));
+    return (greatcirc_dist(X, Y));
   } else {
-    return (euclidean_dist(X,Y));
+    return (euclidean_dist(X, Y));
   }
 }
 // Compute one contour, by filling in each of the pixels/marks
-void compute_contour_vals(Eigen::MatrixXd &zvals, const Eigen::MatrixXd &marks,
-			  const Eigen::VectorXd &now_rates, const Eigen::MatrixXd &now_seeds,
-			  const std::string &distm) {
-  int nxmrks = zvals.cols();
-  int nymrks = zvals.rows();
-  Eigen::MatrixXd distances = pairwise_dist(marks,now_seeds,distm);
-  int closest = 0;
-  for ( int j = 0 ; j < nxmrks*nymrks ; j++ ) {
-    int r = j % nxmrks;
-    int c = j / nxmrks;
-    distances.row(j).minCoeff( &closest );
-    zvals(c,r) = now_rates( closest );
+Eigen::VectorXd compute_contour_vals(const Eigen::MatrixXd &marks,
+				     const Eigen::VectorXd &now_rates, const Eigen::MatrixXd &now_seeds,
+				     const std::string &distm) {
+  int nmrks = marks.rows();
+  Eigen::VectorXd zvals = Eigen::VectorXd::Zero(nmrks);
+  Eigen::MatrixXd dists = pairwise_dist(marks, now_seeds, distm);
+  for ( int row = 0, closest = 0 ; row < nmrks ; row++ ) {
+    dists.row(row).minCoeff( &closest );
+    zvals(row) = now_rates( closest );
   }
+  return zvals;
 }
 // Compute the average contour, by calling compute_contour_vals repeatedly
 //
 // [[Rcpp::export]]
-Eigen::MatrixXd rcppstandardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
-                                      const Eigen::VectorXd &xseed, const Eigen::VectorXd &yseed,
-                                      const Eigen::MatrixXd &marks, const Eigen::VectorXd &nmrks,
+Eigen::VectorXd rcppstandardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
+                                      const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
                                       const std::string &distm) {
   bool use_weighted_mean = true;
-  int nxmrks = nmrks(0);
-  int nymrks = nmrks(1);
-  Eigen::MatrixXd Zvals = Eigen::MatrixXd::Zero(nymrks,nxmrks);
-  Eigen::MatrixXd zvals = Eigen::MatrixXd::Zero(nymrks,nxmrks);
-  int niters = tiles.size();
-  for ( int i = 0, pos = 0 ; i < niters ; i++ ) {
-    int now_tiles = (int)tiles(i);
-    Eigen::VectorXd now_rates = rates.segment(pos,now_tiles);
-    Eigen::VectorXd now_xseed = xseed.segment(pos,now_tiles);
-    Eigen::VectorXd now_yseed = yseed.segment(pos,now_tiles);
-    Eigen::MatrixXd now_seeds(now_tiles, 2);
-    now_seeds << now_xseed,now_yseed;
+  int nmrks = marks.rows();
+  Eigen::VectorXd Zvals = Eigen::VectorXd::Zero(nmrks);
+  Eigen::VectorXd zvals = Eigen::VectorXd::Zero(nmrks);
+  for ( int iter = 0, start = 0 ; iter < tiles.size() ; iter++ ) {
+    int now_tiles = (int)tiles(iter);
+    Eigen::VectorXd now_rates = rates.segment(start, now_tiles);
+    Eigen::MatrixXd now_seeds = seeds.block(start, 0, now_tiles, 2);
     if (use_weighted_mean) {
-      compute_contour_vals(zvals,marks,now_rates,now_seeds,distm);
+      zvals = compute_contour_vals(marks, now_rates, now_seeds, distm);
       zvals = zvals.array() - zvals.mean();
     } else {
       now_rates = now_rates.array() - now_rates.mean();
-      compute_contour_vals(zvals,marks,now_rates,now_seeds,distm);
+      zvals = compute_contour_vals(marks, now_rates, now_seeds, distm);
     }
-    Zvals += zvals; pos += now_tiles;
+    Zvals += zvals;
+    start += now_tiles;
   }
-  // Do not divide by niters here but in 'average.eems.contours' instead
-  // Zvals = Zvals.array() / niters;
-  return Zvals.transpose();
+  // Do not divide by the number of iterations here but in 'average.eems.contours' instead
+  // Zvals = Zvals.array() / tiles.size();
+  return Zvals;
+}
+// Compute the average contour, by calling compute_contour_vals repeatedly
+//
+// [[Rcpp::export]]
+Eigen::VectorXd rcppdont_standardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
+					   const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
+					   const std::string &distm) {
+  Eigen::VectorXd Zvals = Eigen::VectorXd::Zero(marks.rows());
+  for ( int iter = 0, start = 0 ; iter < tiles.size() ; iter++ ) {
+    int now_tiles = (int)tiles(iter);
+    Eigen::VectorXd now_rates = rates.segment(start, now_tiles);
+    Eigen::MatrixXd now_seeds = seeds.block(start, 0, now_tiles, 2);
+    Zvals += compute_contour_vals(marks, now_rates, now_seeds, distm);
+    start += now_tiles;
+  }
+  // Do not divide by the number of iterations here but in 'average.eems.contours' instead
+  // Zvals = Zvals.array() / tiles.size();
+  return Zvals;
 }

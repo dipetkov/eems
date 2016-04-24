@@ -1,6 +1,6 @@
 Input parameter values:
-               datapath = /Users/petkova/Documents/School/Classes/migration/ElephantsProject/DistanceAnalysis/eemscpp/V3b-nohyb-nIndiv1124
-               mcmcpath = /Users/petkova/Documents/School/Classes/migration/ElephantsProject/DistanceAnalysis/eemscpp/V3b-nohyb-nIndiv1124-nDemes360-chain0
+               datapath = ../input/V3b-nohyb-nIndiv1124
+               mcmcpath = ../output/V3b-nohyb-nIndiv1124-EEMS-nDemes360-chain0
                prevpath = 
                gridpath = 
                distance = euclidean

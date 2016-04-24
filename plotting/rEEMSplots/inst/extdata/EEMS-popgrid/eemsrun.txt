@@ -1,0 +1,29 @@
+Input parameter values:
+               datapath = ../input/trfl-no
+               mcmcpath = ../output/trfl-no-EEMS-nDemes500-chain0
+               prevpath = 
+               gridpath = 
+               distance = euclidean
+                diploid = 1
+                 nIndiv = 25
+                 nSites = 100
+                 nDemes = 500
+                   seed = 1461508008
+            numMCMCIter = 20
+            numBurnIter = 10
+            numThinIter = 2
+              negBiSize = 10
+              negBiProb = 0.670000
+             qVoronoiPr = 0.050000
+             mrateShape = 0.001000
+             qrateShape = 0.001000
+             sigmaShape = 0.001000
+             qrateScale = 1.000000
+             mrateScale = 1.000000
+             sigmaScale = 1.000000
+       mSeedsProposalS2 = 0.010000
+       qSeedsProposalS2 = 0.100000
+       mEffctProposalS2 = 0.100000
+       qEffctProposalS2 = 0.001000
+      mrateMuProposalS2 = 0.010000
+

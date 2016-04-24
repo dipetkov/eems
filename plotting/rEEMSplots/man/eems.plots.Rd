@@ -116,7 +116,7 @@ eems.plots(            mcmcpath,
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
 }
 \description{
-Given a vector of EEMS output directories, this function generates five figures to visualize EEMS results:
+Given a vector of EEMS output directories, this function generates six figures to visualize EEMS results:
 \itemize{
  \item \code{plotpath}-mrates01 (effective migration surface)
  \item \code{plotpath}-qrates01 (effective diversity surface)

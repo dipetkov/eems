@@ -1,6 +1,6 @@
 Input parameter values:
-               datapath = ../data/barrier-schemeZ-nIndiv300-nSites3000
-               mcmcpath = ../data/barrier-schemeZ-nIndiv300-nSites3000-EEMS-nDemes200-chain2
+               datapath = ../input/barrier-schemeZ-nIndiv300-nSites3000
+               mcmcpath = ../output/barrier-schemeZ-nIndiv300-nSites3000-EEMS-nDemes200-chain0
                prevpath = 
                gridpath = 
                distance = euclidean

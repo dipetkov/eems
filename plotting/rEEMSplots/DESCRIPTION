@@ -2,10 +2,9 @@ Package: rEEMSplots
 Version: 0.0.0.9000
 Date: 2015-03-04
 Title: Generate EEMS graphics output
-Authors@R:
-    person("Desislava", "Petkova", email = "desislavka@gmail.com", role = c("aut", "cre"))
-Description: Provides one function, eems.plots, to visualize the results of EEMS.
-    It produces contour plots of the effective migration and diversity rates,
+Authors@R: person("Desislava", "Petkova", email = "desislavka@gmail.com", role = c("aut", "cre"))
+Description: Provides one function, eems.plots, to visualize the results of
+    EEMS. It produces contour plots of the effective migration and diversity rates,
     as well as scatterplots of observed vs fitted genetic dissimilarities.
 License: GPL (>= 2)
 BugReports: https://github.com/dipetkov/eems/issues
@@ -27,3 +26,4 @@ Suggests:
     rworldxtra (>= 1.01)
 NeedsCompilation: yes
 LinkingTo: Rcpp, RcppEigen
+RoxygenNote: 5.0.1
