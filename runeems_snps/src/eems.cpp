@@ -3,12 +3,16 @@
 
 EEMS::EEMS(const Params &params) {
   this->params = params;
+
+  ofstream out; string outfile = params.mcmcpath + "/eemsrun.txt";
+  out.open(outfile.c_str(), ofstream::out);
+  if (!out.is_open( )) { cerr << "Failed to open " << outfile << " for writing." << endl; exit(1); }
+  out << "Input parameter values:" << endl << params << endl;
+  
   draw.initialize(params.seed);
-  habitat.generate_outer(params.datapath);
-  habitat.dlmwrite_outer(params.mcmcpath);
-  graph.generate_grid(params.datapath,params.gridpath,
-		      habitat,params.nDemes,params.nIndiv);
-  graph.dlmwrite_grid(params.mcmcpath);
+  habitat.generate_outer(params.datapath, params.mcmcpath);
+  graph.generate_grid(params.datapath, params.gridpath, params.mcmcpath,
+		      habitat, params.nDemes, params.nIndiv);
   o = graph.get_num_obsrv_demes();
   d = graph.get_num_total_demes();
   n = params.nIndiv;
@@ -819,10 +823,9 @@ bool EEMS::output_results(const MCMC &mcmc) const {
   error = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (error) { return(error); }
   error = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (error) { return(error); }
   error = output_current_state( ); if (error) { return(error); }
-  out.open((params.mcmcpath + "/eemsrun.txt").c_str(),ofstream::out);
+  out.open((params.mcmcpath + "/eemsrun.txt").c_str(), ofstream::app);
   if (!out.is_open( )) { return false; }
-  out << "Input parameter values:" << endl << params << endl
-      << "Acceptance proportions:" << endl << mcmc << endl
+  out << "Acceptance proportions:" << endl << mcmc << endl
       << "Final log prior: " << nowpi << endl
       << "Final log llike: " << nowll << endl;
   out.close( );

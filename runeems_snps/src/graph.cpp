@@ -3,7 +3,7 @@
 
 Graph::Graph( ) { }
 Graph::~Graph( ) { }
-void Graph::generate_grid(const string &datapath, const string &gridpath, const Habitat &habitat,
+void Graph::generate_grid(const string &datapath, const string &gridpath, const string &mcmcpath, const Habitat &habitat,
 			  const int nDemeDensity, const int nIndiv)
 {
   cerr << "[Graph::initialize]" << endl;
@@ -27,6 +27,7 @@ void Graph::generate_grid(const string &datapath, const string &gridpath, const 
       exit(1);
     }
   }
+  this->dlmwrite_grid(mcmcpath);
   if (!this->is_connected()) {
     cerr << "  The population grid is not connected." << endl; exit(1);
   }

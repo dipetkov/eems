@@ -1767,7 +1767,7 @@ eems.popgrid <- function(mcmcpath,
     writeLines('Processing the following EEMS output directories :')
     writeLines(mcmcpath)
     
-    save.graphics(paste0(plotpath,'-sampling'), save.params)
+    save.graphics(paste0(plotpath,'-popgrid'), save.params)
 
     ## Read the habitat outline from the mcmcpath (output) directory
     graph <- read.graph(mcmcpath, longlat)
