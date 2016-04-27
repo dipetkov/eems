@@ -3,7 +3,7 @@
 
 Habitat::Habitat( ) { }
 Habitat::~Habitat( ) { }
-void Habitat::generate_outer(const string &datapath)
+void Habitat::generate_outer(const string &datapath, const string &mcmcpath)
 {
   cerr << "[Habitat::initialize]" << endl;
   MatrixXd Outer = readMatrixXd(datapath + ".outer");
@@ -29,7 +29,8 @@ void Habitat::generate_outer(const string &datapath)
     cerr << "  The habitat is not a valid ring (a simple closed polygon)" << endl;
     cerr << "  Corrected habitat: " << endl << "    " << boost::geometry::wkt<Ring>(domain) << endl;
   }
-  double area = this->get_area( );
+  this->dlmwrite_outer(mcmcpath);
+  double area = this->get_area();
   if (area<=0)
     { cerr << "  The habitat has area " << area << ". Specify a valid ring habitat" << endl; exit(1); }
   cerr << "[Habitat::initialize] Done." << endl << endl; 

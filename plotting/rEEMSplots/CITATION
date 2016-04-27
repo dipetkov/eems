@@ -1,0 +1,18 @@
+citation(auto = meta)
+
+bibentry(bibtype = "Article",
+         title = "Visualizing spatial population structure with estimated effective migration surfaces",
+         author = {c(person("Desislava", "Petkova", email = "desislavka@gmail.com"),
+		     person("John", "Novembre", email = "jnovembre@uchicago.edu"),
+		     person("Matthew", "Stephens", email = "mstephens@uchicago.edu"))},
+         year = 2016,
+         journal = "Nature Genetics",
+         volume = 48,
+         number = 1,
+	 pages = "94--100",
+         url = "http://dx.doi.org/10.1038/ng.3464",
+         month = "January",
+         textVersion = paste("D Petkova, J Novembre, M Stephens.",
+                   "Visualizing spatial population structure with estimated effective migration surfaces.",
+                   "Nature Genetics 48, 94 -- 100 (2016).",
+                   "URL: http://dx.doi.org/10.1038/ng.3464."))
