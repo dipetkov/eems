@@ -14,7 +14,7 @@ Data::Data(std::string datapath,int nthreads)
     }
   if( !pio_one_locus_per_row( &plink_file ) ) 
     {
-      std::cerr << "[Data::getsize] This program requires plink files [bed/bim/fam] in SNP-major mode" << std::endl;
+      std::cerr << "[Data::getsize] bed2diffs requires plink files [bed/bim/fam] in SNP-major mode" << std::endl;
       exit(1);
     }
 }
@@ -51,13 +51,13 @@ void Data::bed2diffs_v1()
   size_t *a = (size_t *) malloc( sizeof(size_t)*nPairs );
   size_t *b = (size_t *) malloc( sizeof(size_t)*nPairs );
   double *diffs = (double *) malloc( sizeof(double)*nPairs );
-  double *pairs = (double *) malloc( sizeof(double)*nPairs );
+  double *count = (double *) malloc( sizeof(double)*nPairs );
 
-  for (size_t i = 0 ; i<(nIndiv-1) ; i++ ) {
-    for (size_t j = i+1 ; j<nIndiv ; j++ ) {
-      size_t ij = Index(i,j);
+  for (size_t i = 0 ; i < (nIndiv-1) ; i++ ) {
+    for (size_t j = i+1 ; j < nIndiv ; j++ ) {
+      size_t ij = Index(i, j);
       diffs[ij] = 0.0;
-      pairs[ij] = 0.0;
+      count[ij] = 0.0;
       a[ij] = i;
       b[ij] = j;
     }
@@ -71,9 +71,9 @@ void Data::bed2diffs_v1()
     for (size_t ij = 0 ; ij < nPairs ; ij++ ) {
       size_t zi = snps[a[ij]];
       size_t zj = snps[b[ij]];
-      if ((zi!=PLINK_NA)&&(zj!=PLINK_NA)) {
-	diffs[ij] += (zi - zj)*(zi - zj);
-	pairs[ij] += 1.0;
+      if ((zi != PLINK_NA) && (zj != PLINK_NA)) {
+	diffs[ij] += (zi - zj) * (zi - zj);
+	count[ij] += 1.0;
       }
     }
   }
@@ -86,18 +86,18 @@ void Data::bed2diffs_v1()
       exit(1);
     }   
 
-  for (size_t i = 0 ; i<nIndiv ; i++ ) {
+  for (size_t i = 0 ; i < nIndiv ; i++ ) {
 
     struct pio_sample_t *sample = pio_get_sample( &plink_file, i );
     outorder << sample->fid << " " << sample->iid << std::endl;
 
-    for (size_t j = 0 ; j<nIndiv ; j++ ) {
-      if (i==j) {
+    for (size_t j = 0 ; j < nIndiv ; j++ ) {
+      if (i == j) {
 	outdiffs << " " << 0;
       } else {
-	size_t ij = Index(i,j);
-	outdiffs << " " << diffs[ij]/pairs[ij];
-	outcount << " " << pairs[ij];
+	size_t ij = Index(i, j);
+	outdiffs << " " << diffs[ij] / count[ij];
+	outcount << " " << count[ij];
       }
     }
     outdiffs << std::endl;
@@ -111,7 +111,7 @@ void Data::bed2diffs_v1()
   free( b );
   free( snps );
   free( diffs );
-  free( pairs );
+  free( count );
 }
 
 void Data::bed2diffs_v2()
@@ -132,13 +132,13 @@ void Data::bed2diffs_v2()
   size_t *a = (size_t *) malloc( sizeof(size_t)*nPairs );
   size_t *b = (size_t *) malloc( sizeof(size_t)*nPairs );
   double *diffs = (double *) malloc( sizeof(double)*nPairs );
-  double *pairs = (double *) malloc( sizeof(double)*nPairs );
+  double *count = (double *) malloc( sizeof(double)*nPairs );
 
-  for (size_t i = 0 ; i<(nIndiv-1) ; i++ ) {
-    for (size_t j = i+1 ; j<nIndiv ; j++ ) {
-      size_t ij = Index(i,j);
+  for (size_t i = 0 ; i < (nIndiv-1) ; i++ ) {
+    for (size_t j = i+1 ; j < nIndiv ; j++ ) {
+      size_t ij = Index(i, j);
       diffs[ij] = 0.0;
-      pairs[ij] = 0.0;
+      count[ij] = 0.0;
       a[ij] = i;
       b[ij] = j;
     }
@@ -147,26 +147,26 @@ void Data::bed2diffs_v2()
   while (pio_next_row( &plink_file, snps ) == PIO_OK) {
 
     nSitesProcessed++;
-    
-    double mu = 0.0, NM = 0.0;
-    for (size_t i = 0 ; i<(nIndiv-1) ; i++ ) {
+
+    // Compute the observed genotype mean
+    int sumGeno = 0, nObsrvd = 0;
+    for (size_t i = 0 ; i < nIndiv ; i++ ) {
       size_t zi = snps[i];
-      if (zi!=PLINK_NA) { 
-	mu += zi; NM += 1.0;
+      if (zi != PLINK_NA) { 
+	sumGeno += zi; nObsrvd += 1;
       }
     }
-    
-    mu /= NM;
+    double aveGeno = sumGeno / (double)nObsrvd;
 
     #pragma omp parallel for
     for (size_t ij = 0 ; ij < nPairs ; ij++ ) {
-      size_t zi = snps[a[ij]];
-      size_t zj = snps[b[ij]];
-      // In this case, missing genotypes are "imputed" as the mean genotype
-      if (zi==PLINK_NA) { zi = mu; }
-      if (zj==PLINK_NA) { zj = mu; }
-      diffs[ij] += (zi - zj)*(zi - zj);
-      pairs[ij] += 1.0;
+      // If a genotype missing, impute it with the average genotype (which is a double, not an int)
+      double zi = (double)snps[a[ij]];
+      double zj = (double)snps[b[ij]];
+      if (zi == PLINK_NA) { zi = aveGeno; }
+      if (zj == PLINK_NA) { zj = aveGeno; }
+      diffs[ij] += (zi - zj) * (zi - zj);
+      count[ij] += 1.0;
     }
   }
 
@@ -178,17 +178,17 @@ void Data::bed2diffs_v2()
       exit(1);
     }   
 
-  for (size_t i = 0 ; i<nIndiv ; i++ ) {
+  for (size_t i = 0 ; i < nIndiv ; i++ ) {
 
     struct pio_sample_t *sample = pio_get_sample( &plink_file, i );
     outorder << sample->fid << " " << sample->iid << std::endl;
 
-    for (size_t j = 0 ; j<nIndiv ; j++ ) {
-      if (i==j) {
+    for (size_t j = 0 ; j < nIndiv ; j++ ) {
+      if (i == j) {
 	outdiffs << " " << 0;
       } else {
-	size_t ij = Index(i,j);
-	outdiffs << " " << diffs[ij]/pairs[ij];
+	size_t ij = Index(i, j);
+	outdiffs << " " << diffs[ij] / count[ij];
       }
     }
     outdiffs << std::endl;
@@ -200,7 +200,7 @@ void Data::bed2diffs_v2()
   free( b );
   free( snps );
   free( diffs );
-  free( pairs );
+  free( count );
 }
 
 size_t Data::Index(size_t i, size_t j) {
