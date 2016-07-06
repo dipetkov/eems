@@ -6,3 +6,4 @@ output/
 *.png
 *.so
 *.o
+.Rproj.user

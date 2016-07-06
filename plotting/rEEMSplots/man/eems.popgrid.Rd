@@ -2,41 +2,40 @@
 % Please edit documentation in R/rEEMSplots.R
 \name{eems.popgrid}
 \alias{eems.popgrid}
-\title{A function to plot the constructed population grid and, optionally,
-  the initial sampling locations.}
+\title{A function to plot the constructed population grid and, optionally, the initial sampling locations.}
 \usage{
-eems.popgrid(             mcmcpath,
-                          plotpath,
-                          longlat,
-
-                          ## Properties of the figures to generate
-                          plot.width = 7, 
-                          plot.height = 7, 
-                          out.png = TRUE, 
-                          res = 600, 
-                          
-                          ## Properties of the population grid
-                          add.grid = FALSE, 
-                          col.grid = "gray80", 
-                          lwd.grid = 1, 
-                          
-                          ## Properties of the observed demes
-                          add.demes = FALSE, 
-                          col.demes = "black", 
-                          pch.demes = 19, 
-                          min.cex.demes = 1, 
-                          max.cex.demes = 3, 
-                          
-                          ## Properties of the habitat outline
-                          add.outline = FALSE, 
-                          col.outline = "gray90", 
-                          lwd.outline = 2, 
-                          
-                          ## Properties of the sampling locations
-                          add.coord = FALSE, 
-                          col.coord = "red", 
-                          pch.coord = 3,
-                          datapath = NULL)
+eems.popgrid(            mcmcpath, 
+                         plotpath, 
+                         longlat, 
+                         
+                         ## Properties of the figures to generate
+                         plot.width = 7, 
+                         plot.height = 7, 
+                         out.png = TRUE, 
+                         res = 600, 
+                         
+                         ## Properties of the population grid
+                         add.grid = FALSE, 
+                         col.grid = "gray80", 
+                         lwd.grid = 1, 
+                         
+                         ## Properties of the observed demes
+                         add.demes = FALSE, 
+                         col.demes = "black", 
+                         pch.demes = 19, 
+                         min.cex.demes = 1, 
+                         max.cex.demes = 3, 
+                         
+                         ## Properties of the habitat outline
+                         add.outline = FALSE, 
+                         col.outline = "gray90", 
+                         lwd.outline = 2, 
+                         
+                         ## Properties of the sampling locations
+                         add.coord = FALSE, 
+                         col.coord = "red", 
+                         pch.coord = 3,
+                         datapath = NULL)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
@@ -87,7 +86,7 @@ This can be helpful if runeems exits with the error message "The population grid
 
 ## Use the provided example or supply the path to your own EEMS run.
 eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example")
-name.figures.to.save = "EEMS-example-grid_is_connected"
+name.figures.to.save = path.expand("~/EEMS-example-grid_is_connected")
 
 eems.popgrid(eems.results.to.plot,
              name.figures.to.save,
@@ -97,7 +96,7 @@ eems.popgrid(eems.results.to.plot,
 
 ## It is more interesting to see an example where the grid is unconnected due to the unusual shape of the habitat.
 eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-popgrid")
-name.figures.to.save = "EEMS-example-grid_is_not_connected"
+name.figures.to.save = path.expand("~/EEMS-example-grid_is_not_connected")
 
 eems.popgrid(eems.results.to.plot,
              name.figures.to.save,
