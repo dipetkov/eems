@@ -82,8 +82,7 @@ multi.loci <- names(which(data@loc.n.all != 2))
 ## Explanation: 
 ## Suppose we want to remove locus, `L100` with alleles, `L100.00`, `L100.01`, `L100.02`, 
 ## then detect columns whose names matches the regular expression `^L100\\.\\d+$`
-multi.cols <- which(str_detect(colnames(Geno), 
-                               paste0("^", multi.loci, "\\.\\d+$", collapse = "|")))
+multi.cols <- which(grepl(paste0("^", multi.loci, "\\.\\d+$", collapse = "|"), colnames(Geno)))
 if (length(multi.cols)) Geno <- Geno[, - multi.cols]
 dim(Geno)
 ```
