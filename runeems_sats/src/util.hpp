@@ -17,24 +17,17 @@ using namespace Eigen;
 #include <boost/limits.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <boost/numeric/conversion/bounds.hpp>
-
-#include <boost/config.hpp>
-#include <boost/program_options.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/detail/config_file.hpp>
 #include <boost/math/distributions/normal.hpp>
+#include <boost/numeric/conversion/bounds.hpp>
 #include <boost/algorithm/string.hpp>
-namespace po = boost::program_options;
 
 #ifndef UTIL_H
 #define UTIL_H
 
 const double Inf = numeric_limits<double>::infinity();
-const double pi = boost::math::constants::pi<double>();
-const double log_2 = boost::math::constants::ln_two<double>();
-const double log_pi = log(boost::math::constants::pi<double>());
-const double pi_180 = pi / 180.0;
+const double ln_2 = boost::math::constants::ln_two<double>();
+const double ln_pi = log(boost::math::constants::pi<double>());
+const double Earth_radiusX2 = 2.0 * 6378137.0;
 
 typedef Eigen::SparseMatrix<double> SpMat; // Declares a column-major sparse matrix type of double
 typedef Eigen::Triplet<double> Tri;
@@ -45,7 +38,7 @@ public:
   Params( );
   ~Params( );
   Params(const string &params_file, const long seed_from_command_line);
-  bool check_input_params( ) const;
+  void check_input_arguments();
   
   friend ostream& operator<<(ostream& out, const Params& params);
   
@@ -62,10 +55,11 @@ public:
   double qVoronoiPr, negBiProb;
   int numMCMCIter, numBurnIter, numThinIter;
   int nDemes, nIndiv, nSites, negBiSize;
-  string distance;
 };
 
 VectorXd split(const string &line);
+bool is_finite(const double x);
+bool isposdef(const MatrixXd &A);
 bool isdistmat(const MatrixXd &A);
 double logdet(const MatrixXd &A);
 double pseudologdet(const MatrixXd &A, const int rank);
@@ -76,9 +70,8 @@ MatrixXd pairwise_distance(const MatrixXd &X, const MatrixXd &Y);
 MatrixXd resistance_distance(const MatrixXd& M, const int o);
 MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd& M, const VectorXd& W);
 MatrixXd readMatrixXd(const string &filename);
-double trace_AxB(const MatrixXd &A, const MatrixXd &B);
-
-bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array);
+void dlmwrite(const string &filename, const MatrixXd & mat);
+void dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array);
 void removeRow(MatrixXd &matrix, const int rowToRemove);
 void removeElem(VectorXd &vector, const int elemToRemove);
 void insertRow(MatrixXd &mat, const VectorXd &row);
@@ -94,5 +87,6 @@ MatrixXd slice(const MatrixXd &A, const VectorXi &R, const VectorXi &C);
 
 MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y);
 MatrixXd euclidean_dist(const MatrixXd &X, const MatrixXd &Y);
+void check_condition(const bool condition, const string &message);
 
 #endif

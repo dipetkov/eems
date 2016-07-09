@@ -16,12 +16,19 @@ int MCMC::num_iters_to_save( ) const {
   int a = (numMCMCIter - numBurnIter) / (numThinIter + 1);
   return (a);
 }
-int MCMC::to_save_iteration( ) const {
+bool MCMC::to_save_iteration( ) const {
+  if (currIter>numBurnIter) {
+    int b = (currIter - numBurnIter) % (numThinIter + 1);
+    if (b == 0) return (true);
+  } 
+  return (false);
+}
+int MCMC::index_saved_iteration( ) const {
   if (currIter>numBurnIter) {
     int a = (currIter - numBurnIter) / (numThinIter + 1);
     int b = (currIter - numBurnIter) % (numThinIter + 1);
     if (b==0) { return (a-1); }
-  } 
+  }
   return (-1);
 }
 ostream& operator<<(ostream& out, const MCMC& mcmc) {
@@ -51,8 +58,6 @@ ostream& operator<<(ostream& out, const MCMC& mcmc) {
     case M_VORONOI_BIRTH_DEATH:
       out << "\"mBirthDeath\"" << endl;
       break;
-    case DF_UPDATE:
-      break;
     default:
       cerr << "[RJMCMC] Unknown move type" << endl;
       exit(1);
@@ -65,7 +70,7 @@ void MCMC::end_iteration( ) {
     finished = true;
   }
   if (!(currIter%1000)) {
-    cerr << "Iteration " << currIter << " of " << numMCMCIter << "..." << endl;
+    cout << "Iteration " << currIter << " of " << numMCMCIter << "..." << endl;
   }
 }
 void MCMC::add_to_okay_moves(const int type) {

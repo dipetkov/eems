@@ -3,54 +3,36 @@
 
 extern string dist_metric;
 
-Params::Params( ) { }
-Params::~Params( ) { }
-Params::Params(const string &params_file, const long seed_from_command_line) {
-  try {
-    po::options_description eems_options("EEMS options from parameter file");
-    eems_options.add_options()
-      ("seed", po::value<long>(&seed)->default_value(seed_from_command_line), "Random seed")
-      ("datapath", po::value<string>(&datapath)->required(), "Path to coord/sites/outer files")
-      ("mcmcpath", po::value<string>(&mcmcpath)->required(), "Path to output directory")
-      ("prevpath", po::value<string>(&prevpath)->default_value(""), "Path to previous output directory")
-      ("gridpath", po::value<string>(&gridpath)->default_value(""), "Path to demes/edges/ipmap files")
-      ("nIndiv", po::value<int>(&nIndiv)->required(), "nIndiv")
-      ("nSites", po::value<int>(&nSites)->required(), "nSites")
-      ("nDemes", po::value<int>(&nDemes)->default_value(1), "nDemes")
-      ("diploid", po::value<bool>(&diploid)->default_value(true), "diploid")
-      ("distance", po::value<string>(&distance)->default_value("euclidean"), "distance")
-      ("numMCMCIter", po::value<int>(&numMCMCIter)->default_value(1), "numMCMCIter")
-      ("numBurnIter", po::value<int>(&numBurnIter)->default_value(0), "numBurnIter")
-      ("numThinIter", po::value<int>(&numThinIter)->default_value(0), "numThinIter")
-      ("mSeedsProposalS2", po::value<double>(&mSeedsProposalS2)->default_value(0.01), "mSeedsProposalS2")
-      ("qSeedsProposalS2", po::value<double>(&qSeedsProposalS2)->default_value(0.1), "qSeedsProposalS2")
-      ("mEffctProposalS2", po::value<double>(&mEffctProposalS2)->default_value(0.1), "mEffctProposalS2")
-      ("qEffctProposalS2", po::value<double>(&qEffctProposalS2)->default_value(0.001), "qEffctProposalS2")
-      ("mrateMuProposalS2", po::value<double>(&mrateMuProposalS2)->default_value(0.01), "mrateMuProposalS2")
-      ("qVoronoiPr", po::value<double>(&qVoronoiPr)->default_value(0.05), "qVoronoiPr")
-      ("mrateShape", po::value<double>(&mrateShape_2)->default_value(0.001), "mrateShape")
-      ("qrateShape", po::value<double>(&qrateShape_2)->default_value(0.001), "qrateShape")
-      ("sigmaShape", po::value<double>(&sigmaShape_2)->default_value(0.001), "sigmaShape")
-      ("qrateScale", po::value<double>(&qrateScale_2)->default_value(1.0), "qrateScale")
-      ("mrateScale", po::value<double>(&mrateScale_2)->default_value(1.0), "mrateScale")
-      ("sigmaScale", po::value<double>(&sigmaScale_2)->default_value(1.0), "sigmaScale")
-      ("negBiProb", po::value<double>(&negBiProb)->default_value(0.67), "negBiProb")
-      ("negBiSize", po::value<int>(&negBiSize)->default_value(10), "negBiSize") ;
-    ifstream instrm(params_file.c_str());
-    po::variables_map vm;
-    po::store(po::parse_config_file(instrm,eems_options,true),vm);
-    po::notify(vm);
-    instrm.close();
-  } catch(exception& e) {
-    cerr << "[EEMS::Params] Error parsing input parameters in " << params_file << ": " << endl;
-    cerr << e.what() << endl; exit(1);
-  } 
-  mrateShape_2 /= 2.0;
-  qrateShape_2 /= 2.0;
-  sigmaShape_2 /= 2.0;
-  mrateScale_2 /= 2.0;
-  qrateScale_2 /= 2.0;
-  sigmaScale_2 /= 2.0;
+Params::Params( ) {
+  seed = 1;
+  diploid = true;
+  datapath = "";
+  mcmcpath = "";
+  prevpath = "";
+  gridpath = "";
+  nDemes = 0;
+  nIndiv = 0;
+  nSites = 0;
+  numMCMCIter = 0;
+  numBurnIter = 0;
+  numThinIter = 0;
+  mSeedsProposalS2 = 0.01;
+  qSeedsProposalS2 = 0.1;
+  mEffctProposalS2 = 0.1;
+  qEffctProposalS2 = 0.001;
+  mrateMuProposalS2 = 0.01;
+  qVoronoiPr = 0.25;
+  qrateShape_2 = 0.001;
+  mrateShape_2 = 0.001;
+  sigmaShape_2 = 0.001;
+  mrateScale_2 = 1.0;
+  qrateScale_2 = 1.0;
+  sigmaScale_2 = 1.0;
+  negBiProb = 0.67;
+  negBiSize = 10;
+  mEffctHalfInterval = 2.0;
+  qEffctHalfInterval = 0.1;
+  mrateMuHalfInterval = 2.4771; // log10(300)
   /*
     There are two functions for testing whether the prior and the likelihood are computed correctly:
     * test_prior(parameters) + test_likelihood(parameters)
@@ -58,18 +40,82 @@ Params::Params(const string &params_file, const long seed_from_command_line) {
     If testing = true, then the function check_ll_computation() will be called after each MCMC iteration,
     and it will check that the current prior, nowpi, is the same as test_prior(current parameters)
     as well as that the currrent likelihood, nowll, is the same as test_likelihood(current parameters)
-   */
+  */  
   testing = false;
-  mEffctHalfInterval = 2.0;
-  qEffctHalfInterval = 0.1;
-  mrateMuHalfInterval = 2.4771; // log10(300)
+}
+Params::~Params( ) { }
+
+void Params::check_input_arguments() {
+  check_condition(nDemes > 1, "Check that nDemes > 1 (or type `./runeems_snps --help`)");
+  check_condition(nIndiv > 2, "Check that nIndiv > 2 (or type `./runeems_snps --help`)");
+  check_condition(nSites > 0, "Check that nSites > 0");
+  check_condition(numMCMCIter > 10, "Check that numMCMCIter > 10. But numMCMCIter should be >> 10.");
+  check_condition(numBurnIter >= 0, "Check that numBurnIter >= 0");
+  check_condition(numThinIter >= 0, "Check that numThinIter >= 0");
+  check_condition(numMCMCIter > numBurnIter + numThinIter,
+		  "Check that numMCMCIter > numBurnIter + numThinIter");
+  check_condition(qVoronoiPr > 0.0 && qVoronoiPr < 0.5,
+		  "Check that qVoronoiPr in (0,0.5).\n\tIt is a good idea to update migration more often than diversity.");
+  check_condition(mSeedsProposalS2 > 0.0, "Check that mSeedsProposalS2 > 0");
+  check_condition(qSeedsProposalS2 > 0.0, "Check that qSeedsProposalS2 > 0");
+  check_condition(mEffctProposalS2 > 0.0, "Check that mEffctProposalS2 > 0");
+  check_condition(qEffctProposalS2 > 0.0, "Check that qEffctProposalS2 > 0");
+  check_condition(mrateMuProposalS2 > 0.0, "Check that mrateMuProposalS2 > 0");
+  check_condition(mrateShape_2 > 0.0, "Check that mrateShape > 0");
+  check_condition(qrateShape_2 > 0.0, "Check that qrateShape > 0");
+  check_condition(sigmaShape_2 > 0.0, "Check that sigmaShape > 0");
+  check_condition(mrateScale_2 > 0.0, "Check that mrateScale > 0");
+  check_condition(qrateScale_2 > 0.0, "Check that qrateScale > 0");
+  check_condition(sigmaScale_2 > 0.0, "Check that sigmaScale > 0");
+  check_condition(negBiSize > 0, "Check that negBiSize > 0");
+  check_condition(negBiProb > 0.0 && negBiProb < 1.0,
+		  "Check that negBiProb in (0,1)");
+  check_condition(dist_metric.compare("euclidean") || dist_metric.compare("greatcirc"),
+		  "Check that 'distance' is either 'euclidean' or 'greatcirc'");
+  /////////////////////////////////////////////////////
+  mrateShape_2 /= 2.0;
+  qrateScale_2 /= 2.0;
+  mrateShape_2 /= 2.0;
+  qrateScale_2 /= 2.0;
+  sigmaShape_2 /= 2.0;
+  sigmaScale_2 /= 2.0;
+  /////////////////////////////////////////////////////
+  cout << "Using Boost " << BOOST_LIB_VERSION << " (EEMS was tested with version 1_59)" << endl
+       << "      Eigen " << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION
+       << " (EEMS was tested with version 3.2.7)" << endl << endl;
+  check_condition(numeric_limits<double>::has_infinity, "No representation for infinity");
+  check_condition(boost::filesystem::exists(datapath + ".coord"),
+		  "Check that " + datapath + ".coord exists");
+  check_condition(boost::filesystem::exists(datapath + ".sites"),
+		  "Check that " + datapath + ".sites exists");
+  check_condition(boost::filesystem::exists(datapath + ".outer"),
+		  "Check that " + datapath + ".outer exists");
+  if ( !gridpath.empty() ) {
+    check_condition(boost::filesystem::exists(gridpath + ".demes"),
+		    "Check that " + gridpath + ".demes exists");
+    check_condition(boost::filesystem::exists(gridpath + ".edges"),
+		    "Check that " + gridpath + ".edges exists");
+  }
+  boost::filesystem::path mcmcdir(mcmcpath.c_str());
+  boost::filesystem::path prevdir(prevpath.c_str());
+  if (exists(mcmcdir)) {
+    cout << "  Will save EEMS output to " << mcmcpath << "/" << endl;
+  } else {
+    check_condition(boost::filesystem::create_directory(mcmcdir),
+		    "Check that can create directory " + mcmcpath);
+  }
+  if (exists(prevdir)) {
+    cout << "  Will load EEMS output from " << prevpath << "/" << endl;
+  } else {
+    prevpath.clear();
+  }
 }
 ostream& operator<<(ostream& out, const Params& params) {
   out << "               datapath = " << params.datapath << endl
       << "               mcmcpath = " << params.mcmcpath << endl
       << "               prevpath = " << params.prevpath << endl
       << "               gridpath = " << params.gridpath << endl    
-      << "               distance = " << params.distance << endl
+      << "               distance = " << dist_metric << endl
       << "                diploid = " << params.diploid << endl
       << "                 nIndiv = " << params.nIndiv << endl
       << "                 nSites = " << params.nSites << endl
@@ -95,78 +141,6 @@ ostream& operator<<(ostream& out, const Params& params) {
       << "      mrateMuProposalS2 = " << params.mrateMuProposalS2 << endl;
   return out;
 }
-bool Params::check_input_params( ) const {
-  bool error = false;
-  boost::filesystem::path mcmcdir(mcmcpath.c_str());
-  boost::filesystem::path prevdir(prevpath.c_str());
-  cerr << "Using Boost " << BOOST_LIB_VERSION
-       << " and Eigen " << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION << endl
-       << "  EEMS was tested with Boost 1_57 and Eigen 3.2.4" << endl << endl;
-  if (!numeric_limits<double>::has_infinity || !numeric_limits<double>::infinity()) {
-    cerr << "  Infinity not supported on this platform" << endl;
-    error = true;
-  }
-  if (!boost::filesystem::create_directory(mcmcdir) && !exists(mcmcdir)) {
-    cerr << "  Failed to create output directory " << mcmcpath << endl;
-    error = true;
-  }
-  if (!(!distance.compare("euclidean") || !distance.compare("greatcirc"))) {
-    cerr << "  Choose either 'euclidean' or 'greatcirc' distance metric" << endl;
-    error = true;
-  }
-  if (!boost::filesystem::exists(datapath + ".coord") ||
-      !boost::filesystem::exists(datapath + ".sites") ||
-      !boost::filesystem::exists(datapath + ".outer")) {
-    cerr << "  Failed to find input files " << datapath << ".coord/sites/outer" << endl;
-    error = true;
-  }
-  if (!gridpath.empty() && 
-      (!boost::filesystem::exists(gridpath + ".demes") ||
-       !boost::filesystem::exists(gridpath + ".edges") ||
-       !boost::filesystem::exists(gridpath + ".ipmap"))) {
-    // Path to input population grid is specified
-    // but one of the required files is missing
-    cerr << "  Failed to find graph files " << gridpath << ".demes/edges/ipmap" << endl;
-    error = true;
-  }
-  if (!prevpath.empty() && !exists(prevdir)) {
-    cerr << "  Failed to find directory " << prevpath << " to previous EEMS output" << endl;
-    error = true;
-  }
-  if (!(mSeedsProposalS2>0) || !(mEffctProposalS2>0) ||
-      !(qSeedsProposalS2>0) || !(qEffctProposalS2>0) || !(mrateMuProposalS2>0)) {
-    cerr << "  Choose positive variance parameters for the proposal distributions:" << endl
-	 << "  mrateMuProposalS2 = " << mrateMuProposalS2 << endl
-	 << "   mSeedsProposalS2 = " << mSeedsProposalS2 << ", mEffctProposalS2 = " << mEffctProposalS2 << endl
-	 << "   qSeedsProposalS2 = " << qSeedsProposalS2 << ", qEffctProposalS2 = " << qEffctProposalS2 << endl;
-    error = true;
-  }
-  if (!(nDemes>0) || !(nIndiv>0) || !(nSites>0)) {
-    cerr << "  Error with the EEMS parameters:" << endl
-	 << "  nIndiv = " << nIndiv << ", nSites = " << nSites << ", nDemes = " << nDemes << endl;
-    error = true;
-  }
-  if (!(numMCMCIter>0) || !(numBurnIter>=0) || !(numThinIter>=0) || !(numMCMCIter>numBurnIter) ||
-      !(numMCMCIter>numBurnIter+numThinIter)) {
-    cerr << "  Error with the MCMC parameters:" << endl
-	 << "  numMCMCIter = " << numMCMCIter << ", numBurnIter = " << numBurnIter << ", numThinIter " << numThinIter << endl;
-    error = true;
-  }
-  if (!(qrateShape_2>0) || !(mrateShape_2>0) || !(sigmaShape_2) ||
-      !(qrateScale_2>0) || !(mrateScale_2>0) || !(sigmaScale_2)) {
-    cerr << "  Error with the Inverse Gamma hyperparameters:" << endl
-	 << "  qrateShape = " << 2.0*qrateShape_2 << ", qrateScale = " << 2.0*qrateScale_2 << endl
-	 << "  mrateShape = " << 2.0*mrateShape_2 << ", mrateScale = " << 2.0*mrateScale_2 << endl
-	 << "  sigmaShape = " << 2.0*sigmaShape_2 << ", sigmaScale = " << 2.0*sigmaScale_2 << endl;
-    error = true;
-  }
-  if (!(negBiSize>0) || !( (negBiProb>0) && (negBiProb<1) )) {
-    cerr << "  Error with the Negative Binomial hyperparameters:" << endl
-	 << "  negBiSize = " << negBiSize << ", negBiProb = " << negBiProb << endl;
-    error = true;
-  }
-  return(error);
-}
 VectorXd split(const string &line) {
   istringstream in(line);
   vector<double> numbers;
@@ -180,23 +154,28 @@ VectorXd split(const string &line) {
   // and then typecast it to Eigen::VectorXd
   return (VectorXd::Map(&numbers[0],numbers.size()));
 }
+bool is_finite(const double x) {
+  return ((x != Inf) && (x != -Inf));
+}
 bool isposdef(const MatrixXd &A) {
-  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
-  double minval = eig.eigenvalues().minCoeff();
-  return (minval>0);
+  check_condition(A.rows() == A.cols(), "isposdef : matrix A is not square");
+  SelfAdjointEigenSolver<MatrixXd> eig(A, EigenvaluesOnly);
+  double smallest_eigen_val = eig.eigenvalues().minCoeff();
+  return (smallest_eigen_val > 0);
 }
 bool isdistmat(const MatrixXd &A) {
-  double a = A.minCoeff();
-  double b = A.diagonal().minCoeff();
-  double c = A.diagonal().maxCoeff();
-  double d = (A - A.transpose()).maxCoeff();
-  SelfAdjointEigenSolver<MatrixXd> eig(A,EigenvaluesOnly);
-  ArrayXd val = eig.eigenvalues().array();
+  check_condition(A.rows() == A.cols(), "isdistmat : matrix A is not square");
   double eps = 1e-12;
-  int negative = (val < -eps).count();
-  int positive = (val > eps).count();
-  int zero = ((val > -eps)&&(val < eps)).count();
-  return ((a>=0)&&(b==0)&&(c==0)&&(d==0)&&(positive==1)&&(zero==0));
+  bool A_is_nonnegative = A.minCoeff() >= 0;
+  bool diag_is_zeros = (A.diagonal().minCoeff() == 0) && (A.diagonal().maxCoeff() == 0);
+  bool A_is_symmetric = abs((A - A.transpose()).maxCoeff()) < eps;
+  SelfAdjointEigenSolver<MatrixXd> eig(A, EigenvaluesOnly);
+  ArrayXd eigen_vals = eig.eigenvalues().array();
+  int num_neg_eigen_vals = (eigen_vals < -eps).count();
+  int num_pos_eigen_vals = (eigen_vals > +eps).count();
+  int num_zero_eigen_vals = A.rows() - num_neg_eigen_vals - num_pos_eigen_vals;
+  return (A_is_nonnegative && diag_is_zeros && A_is_symmetric &&
+	  (num_pos_eigen_vals == 1) && (num_zero_eigen_vals == 0));
 }
 double logdet(const MatrixXd &A) {
   return (A.selfadjointView<Lower>().ldlt().vectorD().array().log().sum());
@@ -209,55 +188,101 @@ double wishpdfln(const MatrixXd &X, const MatrixXd &Sigma, const double df) {
   double ldX = logdet(X);
   double ldS = logdet(Sigma);
   int n = X.rows();
-  return (0.5*(-df*ldS - Sigma.selfadjointView<Lower>().llt().solve(X).trace() + 
-	       (df-n-1.0)*ldX - df*n*log_2) - mvgammaln(0.5*df,n));
+  double ln_p = 0.5 * (- df * ldS - Sigma.selfadjointView<Lower>().llt().solve(X).trace()) + 
+    0.5 * ((df - n - 1.0) * ldX - df * n * ln_2) - mvgammaln(0.5 * df, n);
+  return ln_p;
 }
 // Not a general pseudowishpdfln (because L*Diff*L' at a single locus has rank 1
 double pseudowishpdfln(const MatrixXd &X, const MatrixXd &Sigma, const int df) {
   int rank = 1;
-  double ldX = pseudologdet(X,rank);
+  double ldX = pseudologdet(X, rank);
   double ldS = logdet(Sigma);
   int n = X.rows();
-  int q = (df<n) ? df : n;
-  return (0.5*(-df*ldS - Sigma.selfadjointView<Lower>().llt().solve(X).trace() +
-	       (df-n-1.0)*ldX - df*n*log_2 - df*(n-q)*log_pi) - mvgammaln(0.5*df,q));
+  int q = (df < n) ? df : n;
+  double ln_p = 0.5 * (- df * ldS - Sigma.selfadjointView<Lower>().llt().solve(X).trace()) +
+    0.5 * ((df - n - 1.0) * ldX - df * n * ln_2 - df * (n - q) * ln_pi) - mvgammaln(0.5 * df, q);
+  return ln_p;
 }
 double mvgammaln(const double a, const int p) {
-  double val = 0.25*log_pi*p*(p-1);
+  double val = ln_pi * p * (p-1) / 4.0;
   for (int i = 0 ; i < p ; i++ ) {
-    val += lgamma(a-0.5*i);
+    val += lgamma(a - 0.5 * i);
   }
   return (val);
 }
 /*
+  Log probability mass function of the negative binomial distribution, with
+  parameters size (number of failures) and prob (probability of success)
+  * up to a constant of proportionality that depends on size and prob,
+  but not on the random variable k (number of successes)
+  Also -- log pmf of the zero-truncated negative binomial, with the same parameters,
+  as long as k>0, since truncating only changes the constant of proportionality
+  Uses gamma(n) = (n-1)!
+*/
+double dnegbinln(const int k, const int size, const double prob) {
+  double ln_p = -Inf;
+  if ( k >= 0 && ( size > 0 && prob > 0.0 && prob < 1.0 ) ) {
+    ln_p = lgamma(size + k) - lgamma(k + 1) + k * log(prob);
+  }
+  return ln_p;
+}
+/*
+  Log probability density function of the inverse gamma distribution,
+  with parameters shape and scale
+  * Up to a constant of proportionality that depends on the shape and the scale,
+  but not on the random variable x
+*/
+double dinvgamln(const double x, const double shape, const double scale) {
+  double ln_p = -Inf;
+  if ( x > 0.0 && ( shape > 0.0 && scale > 0.0 ) ) {
+    ln_p = - (shape + 1.0) * log(x) - scale / x;
+  }
+  return ln_p;
+}
+/*
+  Truncated normal probability density function with support [ - halfInterval, + halfInterval],
+  on the log scale, including the normalizing constant
+*/
+double dtrnormln(const double x, const double mu, const double sigma2, const double halfInterval) {
+  double ln_p = -Inf;
+  if ( ( x >= -halfInterval && x <= halfInterval ) && sigma2 > 0.0 ) {
+    boost::math::normal pnorm(mu,sqrt(sigma2));
+    ln_p = - 0.5 * log(sigma2) - 0.5 * (x-mu) * (x-mu) / sigma2
+      - log(cdf(pnorm,halfInterval) - cdf(pnorm,-halfInterval)); // the normalizing constant
+  }
+  return ln_p;
+}
+/*
   Squared Euclidean distance: Taking the square root is not necessary
   because EEMS uses the distances to find closest points. For example,
-    pairwise_distance(X,Y).col(0).minCoeff( &closest )
+  pairwise_distance(X,Y).col(0).minCoeff( &closest )
   finds the row/point in X that is closest to the first row/point in Y
- */
+*/
 MatrixXd euclidean_dist(const MatrixXd &X, const MatrixXd &Y) {
-  assert (X.cols()==Y.cols());
-  return (  X.rowwise().squaredNorm().eval().replicate(1,Y.rows())
-	  + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(),1)
-	  - 2.0*X*Y.transpose() );
+  check_condition(X.cols() == Y.cols(), "euclidean_dist : ncol(X) != ncol(Y)");
+  return (  X.rowwise().squaredNorm().eval().replicate(1, Y.rows())
+	    + Y.rowwise().squaredNorm().eval().transpose().replicate(X.rows(), 1)
+	    - 2.0 * X * Y.transpose() );
 }
 // Great circle distance, up to a constant of proportionality equal to 2*R
 // where R is the earth's radius
 MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y) {
-  assert(X.cols()==2);
-  assert(Y.cols()==2);
+  check_condition(X.cols() == 2 && Y.cols() == 2,
+		  "greatcirc_dist : ncol(X) != 2 or ncol(Y) != 2");
   int nr = X.rows();
   int nc = Y.rows();
-  MatrixXd lon1 = X.col(0).replicate(1,nc) * pi_180;
-  MatrixXd lat1 = X.col(1).replicate(1,nc) * pi_180;
-  MatrixXd lon2 = Y.col(0).transpose().replicate(nr,1) * pi_180;
-  MatrixXd lat2 = Y.col(1).transpose().replicate(nr,1) * pi_180;
-  MatrixXd dlon = 0.5*(lon2 - lon1);
-  MatrixXd dlat = 0.5*(lat2 - lat1);
-  MatrixXd a = dlat.array().sin().square().matrix() +
-    (dlon.array().sin().square() * lat1.array().cos() * lat2.array().cos()).matrix();
-  MatrixXd c = (a.array()<1.0).select(a.array().sqrt(),MatrixXd::Ones(nr,nc)).array().asin();
-  return (c); // Instead of (2*R*c) where R = 6378137 is the Earth's radius.
+  // Convert from degrees to radians
+  ArrayXXd lon1 = X.col(0).replicate(1, nc).array() * boost::math::constants::degree<double>();
+  ArrayXXd lat1 = X.col(1).replicate(1, nc).array() * boost::math::constants::degree<double>();
+  ArrayXXd lon2 = Y.col(0).transpose().replicate(nr, 1).array() * boost::math::constants::degree<double>();
+  ArrayXXd lat2 = Y.col(1).transpose().replicate(nr, 1).array() * boost::math::constants::degree<double>();
+  // The haversine function is hav(theta) = (1 - cos(theta)) / 2
+  ArrayXXd hav_lon = 0.5 * (1.0 - (lon2 - lon1).cos());
+  ArrayXXd hav_lat = 0.5 * (1.0 - (lat2 - lat1).cos());
+  ArrayXXd h = hav_lat + hav_lon * lat1.cos() * lat2.cos();
+  // The great circle distance d is given by d = 2 * radius * arcsine( sqrt(h) )
+  MatrixXd d = (h < 1.0).select(h.sqrt(), 1.0).asin(); // Avoid numerical issues by ensuring h <= 1.0
+  return (Earth_radiusX2 * d);
 }
 // Compute pairwise distances between the rows of X and the rows of Y.
 // Choose either Euclidean or great circle distance
@@ -268,30 +293,30 @@ MatrixXd pairwise_distance(const MatrixXd &X, const MatrixXd &Y) {
     return (euclidean_dist(X,Y));
   }
 }
-MatrixXd resistance_distance(const MatrixXd &M, const int o) {
-  assert(M.minCoeff()>=0);
-  assert(M.cols()==M.rows());
-  assert(M.cols()>=o);
+MatrixXd resistance_distance(const MatrixXd &M) {
+  check_condition(M.cols() == M.rows(), "resistance distance : M is not symmetric");
+  check_condition(M.minCoeff() >= 0, "resistance distance : M has negative weights");
   MatrixXd Hinv = - M; Hinv.diagonal() += M.rowwise().sum();
   Hinv.array() += 1.0;
-  MatrixXd H = Hinv.inverse().topLeftCorner(o,o);
-  MatrixXd R = - 2.0*H;
-  VectorXd u_o = VectorXd::Ones(o);
-  R.noalias() += H.diagonal()*u_o.transpose();
-  R.noalias() += u_o*H.diagonal().transpose();
-  return (R);
+  MatrixXd H = Hinv.inverse();
+  MatrixXd R = - 2.0 * H;
+  VectorXd u = VectorXd::Ones(M.rows());
+  R.noalias() += H.diagonal() * u.transpose();
+  R.noalias() += u * H.diagonal().transpose();
+  return R;
 }
 // Implements Equation S12 in the Supplementary 
-MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const VectorXd &W) {
+MatrixXd expected_dissimilarities(const MatrixXd &J, const MatrixXd &M, const VectorXd &w) {
   int n = J.rows();
   int o = J.cols();
-  VectorXd JW = J*W.head(o);
-  VectorXd u_n = VectorXd::Ones(n);
-  MatrixXd Delta = J*resistance_distance(M,o)*J.transpose();
-  Delta.noalias() += 0.5*JW*u_n.transpose();
-  Delta.noalias() += 0.5*u_n*JW.transpose();
-  Delta.diagonal() -= JW;
-  return (Delta);
+  VectorXd Jw = J * w.head(o);
+  MatrixXd R = resistance_distance(M).topLeftCorner(o,o);
+  VectorXd u = VectorXd::Ones(n);
+  MatrixXd Delta = J * R * J.transpose();
+  Delta.noalias() += 0.5 * Jw * u.transpose();
+  Delta.noalias() += 0.5 * u * Jw.transpose();
+  Delta.diagonal() -= Jw;
+  return Delta;
 }
 // Read a matrix, with unknown dimensions, from a text file
 // Return an empty matrix (0 rows, 0 columns) if there is an error
@@ -310,34 +335,36 @@ MatrixXd readMatrixXd(const string &filename) {
     boost::algorithm::trim(line);
     row = split(line);
     if (row.size()==cols) {
-      // Resize the matrix to add each row (done once at the start of EEMS, so okay)
+      // Resize the matrix to add each row (done once at the start)
       insertRow(mat,row);
     } else {
       return (MatrixXd::Zero(0,0));
     }
   }
   instrm.close();
-  return(mat);
-}
-double trace_AxB(const MatrixXd &A, const MatrixXd &B) {
-  return (A.cwiseProduct(B).sum());
+  return mat;
 }
 // If there are two draws and the first has two tiles and the second -- three tiles,
 // then sizes = c(2,3) and array = c(m_{1t_1},m_{1t_2},m_{2t_1},m_{2t_2},m_{2t_3})
-bool dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array) {
-  bool error = false;
-  if (array.size()!=sizes.sum()) { error = true; return(error); }
+void dlmcell(const string &filename, const VectorXd &sizes, const vector<double> &array) {
+  check_condition(array.size() == sizes.sum(), "dlmcell : length(array) != sum(sizes).");
   ofstream out(filename.c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + filename + " for writing");
   vector<double>::const_iterator it = array.begin();
   for ( int i = 0 ; i < sizes.size() ; i++ ) {
     for ( int j = 0 ; j < sizes(i) ; j++ ) {
       out << fixed << setprecision(6) << *it << " "; it++;
+      check_condition(!out.bad(), "Failed writing to " + filename);
     }
     out << endl;
   }
   out.close( );
-  return(error);
+}
+void dlmwrite(const string &filename, const MatrixXd & mat) {
+  ofstream out(filename.c_str(),ofstream::out);
+  out << fixed << setprecision(6) << mat << endl;
+  check_condition(!out.bad(), "Failed writing to " + filename);
+  out.close( );
 }
 void removeElem(VectorXd &vec, const int elemToRemove)
 {
@@ -369,88 +396,39 @@ void insertElem(VectorXd &vec, const double &elem)
 }
 void insertRow(MatrixXd &mat, const VectorXd &row)
 {
-  assert(mat.cols() == row.size());
+  check_condition(mat.cols() == row.size(), "insertRow : ncol(mat) != size(row)");
   int rows = mat.rows();
   int cols = mat.cols();
   mat.noalias() = (MatrixXd(rows+1,cols) << mat, row.transpose()).finished();
 }
-/*
-  Log probability mass function of the negative binomial distribution, with
-  parameters size (number of failures) and prob (probability of success)
-  * up to a constant of proportionality that depends on size and prob,
-    but not on the random variable k (number of successes)
-  Also -- log pmf of the zero-truncated negative binomial, with the same parameters,
-  as long as k>0, since truncating only changes the constant of proportionality
-  Uses gamma(n) = (n-1)!
- */
-double dnegbinln(const int k, const int size, const double prob) {
-  double pln = -Inf;
-  if ( (k>=0) && (size>0) && (prob>0) && (prob<1) ) {
-    pln = lgamma(size+k) - lgamma(k+1) + k*log(prob);
-  }
-  return (pln);
-}
-/*
-  Log probability density function of the inverse gamma distribution,
-  with parameters shape and scale
-  * Up to a constant of proportionality that depends on the shape and the scale,
-    but not on the random variable x
- */
-double dinvgamln(const double x, const double shape, const double scale) {
-  double pln = -Inf;
-  if ( (x>0.0) && (shape>0.0) && (scale>0.0) ) {
-    pln = - (shape+1.0)*log(x) - scale/x;
-  }
-  return (pln);
-}
-/* 
-   Multivariate normal probability density function, on the log scale,
-   up to a constant of proportionality
- */
-double dmvnormln(const VectorXd &x, const VectorXd &mu, const MatrixXd &sigma) {
-  double pln = -Inf;
-  if ( isposdef(sigma) ) {
-    LLT<MatrixXd> Chol(sigma);
-    MatrixXd L = Chol.matrixL();
-    pln = - L.diagonal().array().log().sum();
-    pln -= 0.5 * (x-mu).transpose() * Chol.solve(x-mu);
-  }
-  return (pln);
-}
-/*
-  Truncated normal probability density function, on the log scale,
-  with support [-bnd,+bnd], including the normalizing constant
-*/
-double dtrnormln(const double x, const double mu, const double sigma2, const double bnd) {
-  double pln = -Inf;
-  if ( (sigma2>0) && (x>=-bnd) && (x<=bnd) ) {
-    boost::math::normal pnorm(mu,sqrt(sigma2));
-    pln = - 0.5 * log(sigma2) - 0.5 * (x-mu) * (x-mu) / sigma2
-      - log(cdf(pnorm,bnd) - cdf(pnorm,-bnd));
-  }
-  return (pln);
-}
 VectorXd slice(const VectorXd &A, const VectorXi &I) {
-  assert(I.minCoeff() >= 0);
-  assert(I.maxCoeff() < A.size());
+  check_condition(I.minCoeff() >= 0 && I.maxCoeff() < A.size(),
+		  "Check that I is an index vector with elements in the range [0, size - 1].");
   int size = I.size();
   VectorXd B(size);
   for ( int i = 0 ; i < size ; i++ ) {
     B(i) = A(I(i));
   }
-  return (B);
+  return B;
 }
 MatrixXd slice(const MatrixXd &A, const VectorXi &R, const VectorXi &C) {
-  assert(R.minCoeff() >= 0);
-  assert(C.minCoeff() >= 0);
-  assert(R.maxCoeff() < A.rows());
-  assert(C.maxCoeff() < A.cols());
+  check_condition(R.minCoeff() >= 0 && R.maxCoeff() < A.rows(),
+		  "Check that R is an index vector with elements in the range [0, nrow - 1).");
+  check_condition(C.minCoeff() >= 0 && C.maxCoeff() < A.cols(),
+		  "Check that C is an index vector with elements in the range [0, ncol - 1].");
   int rows = R.size();
   int cols = C.size();
   MatrixXd B(rows,cols);
   for ( int i = 0 ; i < rows ; i++ ) {
-  for ( int j = 0 ; j < cols ; j++ ) {
-    B(i,j) = A(R(i),C(j));
-  } }
-  return (B);
+    for ( int j = 0 ; j < cols ; j++ ) { 
+      B(i,j) = A(R(i), C(j));
+    }
+  }
+  return B;
+}
+void check_condition(const bool condition, const string &message) {
+  if (condition == false) {
+    cerr << "Error: " << message << endl;
+    exit(1);
+  }
 }

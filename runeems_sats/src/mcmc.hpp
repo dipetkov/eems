@@ -13,7 +13,6 @@ enum MoveType {
   M_MEAN_RATE_UPDATE,
   M_VORONOI_POINT_MOVE,
   M_VORONOI_BIRTH_DEATH,
-  DF_UPDATE,
   UNKNOWN_MOVE_TYPE
 };
 
@@ -33,7 +32,8 @@ public:
   void add_to_okay_moves(const int type);
   void add_to_total_moves(const int type);
   int num_iters_to_save( ) const;
-  int to_save_iteration( ) const;
+  bool to_save_iteration( ) const;
+  int index_saved_iteration( ) const;
   
   friend ostream& operator<<(ostream& out, const MCMC& mcmc);
     

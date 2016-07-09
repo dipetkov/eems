@@ -93,8 +93,8 @@ public:
 
   void print_iteration(const MCMC &mcmc) const;
   void save_iteration(const MCMC &mcmc);
-  bool output_results(const MCMC &mcmc) const;
-  bool output_current_state() const;
+  void output_results(const MCMC &mcmc) const;
+  void output_current_state() const;
   void check_ll_computation() const;
   string datapath() const;
   string mcmcpath() const;

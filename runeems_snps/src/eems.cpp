@@ -1,13 +1,16 @@
 
 #include "eems.hpp"
 
+extern string dist_metric;
+
 EEMS::EEMS(const Params &params) {
   this->params = params;
 
   ofstream out; string outfile = params.mcmcpath + "/eemsrun.txt";
   out.open(outfile.c_str(), ofstream::out);
-  if (!out.is_open( )) { cerr << "Failed to open " << outfile << " for writing." << endl; exit(1); }
+  check_condition(out.is_open(), "Cannot open " + outfile + " for writing");
   out << "Input parameter values:" << endl << params << endl;
+  out.close();
   
   draw.initialize(params.seed);
   habitat.generate_outer(params.datapath, params.mcmcpath);
@@ -32,6 +35,7 @@ string EEMS::gridpath( ) const { return params.gridpath; }
 // Draw points randomly inside the habitat: the habitat is two-dimensional, so
 // a point is represented as a row in a matrix with two columns
 void EEMS::randpoint_in_habitat(MatrixXd &Seeds) {
+  check_condition(Seeds.cols() == 2, "randpoint_in_habitat : a point has two coordinates, latitude and longitude");
   for (int i = 0 ; i < Seeds.rows() ; i++ ) {
     bool in = false;
     double x,y;
@@ -50,7 +54,7 @@ void EEMS::rnorm_effects(const double HalfInterval, const double rateS2, VectorX
   }
 }
 void EEMS::initialize_diffs( ) {
-  cerr << "[Diffs::initialize]" << endl;
+  cout << "[Diffs::initialize]" << endl;
   n_2 = (double)n/2.0; nmin1 = n-1; logn = log(n);
   J = MatrixXd::Zero(n,o);
   cvec = VectorXd::Zero(o);
@@ -62,14 +66,10 @@ void EEMS::initialize_diffs( ) {
   cinv = pow(cvec.array(),-1.0).matrix();  // cinv is the vector of inverse counts
   cmin1 = cvec; cmin1.array() -= 1;        // cmin1 is the vector of counts - 1
   Diffs = readMatrixXd(params.datapath + ".diffs");
-  if ((Diffs.rows()!=n)||(Diffs.cols()!=n)) {
-    cerr << "  Error reading dissimilarities matrix " << params.datapath + ".diffs" << endl
-	 << "  Expect a " << n << "x" << n << " matrix of pairwise differences" << endl; exit(1);
-  }
-  cerr << "  Loaded dissimilarities matrix from " << params.datapath + ".diffs" << endl;
-  if (!isdistmat(Diffs)) {
-    cerr << "  The dissimilarity matrix is not a full-rank distance matrix" << endl; exit(1);
-  }
+  check_condition(Diffs.rows() == n && Diffs.cols() == n,
+		  "Check that the dissimilarity matrix is a square nIndiv-by-nIndiv matrix.");
+  check_condition(isdistmat(Diffs),
+		  "The dissimilarity matrix is not a full-rank distance matrix.");
   L = MatrixXd::Constant(nmin1,n,-1.0);
   L.topRightCorner(nmin1,nmin1).setIdentity();
   JtDhatJ = MatrixXd::Zero(o,o);
@@ -77,16 +77,16 @@ void EEMS::initialize_diffs( ) {
   ldLLt = logdet(L*L.transpose());
   ldLDLt = logdet(-L*Diffs*L.transpose());
   ldDiQ = ldLLt - ldLDLt;
-  cerr << "[Diffs::initialize] Done." << endl << endl;
+  cout << "[Diffs::initialize] Done." << endl << endl;
 }
 void EEMS::initialize_state( ) {
-  cerr << "[EEMS::initialize_state]" << endl;
+  cout << "[EEMS::initialize_state]" << endl;
   nowdf = n;
   // Initialize the two Voronoi tessellations
   nowsigma2 = draw.rinvgam(3.0,1.0);
   nowqtiles = draw.rnegbin(2*o,0.5); // o is the number of observed demes
   nowmtiles = draw.rnegbin(2*o,0.5);
-  cerr << "  EEMS starts with " << nowqtiles << " qtiles and " << nowmtiles << " mtiles" << endl;
+  cout << "  EEMS starts with " << nowqtiles << " qtiles and " << nowmtiles << " mtiles" << endl;
   // Draw the Voronoi centers Coord uniformly within the habitat
   nowqSeeds = MatrixXd::Zero(nowqtiles,2); randpoint_in_habitat(nowqSeeds);
   nowmSeeds = MatrixXd::Zero(nowmtiles,2); randpoint_in_habitat(nowmSeeds);
@@ -103,10 +103,10 @@ void EEMS::initialize_state( ) {
   graph.index_closest_to_deme(nowmSeeds,nowmColors);
   // Initialize the mapping of demes to mVoronoi tiles
   graph.index_closest_to_deme(nowqSeeds,nowqColors);
-  cerr << "[EEMS::initialize_state] Done." << endl << endl;
+  cout << "[EEMS::initialize_state] Done." << endl << endl;
 }
 void EEMS::load_final_state( ) {
-  cerr << "[EEMS::load_final_state]" << endl;  
+  cout << "[EEMS::load_final_state]" << endl;  
   MatrixXd tempi; bool error = false;
   tempi = readMatrixXd(params.prevpath + "/lastqtiles.txt");
   if ((tempi.rows()!=1) || (tempi.cols()!=1)) { error = true; }
@@ -114,7 +114,7 @@ void EEMS::load_final_state( ) {
   tempi = readMatrixXd(params.prevpath + "/lastmtiles.txt");
   if ((tempi.rows()!=1) || (tempi.cols()!=1)) { error = true; }
   nowmtiles = tempi(0,0);
-  cerr << "  EEMS starts with " << nowqtiles << " qtiles and " << nowmtiles << " mtiles" << endl;
+  cout << "  EEMS starts with " << nowqtiles << " qtiles and " << nowmtiles << " mtiles" << endl;
   tempi = readMatrixXd(params.prevpath + "/lastthetas.txt");
   if ((tempi.rows()!=1) || (tempi.cols()!=2)) { error = true; }
   nowsigma2 = tempi(0,0);
@@ -140,17 +140,14 @@ void EEMS::load_final_state( ) {
   if ((nowqSeeds.rows()!=nowqtiles) || (nowqSeeds.cols()!=2)) { error = true; }
   nowmSeeds = readMatrixXd(params.prevpath + "/lastmseeds.txt");
   if ((nowmSeeds.rows()!=nowmtiles) || (nowmSeeds.cols()!=2)) { error = true; }
+  check_condition(!error, "Error loading MCMC state from " + params.prevpath);
   // Initialize the mapping of demes to qVoronoi tiles
   graph.index_closest_to_deme(nowmSeeds,nowmColors);
   // Initialize the mapping of demes to mVoronoi tiles
   graph.index_closest_to_deme(nowqSeeds,nowqColors);
-  if (error) {
-    cerr << "  Error loading MCMC state from " << params.prevpath << endl; exit(1);
-  }
-  cerr << "[EEMS::load_final_state] Done." << endl << endl;
+  cout << "[EEMS::load_final_state] Done." << endl << endl;
 }
 bool EEMS::start_eems(const MCMC &mcmc) {
-  bool error = false;
   // The deviation of move proposals is scaled by the habitat range
   params.mSeedsProposalS2x = params.mSeedsProposalS2 * habitat.get_xspan();
   params.mSeedsProposalS2y = params.mSeedsProposalS2 * habitat.get_yspan();
@@ -171,13 +168,13 @@ bool EEMS::start_eems(const MCMC &mcmc) {
   mcmcyCoord.clear();
   mcmcwCoord.clear();
   mcmczCoord.clear();
-  this->eval_prior();
-  this->eval_likelihood();
-  cerr << "Input parameters: " << endl << params << endl
+  eval_prior();
+  eval_likelihood();
+  cout << "Input parameters: " << endl << params << endl
+       << fixed << setprecision(2)
        << "Initial log prior: " << nowpi << endl
        << "Initial log llike: " << nowll << endl << endl;
-  if ((nowpi==-Inf) || (nowpi==Inf) || (nowll==-Inf) || (nowll==Inf)) { error = true; }
-  return(error);
+  return (is_finite(nowpi) && is_finite(nowll));
 }
 MoveType EEMS::choose_move_type( ) {
   double u1 = draw.runif( );
@@ -341,7 +338,7 @@ double EEMS::EEMS_wishpdfln(const MatrixXd &Binv, const VectorXd &W, const doubl
   VectorXd Xc_Winv = X*cvec - Winv;
   double oDinvo = cvec.dot(Xc_Winv);                       // oDinvo = 1'*inv(Delta)*1
   double oDiDDi = Xc_Winv.transpose()*JtDobsJ*Xc_Winv;     // oDiDDi = 1'*inv(Delta)*D*inv(D)*1
-  triDeltaQD = trace_AxB(X,JtDobsJ) - oDiDDi/oDinvo;       // triDeltaQD = tr(inv(Delta)*Q*D)
+  triDeltaQD = X.cwiseProduct(JtDobsJ).sum() - oDiDDi/oDinvo; // triDeltaQD = tr(inv(Delta)*Q*D)
   double ldetDinvQ = logn - log(abs(oDinvo))               // ldetDinvQ = logDet(-inv(Delta)*Q)
     + cmin1.dot(Winv.array().log().matrix())               // log(det(W_n) * det(inv(W_o)))
     - lu.matrixLU().diagonal().array().abs().log().sum();  // log(abs(det(B*C - W)))
@@ -520,9 +517,8 @@ void EEMS::propose_birthdeath_qVoronoi(Proposal &proposal) {
   // If there is exactly one tile, rule out a death proposal
   if ((nowqtiles==1) || (u<0.5)) { // Propose birth
     if (nowqtiles==1) { pBirth = 1.0; }
-    newqtiles++;
-    MatrixXd newqSeed = MatrixXd::Zero(1,2);
-    randpoint_in_habitat(newqSeed);
+    newqtiles++; // Birth means adding a tile
+    MatrixXd newqSeed = MatrixXd::Zero(1,2); randpoint_in_habitat(newqSeed);
     pairwise_distance(nowqSeeds,newqSeed).col(0).minCoeff(&r);
     // The new tile is assigned a rate by perturbing the current rate at the new seed    
     double nowqEffct = nowqEffcts(r);
@@ -537,7 +533,7 @@ void EEMS::propose_birthdeath_qVoronoi(Proposal &proposal) {
       + dtrnormln(newqEffct,0.0,nowqrateS2,params.qEffctHalfInterval);
   } else {                      // Propose death
     if (nowqtiles==2) { pBirth = 1.0; }
-    newqtiles--;
+    newqtiles--; // Death means removing a tile
     int qtileToRemove = draw.runif_int(0,newqtiles);
     MatrixXd oldqSeed = nowqSeeds.row(qtileToRemove);
     removeRow(proposal.newqSeeds,qtileToRemove);
@@ -561,14 +557,12 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
   double u = draw.runif();
   double pBirth = 0.5;
   double pDeath = 0.5;
-  //boost::math::normal pnorm(0.0,sqrt(nowmrateS2));
   proposal.newmEffcts = nowmEffcts;
   proposal.newmSeeds = nowmSeeds;
   if ((nowmtiles==1) || (u<0.5)) { // Propose birth
     if (nowmtiles==1) { pBirth = 1.0; }
-    newmtiles++;
-    MatrixXd newmSeed = MatrixXd::Zero(1,2);
-    randpoint_in_habitat(newmSeed);
+    newmtiles++; // Birth means adding a tile
+    MatrixXd newmSeed = MatrixXd::Zero(1,2); randpoint_in_habitat(newmSeed);
     pairwise_distance(nowmSeeds,newmSeed).col(0).minCoeff(&r);
     double nowmEffct = nowmEffcts(r);
     double newmEffct = draw.rtrnorm(nowmEffct,params.mEffctProposalS2,params.mEffctHalfInterval);
@@ -582,7 +576,7 @@ void EEMS::propose_birthdeath_mVoronoi(Proposal &proposal) {
       + dtrnormln(newmEffct,0.0,nowmrateS2,params.mEffctHalfInterval);
   } else {                      // Propose death
     if (nowmtiles==2) { pBirth = 1.0; }
-    newmtiles--;
+    newmtiles--; // Death means removing a tile
     int mtileToRemove = draw.runif_int(0,newmtiles);
     MatrixXd oldmSeed = nowmSeeds.row(mtileToRemove);
     removeRow(proposal.newmSeeds,mtileToRemove);
@@ -680,7 +674,7 @@ bool EEMS::accept_proposal(Proposal &proposal) {
 }
 ///////////////////////////////////////////
 void EEMS::print_iteration(const MCMC &mcmc) const {
-  cerr << " Ending iteration " << mcmc.currIter
+  cout << " Ending iteration " << mcmc.currIter
        << " with acceptance proportions:" << endl << mcmc
        << " and effective degrees of freedom = " << nowdf << endl
        << "         number of qVoronoi tiles = " << nowqtiles << endl
@@ -689,7 +683,7 @@ void EEMS::print_iteration(const MCMC &mcmc) const {
        << "          Log llike = " << nowll << endl;
 }
 void EEMS::save_iteration(const MCMC &mcmc) {
-  int iter = mcmc.to_save_iteration( );
+  int iter = mcmc.index_saved_iteration( );
   mcmcthetas(iter,0) = nowsigma2;
   mcmcthetas(iter,1) = nowdf;
   mcmcqhyper(iter,0) = 0.0;
@@ -726,124 +720,78 @@ void EEMS::save_iteration(const MCMC &mcmc) {
   B += 0.5 * nowW.transpose().replicate(o,1);
   JtDhatJ += nowsigma2 * B;
 }
-bool EEMS::output_current_state( ) const {
-  ofstream out; bool error = false;
+void EEMS::output_current_state( ) const {
+  ofstream out;
   out.open((params.mcmcpath + "/lastqtiles.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastqtiles.txt for writing");
   out << nowqtiles << endl;
   out.close( );
   out.open((params.mcmcpath + "/lastmtiles.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastmtiles.txt for writing");
   out << nowmtiles << endl;
   out.close( );
   out.open((params.mcmcpath + "/lastthetas.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lasthetas.txt for writing");
   out << fixed << setprecision(6) << nowsigma2 << " " << nowdf << endl;
   out.close( );
   out.open((params.mcmcpath + "/lastdfpars.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastdfpars.txt for writing");
   out << fixed << setprecision(6) << params.dfmin << " " << params.dfmax << endl;
   out.close( );  
   out.open((params.mcmcpath + "/lastqhyper.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastqhyper.txt for writing");
   out << fixed << setprecision(6) << nowqrateS2 << endl;
   out.close( );
   out.open((params.mcmcpath + "/lastmhyper.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastmhyper.txt for writing");
   out << fixed << setprecision(6) << nowmrateMu << " " << nowmrateS2 << endl;
   out.close( );
   out.open((params.mcmcpath + "/lastpilogl.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
+  check_condition(out.is_open(), "Cannot open " + params.mcmcpath + "/lastpilogl.txt for writing");
   out << fixed << setprecision(6) << nowpi << " " << nowll << endl;
   out.close( );
-  out.open((params.mcmcpath + "/lastmeffct.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
-  out << fixed << setprecision(6) << nowmEffcts << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/lastmseeds.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
-  out << fixed << setprecision(6) << nowmSeeds << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/lastqeffct.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
-  out << fixed << setprecision(6) << nowqEffcts << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/lastqseeds.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { error = true; return(error); }
-  out << fixed << setprecision(6) << nowqSeeds << endl;
-  out.close( );
-  return(error);
+  dlmwrite(params.mcmcpath + "/lastmeffct.txt", nowmEffcts);
+  dlmwrite(params.mcmcpath + "/lastmseeds.txt", nowmSeeds);
+  dlmwrite(params.mcmcpath + "/lastqeffct.txt", nowqEffcts);
+  dlmwrite(params.mcmcpath + "/lastqseeds.txt", nowqSeeds);
 }
-bool EEMS::output_results(const MCMC &mcmc) const {
-  ofstream out; bool error = false;
-  MatrixXd oDemes = MatrixXd::Zero(o,3);
-  oDemes << graph.get_the_obsrv_demes(),cvec;
-  out.open((params.mcmcpath + "/rdistoDemes.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << oDemes << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/rdistJtDobsJ.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
+void EEMS::output_results(const MCMC &mcmc) const {
+  ofstream out;
   MatrixXd Pairs = cvec*cvec.transpose(); Pairs -= cvec.asDiagonal();
-  out << JtDobsJ.cwiseQuotient(Pairs) << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/rdistJtDhatJ.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
+  MatrixXd oDemes = MatrixXd::Zero(o,3);
   int niters = mcmc.num_iters_to_save();
-  out << JtDhatJ/niters << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcqtiles.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << mcmcqtiles << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcmtiles.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << mcmcmtiles << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcthetas.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << fixed << setprecision(6) << mcmcthetas << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcqhyper.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << fixed << setprecision(6) << mcmcqhyper << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcmhyper.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << fixed << setprecision(6) << mcmcmhyper << endl;
-  out.close( );
-  out.open((params.mcmcpath + "/mcmcpilogl.txt").c_str(),ofstream::out);
-  if (!out.is_open()) { return false; }
-  out << fixed << setprecision(6) << mcmcpilogl << endl;
-  out.close( );
-  error = dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates); if (error) { return(error); }
-  error = dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord); if (error) { return(error); }
-  error = dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord); if (error) { return(error); }
-  error = dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates); if (error) { return(error); }
-  error = dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord); if (error) { return(error); }
-  error = dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord); if (error) { return(error); }
-  error = output_current_state( ); if (error) { return(error); }
+  oDemes << graph.get_the_obsrv_demes(), cvec;
+  dlmwrite(params.mcmcpath + "/rdistoDemes.txt", oDemes);
+  dlmwrite(params.mcmcpath + "/rdistJtDobsJ.txt", JtDobsJ.cwiseQuotient(Pairs));
+  dlmwrite(params.mcmcpath + "/rdistJtDhatJ.txt", JtDhatJ/niters);
+  dlmwrite(params.mcmcpath + "/mcmcqtiles.txt", mcmcqtiles);
+  dlmwrite(params.mcmcpath + "/mcmcmtiles.txt", mcmcmtiles);
+  dlmwrite(params.mcmcpath + "/mcmcthetas.txt", mcmcthetas);
+  dlmwrite(params.mcmcpath + "/mcmcqhyper.txt", mcmcqhyper);
+  dlmwrite(params.mcmcpath + "/mcmcmhyper.txt", mcmcmhyper);
+  dlmwrite(params.mcmcpath + "/mcmcpilogl.txt", mcmcpilogl);
+  dlmcell(params.mcmcpath + "/mcmcmrates.txt",mcmcmtiles,mcmcmRates);
+  dlmcell(params.mcmcpath + "/mcmcxcoord.txt",mcmcmtiles,mcmcxCoord);
+  dlmcell(params.mcmcpath + "/mcmcycoord.txt",mcmcmtiles,mcmcyCoord);
+  dlmcell(params.mcmcpath + "/mcmcqrates.txt",mcmcqtiles,mcmcqRates);
+  dlmcell(params.mcmcpath + "/mcmcwcoord.txt",mcmcqtiles,mcmcwCoord);
+  dlmcell(params.mcmcpath + "/mcmczcoord.txt",mcmcqtiles,mcmczCoord);
+  output_current_state( );
   out.open((params.mcmcpath + "/eemsrun.txt").c_str(), ofstream::app);
-  if (!out.is_open( )) { return false; }
   out << "Acceptance proportions:" << endl << mcmc << endl
+      << fixed << setprecision(2)
       << "Final log prior: " << nowpi << endl
       << "Final log llike: " << nowll << endl;
   out.close( );
-  cerr << "Final log prior: " << nowpi << endl
+  cout << fixed << setprecision(2)
+       << "Final log prior: " << nowpi << endl
        << "Final log llike: " << nowll << endl;
-  return(error);
 }
 void EEMS::check_ll_computation( ) const {
   double pi0 = test_prior(nowmSeeds,nowmEffcts,nowmrateMu,nowqSeeds,nowqEffcts,nowdf,nowsigma2,nowmrateS2,nowqrateS2);
   double ll0 = test_likelihood(nowmSeeds,nowmEffcts,nowmrateMu,nowqSeeds,nowqEffcts,nowdf,nowsigma2);
-  if (!isfinite(nowpi) || !isfinite(pi0) ||
-      !isfinite(nowll) || !isfinite(ll0) ||
-      (abs(nowpi-pi0)/abs(pi0)>1e-12) ||
-      (abs(nowll-ll0)/abs(ll0)>1e-12)) {
-    cerr << "[EEMS::testing]   |ll0-ll|/|ll0| = " << abs(nowll - ll0)/abs(ll0) << endl;
-    cerr << "[EEMS::testing]   |pi0-pi|/|pi0| = " << abs(nowpi - pi0)/abs(pi0) << endl;
-    exit(1);
-  }
+  check_condition( abs(nowll - ll0) / abs(ll0) < 1e-12, "ll0 != ll");
+  check_condition( abs(nowpi - pi0) / abs(pi0) < 1e-12, "pi0 != pi");
 }
 double EEMS::test_prior(const MatrixXd &mSeeds, const VectorXd &mEffcts, const double mrateMu,
 			const MatrixXd &qSeeds, const VectorXd &qEffcts,
@@ -864,19 +812,19 @@ double EEMS::test_prior(const MatrixXd &mSeeds, const VectorXd &mEffcts, const d
   if ((df<params.dfmin) || (df>params.dfmax)) { inrange = false; }
   if (!inrange) { return (-Inf); }
   // Then compute the prior, on the log scale
-  double logpi = - log(df)
+  double ln_pr = - log(df)
     + dnegbinln(mtiles,params.negBiSize,params.negBiProb)
     + dnegbinln(qtiles,params.negBiSize,params.negBiProb)
     + dinvgamln(mrateS2,params.mrateShape_2,params.mrateScale_2)
     + dinvgamln(qrateS2,params.qrateShape_2,params.qrateScale_2)
     + dinvgamln( sigma2,params.sigmaShape_2,params.sigmaScale_2);
   for (int i = 0 ; i < qtiles ; i++) {
-    logpi += dtrnormln(qEffcts(i),0.0,qrateS2,params.qEffctHalfInterval);
+    ln_pr += dtrnormln(qEffcts(i),0.0,qrateS2,params.qEffctHalfInterval);
   }
   for (int i = 0 ; i < mtiles ; i++) {
-    logpi += dtrnormln(mEffcts(i),0.0,mrateS2,params.mEffctHalfInterval);
+    ln_pr += dtrnormln(mEffcts(i),0.0,mrateS2,params.mEffctHalfInterval);
   }
-  return (logpi);
+  return ln_pr;
 }
 double EEMS::test_likelihood(const MatrixXd &mSeeds, const VectorXd &mEffcts, const double mrateMu,
 			     const MatrixXd &qSeeds, const VectorXd &qEffcts,
@@ -893,7 +841,7 @@ double EEMS::test_likelihood(const MatrixXd &mSeeds, const VectorXd &mEffcts, co
   // Transform the log10 diversity parameters into diversity rates on the original scale
   for ( int alpha = 0 ; alpha < d ; alpha++ ) {
     double log10q_alpha = qEffcts(qColors(alpha)); // qrateMu = 0.0
-    W(alpha) = pow(10.0,log10q_alpha);
+    W(alpha) = pow(10.0, log10q_alpha);
   }
   MatrixXd M = MatrixXd::Zero(d,d);
   int alpha, beta;
@@ -902,14 +850,14 @@ double EEMS::test_likelihood(const MatrixXd &mSeeds, const VectorXd &mEffcts, co
     graph.get_edge(edge,alpha,beta);
     double log10m_alpha = mEffcts(mColors(alpha)) + mrateMu;
     double log10m_beta = mEffcts(mColors(beta)) + mrateMu;
-    M(alpha,beta) = 0.5 * pow(10.0,log10m_alpha) + 0.5 * pow(10.0,log10m_beta);
-    M(beta,alpha) = M(alpha,beta);
+    M(alpha,beta) = 0.5 * pow(10.0, log10m_alpha) + 0.5 * pow(10.0, log10m_beta);
+    M(beta,alpha) = M(alpha, beta);
   }
   // J is an indicator matrix such that J(i,a) = 1 if individual i comes from deme a,
   // and J(i,a) = 0 otherwise  
   MatrixXd Delta = expected_dissimilarities(J, M * Binvconst, W * Wconst);
   // Exactly equation S13
-  double logll = wishpdfln(-L*Diffs*L.transpose(),
-			   -L*Delta*L.transpose()*sigma2/df,df);
-  return (logll);
+  double logl = wishpdfln(-L * Diffs * L.transpose(),
+			  -L * Delta * L.transpose() * sigma2 / df, df);
+  return logl;
 }

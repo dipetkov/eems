@@ -37,8 +37,7 @@ public:
   Habitat( );
   ~Habitat( );
 
-  void generate_outer(const string &datapath);
-  bool dlmwrite_outer(const string &mcmcpath) const;
+  void generate_outer(const string &datapath, const string &mcmcpath);
   bool in_point(const double x, const double y) const;
 
   double get_area( ) const;
@@ -54,6 +53,8 @@ private:
   Ring domain;
   double xmin, xmax, xspan;
   double ymin, ymax, yspan;
+  
+  void dlmwrite_outer(const string &mcmcpath) const;
   
 };
 

@@ -1,7 +1,7 @@
 
-EIGEN_INC = /opt/local/include/eigen3
-BOOST_LIB = /opt/local/lib
-BOOST_INC = /opt/local/include
+EIGEN_INC = /usr/local/opt/eigen/include/eigen3
+BOOST_LIB = /usr/local/lib
+BOOST_INC = /usr/local/include
 
 EXE = runeems_snps
 OBJ = runeems_snps.o eems.o util.o mcmc.o draw.o habitat.o graph.o

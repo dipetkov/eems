@@ -21,9 +21,8 @@ public:
   Graph( );
   ~Graph( );
 
-  void generate_grid(const string &datapath, const string &gridpath, const Habitat &habitat,
+  void generate_grid(const string &datapath, const string &gridpath, const string &mcmcpath, const Habitat &habitat,
 		     const int nDemeDensity, const int nIndiv);
-  bool dlmwrite_grid(const string &mcmcpath) const;
   
   bool is_connected() const;
   int get_num_edges() const;
@@ -49,8 +48,9 @@ private:
   void reindex_demes();
 
   // The grid to read does not need to be triangular as long as it is connected
-  bool read_input_grid(const string &datapath, MatrixXd &DemeCoord, MatrixXi &DemePairs);
-  bool read_indiv_to_deme(const string &datapath, const int nDemes, VectorXi &indiv2deme);
+  void read_input_grid(const string &datapath, MatrixXd &DemeCoord, MatrixXi &DemePairs);
+  void read_indiv_to_deme(const string &datapath, const int nDemes, VectorXi &indiv2deme);
+  void dlmwrite_grid(const string &mcmcpath) const;
   
 };
 

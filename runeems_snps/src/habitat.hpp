@@ -54,7 +54,7 @@ private:
   double xmin, xmax, xspan;
   double ymin, ymax, yspan;
   
-  bool dlmwrite_outer(const string &mcmcpath) const;
+  void dlmwrite_outer(const string &mcmcpath) const;
   
 };
 
