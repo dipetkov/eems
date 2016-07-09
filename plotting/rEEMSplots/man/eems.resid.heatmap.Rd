@@ -34,7 +34,11 @@ eems.resid.heatmap(            datapath,
 \item{heatmap.cols}{The heatmap color palette as a vector of colors, ordered from low to high. Defaults to the "Reds" divergent palette in the RColorBrewer package.}
 }
 \description{
-Given a set of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. It also saves the matrix of residuals to a file called \code{plotpath}-eems-resid.RData. In both the residual matrix and the corresponding heatmap, individuals are ordered according to the input \code{datapath}.coord and \code{datapath}.diffs. Applies only to the case of SNP data (when a Diffs matrix is computed).
+Given a set of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. The residuals are the differences between the
+observed and the fitted dissimilarities.
+The function also saves the residual matrix to a file called \code{plotpath-eems-resid.RData}.
+In both the residual matrix and the corresponding heat map, individuals are are in the same order as in the input files \code{datapath.coord} and \code{datapath.diffs}.
+Applicable only in the case of SNP data when the observed dissimilarity matrix is computed explicitly.
 }
 \examples{
 
@@ -47,5 +51,9 @@ eems.resid.heatmap(datapath = eems.dataset.to.plot,
                    mcmcpath = eems.results.to.plot, 
                    plotpath = name.figures.to.save, 
                    heatmap.cols = c("gray99", "red"))
+           
+}
+\seealso{
+\code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.population.grid}}
 }
 

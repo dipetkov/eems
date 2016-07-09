@@ -110,7 +110,7 @@ eems.posterior.draws(            mcmcpath,
 Given a set of EEMS output directories, this function takes random draws from the posterior distribution of the migration and diversity rate parameters. Each draw is visualized as two Voronoi diagrams; the migration diagram is saved to a file ending in \code{mvoronoiXX}, the diversity diagram is saved to a file ending in \code{qvoronoiXX} where \code{XX} is a numeric id. Specify the number of times to draw from the posterior with the argument \code{post.draws}. If \code{post.draws = 10}, then \code{eems.posterior.draws} will generate plots with id \code{XX = 1} to \code{XX = 10}.
 }
 \details{
-Note about the implementation: `eems.voronoi` samples randomly from the posterior draws saved during the execution of `runeems`, after burn-in and thinning.
+Note about the implementation: \code{eems.voronoi.samples} samples randomly from the posterior draws saved during the execution of EEMS, after burn-in and thinning.
 }
 \examples{
 
@@ -123,8 +123,12 @@ name.figures.to.save = path.expand("~/EEMS-example-rEEMSplots")
 eems.posterior.draws(mcmcpath = eems.results.to.plot, 
                      plotpath = paste0(name.figures.to.save, "-posterior-draws"), 
                      longlat = TRUE, post.draws = 10)
+           
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
+}
+\seealso{
+\code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 }
 

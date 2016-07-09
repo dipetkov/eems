@@ -6,10 +6,20 @@
 EEMS graphics output
 }
 \description{
-  Provides one function, eems.plots, to visualize the results of EEMS.
-  That function produces contour plots of the effective migration and
-  diversity rates, as well as scatterplots of observed vs fitted genetic
-  dissimilarities.
+    Provides several functions to visualize the results of EEMS.
+    
+    \code{eems.plots} produces contour plots of the effective migration and diversity rates,
+    as well as scatterplots of observed vs fitted genetic dissimilarities.
+    
+    \code{eems.population.grid} plots the population grid, with all edges in the same color,
+    to visualize the grid before estimating migration and diversity rates.
+    
+    \code{eems.voronoi.samples} and \code{eems.posterior.draws} both take random samples
+    from the posterior distribution of the migration and diversity rates and plot
+    them to visualize the posterior variance (in a slightly different way).
+    
+    \code{eems.resid.heatmap} computes the matrix of residuals (differences between the
+    observed and fitted dissimilarities) and plots it as a heat map.
 }
 \details{
 \tabular{ll}{

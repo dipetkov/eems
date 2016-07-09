@@ -121,12 +121,12 @@ eems.plots(            mcmcpath,
 \description{
 Given a vector of EEMS output directories, this function generates six figures to visualize EEMS results:
 \itemize{
- \item \code{plotpath}-mrates01 (effective migration surface)
- \item \code{plotpath}-qrates01 (effective diversity surface)
- \item \code{plotpath}-rdist01 (between-demes component of genetic dissimilarity)
- \item \code{plotpath}-rdist02 (within-demes component of genetic dissimilarity)
- \item \code{plotpath}-rdist03 (between-demes dissimilarities vs geographic distances)
- \item \code{plotpath}-pilogl01 (posterior probability trace)
+ \item \code{plotpath-mrates01} (effective migration surface)
+ \item \code{plotpath-qrates01} (effective diversity surface)
+ \item \code{plotpath-rdist01} (between-demes component of genetic dissimilarity)
+ \item \code{plotpath-rdist02} (within-demes component of genetic dissimilarity)
+ \item \code{plotpath-rdist03} (between-demes dissimilarities vs geographic distances)
+ \item \code{plotpath-pilogl01} (posterior probability trace)
 }
 The latter figures are helpful in checking that the MCMC sampler has converged (the trace plot \code{pilogl01}) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities \code{rdist0*}). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
 }
@@ -241,8 +241,12 @@ eems.plots(mcmcpath = eems.results.to.plot,
            plotpath = paste0(name.figures.to.save, "-highlight-demes"), 
            longlat = TRUE, 
            highlight.demes = highlight.demes)
+           
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
+}
+\seealso{
+\code{\link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 }
 

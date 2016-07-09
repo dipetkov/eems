@@ -714,6 +714,7 @@ voronoi.diagram <- function(mcmcpath, dimns, longlat, plot.params, post.draws = 
     now.rates <- now.rates - mean(now.rates)
     now.rates <- ifelse(now.rates > max.levels, max.levels, now.rates)
     now.rates <- ifelse(now.rates < min.levels, min.levels, now.rates)
+    par(mar = c(0, 0, 0, 0) + 0.1)
     plot(0, 0, type = "n", xlim = dimns$xlim, ylim = dimns$ylim, asp = 1, 
          axes = FALSE, xlab = "", ylab = "", main = "")
     if (now.tiles == 1) {
@@ -739,15 +740,7 @@ voronoi.diagram <- function(mcmcpath, dimns, longlat, plot.params, post.draws = 
 }
 plot.logposterior <- function(mcmcpath) {
     writeLines('Plotting posterior probability trace')
-    mcmcpath1 <- character()
-    for (path in mcmcpath) {
-        if (file.exists(paste0(path, '/mcmcpilogl.txt'))) {
-            mcmcpath1 <- c(mcmcpath1, path)
-        }
-    }
-    mcmcpath <- mcmcpath1
     nchains <- length(mcmcpath)
-    if (nchains == 0) { return(NULL) }
     ## Here colors = RColorBrewer::brewer.pal(12, "Paired") + "black"
     colors <- rep_len(c("#000000", "#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F",
                         "#FF7F00", "#CAB2D6", "#6A3D9A", "#FFFF99", "#B15928"), length.out = nchains)
@@ -757,6 +750,7 @@ plot.logposterior <- function(mcmcpath) {
     niters <- NULL
     for (i in 1:nchains) {
         path <- mcmcpath[i]; writeLines(path)
+        stopifnot( all( file.exists( paste0(path, '/mcmcpilogl.txt'))))
         pilogl <- scan(paste0(path, '/mcmcpilogl.txt'), quiet = TRUE)
         pilogl <- matrix(pilogl, ncol = 2, byrow = TRUE)
         posterior <- pilogl[, 1] + pilogl[, 2]
@@ -812,17 +806,10 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
                              remove.singletons = TRUE, add.abline = FALSE, 
                              highlight = NULL) {
     writeLines('Plotting average dissimilarities within and between demes')
-    mcmcpath1 <- character()
     for (path in mcmcpath) {
-        if (file.exists(paste0(path, '/rdistJtDobsJ.txt'))&&
-            file.exists(paste0(path, '/rdistJtDhatJ.txt'))&&
-            file.exists(paste0(path, '/rdistoDemes.txt'))) {
-            mcmcpath1 <- c(mcmcpath1, path)
-        }
+        stopifnot( all( file.exists( paste0( path, c('/rdistoDemes.txt')))))
     }
-    mcmcpath <- mcmcpath1
     nchains <- length(mcmcpath)
-    if (nchains == 0) { return(NULL) }
     ## List of observed demes, with number of samples taken collected
     ## Each row specifies: x coordinate, y coordinate, n samples
     oDemes <- scan(paste0(mcmcpath[1], '/rdistoDemes.txt'), quiet = TRUE)
@@ -919,70 +906,68 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
     ## This can help to identify demes that are of special interest among all the other points
     ## Since `highlights` is not fully working yet and to avoid notes about "no visible
     ## binding for global variable XXX", I have commented the code out.
-    # highlight.demes <- FALSE
-    # if (!is.null(highlight) &&
-    #     !is.null(highlight$x) &&
-    #     !is.null(highlight$y)) {
-    #     ## Highligh some demes
-    #     if (is.null(highlight$col)) highlight$col <- "red"
-    #     if (is.null(highlight$cex)) highlight$cex <- 1 
-    #     if (is.null(highlight$pch)) highlight$pch <- 4 
-    #     if (is.null(highlight$lwd)) highlight$lwd <- 2 
-    #     ## In the between-deme component, each point is associated with two demes:
-    #     ## alpha and beta
-    #     highlight <- dplyr::select(highlight, x, y, col, cex, pch, lwd)
-    #     highlight <- dplyr::rename(highlight, alpha.col = col)
-    #     highlight <- dplyr::rename(highlight, alpha.cex = cex)
-    #     highlight <- dplyr::rename(highlight, alpha.pch = pch)
-    #     highlight <- dplyr::rename(highlight, alpha.lwd = lwd)
-    #     B.component <- dplyr::left_join(B.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
-    #     W.component <- dplyr::left_join(W.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
-    #     G.component <- dplyr::left_join(G.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
-    #     highlight <- dplyr::rename(highlight, beta.col = alpha.col)
-    #     highlight <- dplyr::rename(highlight, beta.cex = alpha.cex)
-    #     highlight <- dplyr::rename(highlight, beta.pch = alpha.pch)
-    #     highlight <- dplyr::rename(highlight, beta.lwd = alpha.lwd)
-    #     B.component <- dplyr::left_join(B.component, highlight, by = c("beta.x" = "x", "beta.y" = "y"))
-    #     G.component <- dplyr::left_join(G.component, highlight, by = c("beta.x" = "x", "beta.y" = "y"))
-    #     if (sum(!is.na(B.component$alpha.col)) ||
-    #         sum(!is.na(B.component$beta.col))) { highlight.demes <- TRUE }
-    # }    
-    # if (highlight.demes) {
-    #     B.component.alpha <- dplyr::select(B.component, fitted, obsrvd, size, starts_with("alpha"))
-    #     B.component.beta <- dplyr::select(B.component, fitted, obsrvd, size, starts_with("beta"))
-    #     B.component.alpha <- dplyr::rename(B.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
-    #     B.component.beta <- dplyr::rename(B.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
-    #     sub.scatterplot("Between", B.component, remove.singletons, add.abline, 
-    #                     subtitle = expression(paste("Highlight ", alpha, " in (", alpha, ", ", beta, ")")))
-    #     sub.scatterplot("Between", B.component.alpha, remove.singletons, add.abline, add = TRUE)
-    #     sub.scatterplot("Between", B.component, remove.singletons, add.abline, 
-    #                     subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
-    #     sub.scatterplot("Between", B.component.beta, remove.singletons, add.abline, add = TRUE)
-    # } else {
-    #     sub.scatterplot("Between", B.component, remove.singletons, add.abline)
-    # }
-    # if (highlight.demes) {
-    #     W.component.alpha <- dplyr::select(W.component, fitted, obsrvd, size, starts_with("alpha"))
-    #     W.component.alpha <- dplyr::rename(W.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
-    #     sub.scatterplot("Within", W.component, remove.singletons, add.abline)
-    #     sub.scatterplot("Within", W.component.alpha, remove.singletons, add.abline, add = TRUE)
-    # } else {    
-    #     sub.scatterplot("Within", W.component, remove.singletons, add.abline)
-    # }
-    # if (highlight.demes) {
-    #     G.component.alpha <- dplyr::select(G.component, fitted, obsrvd, size, starts_with("alpha"))
-    #     G.component.beta <- dplyr::select(G.component, fitted, obsrvd, size, starts_with("beta"))
-    #     G.component.alpha <- dplyr::rename(G.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
-    #     G.component.beta <- dplyr::rename(G.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
-    #     sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE, 
-    #                     subtitle = expression(paste("Highlight ", alpha, " in (", alpha, ", ", beta, ")")))
-    #     sub.scatterplot("GeoDist", G.component.alpha, remove.singletons, add = TRUE)
-    #     sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE, 
-    #                     subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
-    #     sub.scatterplot("GeoDist", G.component.beta, remove.singletons, add = TRUE)
-    # } else {
-    #     sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE)
-    # }
+    highlight.demes <- FALSE
+    if (!is.null(highlight) && !is.null(highlight$x) && !is.null(highlight$y)) {
+        # ## Highligh some demes
+        # if (is.null(highlight$col)) highlight$col <- "red"
+        # if (is.null(highlight$cex)) highlight$cex <- 1
+        # if (is.null(highlight$pch)) highlight$pch <- 4
+        # if (is.null(highlight$lwd)) highlight$lwd <- 2
+        # ## In the between-deme component, each point is associated with two demes:
+        # ## alpha and beta
+        # highlight <- dplyr::select(highlight, x, y, col, cex, pch, lwd)
+        # highlight <- dplyr::rename(highlight, alpha.col = col)
+        # highlight <- dplyr::rename(highlight, alpha.cex = cex)
+        # highlight <- dplyr::rename(highlight, alpha.pch = pch)
+        # highlight <- dplyr::rename(highlight, alpha.lwd = lwd)
+        # B.component <- dplyr::left_join(B.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
+        # W.component <- dplyr::left_join(W.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
+        # G.component <- dplyr::left_join(G.component, highlight, by = c("alpha.x" = "x", "alpha.y" = "y"))
+        # highlight <- dplyr::rename(highlight, beta.col = alpha.col)
+        # highlight <- dplyr::rename(highlight, beta.cex = alpha.cex)
+        # highlight <- dplyr::rename(highlight, beta.pch = alpha.pch)
+        # highlight <- dplyr::rename(highlight, beta.lwd = alpha.lwd)
+        # B.component <- dplyr::left_join(B.component, highlight, by = c("beta.x" = "x", "beta.y" = "y"))
+        # G.component <- dplyr::left_join(G.component, highlight, by = c("beta.x" = "x", "beta.y" = "y"))
+        # if (sum(!is.na(B.component$alpha.col)) ||
+        #     sum(!is.na(B.component$beta.col))) { highlight.demes <- TRUE }
+    }    
+    if (highlight.demes) {
+        # B.component.alpha <- dplyr::select(B.component, fitted, obsrvd, size, starts_with("alpha"))
+        # B.component.beta <- dplyr::select(B.component, fitted, obsrvd, size, starts_with("beta"))
+        # B.component.alpha <- dplyr::rename(B.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        # B.component.beta <- dplyr::rename(B.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
+        # sub.scatterplot("Between", B.component, remove.singletons, add.abline,
+        #                 subtitle = expression(paste("Highlight ", alpha, " in (", alpha, ", ", beta, ")")))
+        # sub.scatterplot("Between", B.component.alpha, remove.singletons, add.abline, add = TRUE)
+        # sub.scatterplot("Between", B.component, remove.singletons, add.abline,
+        #                 subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
+        # sub.scatterplot("Between", B.component.beta, remove.singletons, add.abline, add = TRUE)
+    } else {
+        sub.scatterplot("Between", B.component, remove.singletons, add.abline)
+    }
+    if (highlight.demes) {
+        # W.component.alpha <- dplyr::select(W.component, fitted, obsrvd, size, starts_with("alpha"))
+        # W.component.alpha <- dplyr::rename(W.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        # sub.scatterplot("Within", W.component, remove.singletons, add.abline)
+        # sub.scatterplot("Within", W.component.alpha, remove.singletons, add.abline, add = TRUE)
+    } else {    
+        sub.scatterplot("Within", W.component, remove.singletons, add.abline)
+    }
+    if (highlight.demes) {
+        # G.component.alpha <- dplyr::select(G.component, fitted, obsrvd, size, starts_with("alpha"))
+        # G.component.beta <- dplyr::select(G.component, fitted, obsrvd, size, starts_with("beta"))
+        # G.component.alpha <- dplyr::rename(G.component.alpha, col = alpha.col, cex = alpha.cex, pch = alpha.pch, lwd = alpha.lwd)
+        # G.component.beta <- dplyr::rename(G.component.beta, col = beta.col, cex = beta.cex, pch = beta.pch, lwd = beta.lwd)
+        # sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE,
+        #                 subtitle = expression(paste("Highlight ", alpha, " in (", alpha, ", ", beta, ")")))
+        # sub.scatterplot("GeoDist", G.component.alpha, remove.singletons, add = TRUE)
+        # sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE,
+        #                 subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
+        # sub.scatterplot("GeoDist", G.component.beta, remove.singletons, add = TRUE)
+    } else {
+        sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE)
+    }
     return (list(B.component = B.component, W.component = W.component))
 }
 heatmap.resid <- function(datapath, mcmcpath) {
@@ -1198,12 +1183,12 @@ load.required.package <- function(package, required.by) {
 #'
 #' Given a vector of EEMS output directories, this function generates six figures to visualize EEMS results:
 #' \itemize{
-#'  \item \code{plotpath}-mrates01 (effective migration surface)
-#'  \item \code{plotpath}-qrates01 (effective diversity surface)
-#'  \item \code{plotpath}-rdist01 (between-demes component of genetic dissimilarity)
-#'  \item \code{plotpath}-rdist02 (within-demes component of genetic dissimilarity)
-#'  \item \code{plotpath}-rdist03 (between-demes dissimilarities vs geographic distances)
-#'  \item \code{plotpath}-pilogl01 (posterior probability trace)
+#'  \item \code{plotpath-mrates01} (effective migration surface)
+#'  \item \code{plotpath-qrates01} (effective diversity surface)
+#'  \item \code{plotpath-rdist01} (between-demes component of genetic dissimilarity)
+#'  \item \code{plotpath-rdist02} (within-demes component of genetic dissimilarity)
+#'  \item \code{plotpath-rdist03} (between-demes dissimilarities vs geographic distances)
+#'  \item \code{plotpath-pilogl01} (posterior probability trace)
 #' }
 #' The latter figures are helpful in checking that the MCMC sampler has converged (the trace plot \code{pilogl01}) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities \code{rdist0*}). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
 #' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
@@ -1346,6 +1331,8 @@ load.required.package <- function(package, required.by) {
 #'            plotpath = paste0(name.figures.to.save, "-highlight-demes"), 
 #'            longlat = TRUE, 
 #'            highlight.demes = highlight.demes)
+#'            
+#' @seealso \code{\link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 
 eems.plots <- function(mcmcpath, 
                        plotpath, 
@@ -1499,9 +1486,9 @@ eems.plots <- function(mcmcpath,
 
 #' A function to plot Voronoi diagrams of effective migration and diversity rates
 #'
-#' Given a set of EEMS output directories, this function takes random draws from the posterior distribution of the migration and diversity rate parameters. Each draw is visualized as two Voronoi diagrams; the migration diagram is saved to a file ending in \code{mvoronoiXX}, the diversity diagram is saved to a file ending in \code{qvoronoiXX} where \code{XX} is a numeric id. Specify the number of times to draw from the posterior with the argument \code{post.draws}. If \code{post.draws = 10}, then \code{eems.voronoi} will generate plots with id \code{XX = 1} to \code{XX = 10}.
+#' Given a set of EEMS output directories, this function takes random draws from the posterior distribution of the migration and diversity rate parameters. Each draw is visualized as two Voronoi diagrams; the migration diagram is saved to a file ending in \code{mvoronoiXX}, the diversity diagram is saved to a file ending in \code{qvoronoiXX} where \code{XX} is a numeric id. Specify the number of times to draw from the posterior with the argument \code{post.draws}. If \code{post.draws = 10}, then \code{eems.voronoi.samples} will generate plots with id \code{XX = 1} to \code{XX = 10}.
 #' 
-#' Note about the implementation: `eems.voronoi` samples randomly from the posterior draws saved during the execution of `runeems`, after burn-in and thinning.
+#' Note about the implementation: \code{eems.voronoi.samples} samples randomly from the posterior draws saved during the execution of EEMS, after burn-in and thinning.
 #' @param mcmcpath An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.
 #' @param plotpath The full path and the file name for the graphics to be generated.
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
@@ -1540,55 +1527,56 @@ eems.plots <- function(mcmcpath,
 #'
 #' ## Plot a series of Voronoi diagrams for the EEMS model parameters:
 #' ## the effective migration rates (m) and the effective diversity rates (q).
-#' eems.voronoi(mcmcpath = eems.results.to.plot, 
-#'             plotpath = paste0(name.figures.to.save, "-voronoi-diagrams"), 
-#'             longlat = TRUE, post.draws = 10)
+#' eems.voronoi.samples(mcmcpath = eems.results.to.plot, 
+#'                      plotpath = paste0(name.figures.to.save, "-voronoi-diagrams"), 
+#'                      longlat = TRUE, post.draws = 10)
+#'            
+#' @seealso \code{\link{eems.plots}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 
-eems.voronoi <- function(mcmcpath, 
-                         plotpath, 
-                         longlat, 
-                         
-                         ## Number of times to draw from p(m, q | diffs)
-                         post.draws = 1, 
-                         
-                         ## Properties of the figures to generate
-                         plot.width = 7, 
-                         plot.height = 7, 
-                         out.png = TRUE, 
-                         res = 600, 
-                         
-                         ## Properties of the population grid
-                         add.grid = FALSE, 
-                         col.grid = "gray80", 
-                         lwd.grid = 1, 
-                         
-                         ## Properties of the habitat outline
-                         add.outline = TRUE, 
-                         col.outline = "gray80",
-                         lwd.outline = 2, 
-                         
-                         ## Properties of the graph vertices
-                         add.demes = FALSE, 
-                         col.demes = "gray80", 
-                         pch.demes = 19, 
-                         cex.demes = 1, 
-                         
-                         ## Properties of the Voronoi seeds
-                         add.seeds = TRUE, 
-                         col.seeds = "#8AE234", 
-                         pch.seeds = 4, 
-                         cex.seeds = 1, 
-                         
-                         ## Color palette
-                         eems.colors = NULL, 
-                         
-                         ## Properties of the color key
-                         add.colbar = FALSE,
-                         m.colscale = NULL, 
-                         q.colscale = NULL, 
-                         
-                         ## Extra options
-                         add.title = FALSE) {
+eems.voronoi.samples <- function(mcmcpath, 
+                                 plotpath, 
+                                 longlat, 
+                                 
+                                 ## Number of times to draw from p(m, q | diffs)
+                                 post.draws = 1, 
+                                 
+                                 ## Properties of the figures to generate
+                                 plot.width = 7, 
+                                 plot.height = 7, 
+                                 out.png = TRUE, 
+                                 res = 600, 
+                                 
+                                 ## Properties of the population grid
+                                 add.grid = FALSE, 
+                                 col.grid = "gray80", 
+                                 lwd.grid = 1, 
+                                 
+                                 ## Properties of the habitat outline
+                                 add.outline = TRUE, 
+                                 col.outline = "gray80",
+                                 lwd.outline = 2, 
+                                 
+                                 ## Properties of the graph vertices
+                                 add.demes = FALSE, 
+                                 col.demes = "gray80", 
+                                 pch.demes = 19, 
+                                 cex.demes = 1, 
+                                 
+                                 ## Properties of the Voronoi seeds
+                                 add.seeds = TRUE, 
+                                 col.seeds = "#8AE234", 
+                                 pch.seeds = 4, 
+                                 cex.seeds = 1, 
+                                 
+                                 ## Color palette
+                                 eems.colors = NULL, 
+                                 
+                                 ## Properties of the color key
+                                 m.colscale = NULL, 
+                                 q.colscale = NULL, 
+                                 
+                                 ## Extra options
+                                 add.title = FALSE) {
     
     plot.params <- list(eems.colors = eems.colors, m.colscale = m.colscale, q.colscale = q.colscale, 
                         add.grid = add.grid, add.outline = add.outline, add.demes = add.demes, add.seeds = add.seeds, 
@@ -1598,7 +1586,7 @@ eems.voronoi <- function(mcmcpath,
                         add.colbar = add.colbar, add.title = add.title)    
     plot.params <- check.plot.params(plot.params)
     
-    load.required.package(package = 'deldir', required.by = 'eems.voronoi')
+    load.required.package(package = 'deldir', required.by = 'eems.voronoi.samples')
     
     ## A vector of EEMS output directories, for the same dataset.
     ## Assume that if eemsrun.txt exists, then all EEMS output files exist.
@@ -1643,7 +1631,7 @@ eems.voronoi <- function(mcmcpath,
 #'
 #' Given a set of EEMS output directories, this function takes random draws from the posterior distribution of the migration and diversity rate parameters. Each draw is visualized as two Voronoi diagrams; the migration diagram is saved to a file ending in \code{mvoronoiXX}, the diversity diagram is saved to a file ending in \code{qvoronoiXX} where \code{XX} is a numeric id. Specify the number of times to draw from the posterior with the argument \code{post.draws}. If \code{post.draws = 10}, then \code{eems.posterior.draws} will generate plots with id \code{XX = 1} to \code{XX = 10}.
 #' 
-#' Note about the implementation: `eems.voronoi` samples randomly from the posterior draws saved during the execution of `runeems`, after burn-in and thinning.
+#' Note about the implementation: \code{eems.voronoi.samples} samples randomly from the posterior draws saved during the execution of EEMS, after burn-in and thinning.
 #' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
 #' @param plotpath The full path and the file name for the graphics to be generated. 
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
@@ -1681,6 +1669,8 @@ eems.voronoi <- function(mcmcpath,
 #' eems.posterior.draws(mcmcpath = eems.results.to.plot, 
 #'                      plotpath = paste0(name.figures.to.save, "-posterior-draws"), 
 #'                      longlat = TRUE, post.draws = 10)
+#'            
+#' @seealso \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 
 eems.posterior.draws <- function(mcmcpath, 
                                  plotpath, 
@@ -1774,7 +1764,11 @@ eems.posterior.draws <- function(mcmcpath,
 
 #' A function to plot a heatmap of the residual pairwise dissimilarities, abs(observed - fitted)
 #'
-#' Given a set of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. It also saves the matrix of residuals to a file called \code{plotpath}-eems-resid.RData. In both the residual matrix and the corresponding heatmap, individuals are ordered according to the input \code{datapath}.coord and \code{datapath}.diffs. Applies only to the case of SNP data (when a Diffs matrix is computed).
+#' Given a set of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. The residuals are the differences between the
+#' observed and the fitted dissimilarities.
+#' The function also saves the residual matrix to a file called \code{plotpath-eems-resid.RData}.
+#' In both the residual matrix and the corresponding heat map, individuals are are in the same order as in the input files \code{datapath.coord} and \code{datapath.diffs}.
+#' Applicable only in the case of SNP data when the observed dissimilarity matrix is computed explicitly.
 #' @param datapath The full path and the file name of the input Diffs matrix, which is not copied by \code{runeems} to the output directory.
 #' @param mcmcpath An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.
 #' @param plotpath The full path and the file name for the graphics to be generated.
@@ -1794,6 +1788,8 @@ eems.posterior.draws <- function(mcmcpath,
 #'                    mcmcpath = eems.results.to.plot, 
 #'                    plotpath = name.figures.to.save, 
 #'                    heatmap.cols = c("gray99", "red"))
+#'            
+#' @seealso \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.population.grid}}
 
 eems.resid.heatmap <- function(datapath, 
                                mcmcpath, 
@@ -1845,7 +1841,8 @@ eems.resid.heatmap <- function(datapath,
 #' A function to plot the constructed population grid and, optionally, the initial sampling locations.
 #'
 #' Given an EEMS output directory, this function generates one figure to visualize the EEMS population grid.
-#' This can be helpful if runeems exits with the error message "The population grid is not connected".
+#' All edges are shown in the same color to visualize the grid before estimating migration and diversity rates.
+#' This can be helpful if EEMS exits with the error message "The population grid is not connected".
 #' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
 #' @param plotpath The full path and the file name for the graphics to be generated. 
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
@@ -1865,7 +1862,7 @@ eems.resid.heatmap <- function(datapath,
 #' @param add.coord A logical value indicating whether to add the original sampling locations to the plot or not.
 #' @param col.coord The color of the sampling locations. Defaults to \code{red}.
 #' @param pch.coord The symbol, specified as an integer, or the character to be used for plotting the sampling locations. Defaults to 3.
-#' @param datapath The full path and the file name of the input dataset (the three files datapath.coord, datapath.diffs, datapath.outer). Must be specified if add.coord = TRUE.
+#' @param datapath The full path and the file name of the input dataset (the three files datapath.coord, datapath.diffs, datapath.outer). Must be specified if \code{add.coord = TRUE}.
 #' @export
 #' @examples
 #'
@@ -1873,54 +1870,56 @@ eems.resid.heatmap <- function(datapath,
 #' eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example")
 #' name.figures.to.save = path.expand("~/EEMS-example-grid_is_connected")
 #'
-#' eems.popgrid(eems.results.to.plot,
-#'              name.figures.to.save,
-#'              longlat = TRUE,
-#'              add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
-#'              add.grid = TRUE, col.grid = "green", lwd.grid = 2)
+#' eems.population.grid(eems.results.to.plot,
+#'                      name.figures.to.save,
+#'                      longlat = TRUE,
+#'                      add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
+#'                      add.grid = TRUE, col.grid = "green", lwd.grid = 2)
 #'
 #' ## It is more interesting to see an example where the grid is unconnected due to the unusual shape of the habitat.
 #' eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-popgrid")
 #' name.figures.to.save = path.expand("~/EEMS-example-grid_is_not_connected")
 #' 
-#' eems.popgrid(eems.results.to.plot,
-#'              name.figures.to.save,
-#'              longlat = FALSE,
-#'              add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
-#'              add.grid = TRUE, col.grid = "green", lwd.grid = 2)
+#' eems.population.grid(eems.results.to.plot,
+#'                      name.figures.to.save,
+#'                      longlat = FALSE,
+#'                      add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
+#'                      add.grid = TRUE, col.grid = "green", lwd.grid = 2)
+#'            
+#' @seealso \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}}
 
-eems.popgrid <- function(mcmcpath, 
-                         plotpath, 
-                         longlat, 
-                         
-                         ## Properties of the figures to generate
-                         plot.width = 7, 
-                         plot.height = 7, 
-                         out.png = TRUE, 
-                         res = 600, 
-                         
-                         ## Properties of the population grid
-                         add.grid = FALSE, 
-                         col.grid = "gray80", 
-                         lwd.grid = 1, 
-                         
-                         ## Properties of the observed demes
-                         add.demes = FALSE, 
-                         col.demes = "black", 
-                         pch.demes = 19, 
-                         min.cex.demes = 1, 
-                         max.cex.demes = 3, 
-                         
-                         ## Properties of the habitat outline
-                         add.outline = FALSE, 
-                         col.outline = "gray90", 
-                         lwd.outline = 2, 
-                         
-                         ## Properties of the sampling locations
-                         add.coord = FALSE, 
-                         col.coord = "red", 
-                         pch.coord = 3,
-                         datapath = NULL) {
+eems.population.grid <- function(mcmcpath, 
+                                 plotpath, 
+                                 longlat, 
+                                 
+                                 ## Properties of the figures to generate
+                                 plot.width = 7, 
+                                 plot.height = 7, 
+                                 out.png = TRUE, 
+                                 res = 600, 
+                                 
+                                 ## Properties of the population grid
+                                 add.grid = TRUE, 
+                                 col.grid = "gray80", 
+                                 lwd.grid = 1, 
+                                 
+                                 ## Properties of the observed demes
+                                 add.demes = FALSE, 
+                                 col.demes = "black", 
+                                 pch.demes = 19, 
+                                 min.cex.demes = 1, 
+                                 max.cex.demes = 3, 
+                                 
+                                 ## Properties of the habitat outline
+                                 add.outline = TRUE, 
+                                 col.outline = "gray90", 
+                                 lwd.outline = 2, 
+                                 
+                                 ## Properties of the sampling locations
+                                 add.coord = FALSE, 
+                                 col.coord = "red", 
+                                 pch.coord = 3,
+                                 datapath = NULL) {
     
     plot.params <- list(add.grid = add.grid, add.outline = add.outline, add.demes = add.demes, 
                         col.grid = col.grid, col.outline = col.outline, col.demes = col.demes, 
@@ -1965,8 +1964,8 @@ eems.popgrid <- function(mcmcpath,
     ## Plot the sampling locations
     if (add.coord) {
         if (is.null(coord)) {
-            writeLines(paste0("Specify the full path to the input dataset (coord/diffs/outer files)\n",
-                              "so that the original sampling coordinates can be loaded.\n\n"))
+            writeLines(paste0("\nTo add the sampling locations with option add.coord = TRUE,\n",
+                              "Specify the full path to the input dataset (coord/diffs/outer files)\n\n"))
         } else {
             points(coord, pch = pch.coord, col = col.coord)
         }
