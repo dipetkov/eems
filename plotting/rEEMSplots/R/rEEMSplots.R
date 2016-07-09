@@ -1513,7 +1513,6 @@ eems.plots <- function(mcmcpath,
 #' @param pch.demes The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 1.
 #' @param cex.demes The size of the deme symbol/character. Defaults to 1.
 #' @param m.colscale, q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.
-#' @param add.colbar A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.
 #' @param add.title A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
@@ -1583,7 +1582,7 @@ eems.voronoi.samples <- function(mcmcpath,
                         col.grid = col.grid, col.outline = col.outline, col.demes = col.demes, col.seeds = col.seeds, 
                         lwd.grid = lwd.grid, lwd.outline = lwd.outline, pch.demes = pch.demes, pch.seeds = pch.seeds, 
                         cex.seeds = cex.seeds, min.cex.demes = cex.demes, max.cex.demes = cex.demes, 
-                        add.colbar = add.colbar, add.title = add.title)    
+                        add.title = add.title)    
     plot.params <- check.plot.params(plot.params)
     
     load.required.package(package = 'deldir', required.by = 'eems.voronoi.samples')

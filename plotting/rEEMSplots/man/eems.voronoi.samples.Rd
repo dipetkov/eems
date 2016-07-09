@@ -94,8 +94,6 @@ eems.voronoi.samples(            mcmcpath,
 
 \item{eems.colors}{The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.}
 
-\item{add.colbar}{A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.}
-
 \item{m.colscale, }{q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
 
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
