@@ -60,8 +60,10 @@ void EEMS::initialize_diffs( ) {
     alleles_to_read = p;
   }
   MatrixXd Sites = readMatrixXd(params.datapath + ".sites");
+  stringstream alleles_to_read_str; alleles_to_read_str << alleles_to_read;
   check_condition(Sites.rows() == n && Sites.cols() == alleles_to_read,
-		  "Check that the genotype matrix is a nIndiv-by-" + to_string(alleles_to_read) + " matrix.");
+		  // Use `stringstream` instead of `to_string` to convert int to string.
+		  "Check that the genotype matrix is a nIndiv-by-" + alleles_to_read_str.str() + " matrix.");
   cout << "  Read genotype data from " << params.datapath + ".diffs" << endl;
   ///////////////////////////////////////
   J = MatrixXd::Zero(n,o);
