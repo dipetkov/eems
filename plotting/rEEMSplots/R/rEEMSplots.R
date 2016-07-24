@@ -387,6 +387,7 @@ read.graph <- function(path, longlat) {
     return(list(ipmap = ipmap, demes = demes, edges = edges, alpha = alpha, sizes = sizes, outer = outer))
 }
 read.voronoi <- function(mcmcpath, longlat, is.mrates, log_scale) {
+    
     if (is.mrates) {
         rates <- scan(paste0(mcmcpath, '/mcmcmrates.txt'), what = numeric(), quiet = TRUE)
         tiles <- scan(paste0(mcmcpath, '/mcmcmtiles.txt'), what = numeric(), quiet = TRUE)
@@ -634,7 +635,8 @@ random.eems.contour <- function(mcmcpath, dimns, longlat, plot.params, is.mrates
     
     rslt <- transform.rates(dimns, now.tiles, now.rates, now.xseed, now.yseed, zero_mean)
     Zvals <- rslt$Zvals
-    rates.raster <- one.eems.contour(mcmcpath, dimns, Zvals, longlat, plot.params, is.mrates, 
+    ## Actually plot the colored contour plot
+    rates.raster <- one.eems.contour(mcmcpath[1], dimns, Zvals, longlat, plot.params, is.mrates, 
                                      plot.xy = plot.xy, highlight.samples = highlight.samples)
     return(rates.raster)
 }
@@ -651,13 +653,14 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
     }
     Zmean <- matrix(0, dimns$nxmrks, dimns$nymrks)
     niters <- 0
+    ## Loop over each output directory in mcmcpath to average the colored contour plots
     for (path in mcmcpath) {
         writeLines(path)
         stopifnot( all( file.exists( paste0( path, c('/mcmcmtiles.txt', '/mcmcmrates.txt', 
                                                      '/mcmcxcoord.txt', '/mcmcycoord.txt',
                                                      '/mcmcqtiles.txt', '/mcmcqrates.txt', 
                                                      '/mcmcwcoord.txt', '/mcmczcoord.txt')))))
-        voronoi <- read.voronoi(mcmcpath, longlat, is.mrates, log_scale)
+        voronoi <- read.voronoi(path, longlat, is.mrates, log_scale)
         tiles <- voronoi$tiles
         rates <- voronoi$rates
         xseed <- voronoi$xseed
@@ -667,6 +670,9 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
         niters <- niters + rslt$niters
     }
     Zmean <- Zmean / niters
+    ## Actually plot the colored contour plot
+    ## Pass one mcmcpath (shouldn't matter which one) in case adding extra information
+    ## (demes, edges, etc.) on top of the contour plot.
     rates.raster <- one.eems.contour(mcmcpath[1], dimns, Zmean, longlat, plot.params, is.mrates, 
                                      plot.xy = plot.xy, highlight.samples = highlight.samples)
     return(rates.raster)
@@ -807,7 +813,9 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
                              highlight = NULL) {
     writeLines('Plotting average dissimilarities within and between demes')
     for (path in mcmcpath) {
-        stopifnot( all( file.exists( paste0( path, c('/rdistoDemes.txt')))))
+        stopifnot(all(file.exists(paste0(path, c('/rdistJtDhatJ.txt')),
+                                  paste0(path, c('/rdistJtDobsJ.txt')),
+                                  paste0(path, c('/rdistoDemes.txt')))))
     }
     nchains <- length(mcmcpath)
     ## List of observed demes, with number of samples taken collected
@@ -1454,8 +1462,13 @@ eems.plots <- function(mcmcpath,
                         key.title = mtext(expression(paste(log, "(", italic(q), ")", sep = "")), 
                                           side = 3, cex = 2.5, line = 1.5, font = 1))
         dev.off( )
-        
     }
+    
+    ## Plot trace plot of posterior probability to check convergence
+    save.graphics(paste0(plotpath, '-pilogl'), save.params)
+    par(las = 0, font.main = 1, mar = c(5, 5, 4, 5) + 0.1, xpd = TRUE)
+    plot.logposterior(mcmcpath)
+    dev.off( )
     
     save.params$height <- 6
     save.params$width <- 6.5
@@ -1475,13 +1488,6 @@ eems.plots <- function(mcmcpath,
     B.component <- B.and.W$B.component
     W.component <- B.and.W$W.component
     save(B.component, W.component, file = paste0(plotpath, '-rdist.RData'))
-    
-    ## Plot trace plot of posterior probability to check convergence
-    save.graphics(paste0(plotpath, '-pilogl'), save.params)
-    par(las = 0, font.main = 1, mar = c(5, 5, 4, 5) + 0.1, xpd = TRUE)
-    plot.logposterior(mcmcpath)
-    dev.off( )
-    
 }
 
 #' A function to plot Voronoi diagrams of effective migration and diversity rates

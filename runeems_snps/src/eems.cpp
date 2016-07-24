@@ -757,6 +757,10 @@ void EEMS::output_current_state( ) const {
 }
 void EEMS::output_results(const MCMC &mcmc) const {
   ofstream out;
+  // If there is a single observation in deme alpha,
+  // then Pairs = c[alpha] * c[alpha] - c[alpha] = 0
+  // and there will be NaN's on the diagonal of the `rdistJtDobsJ` matrix,
+  // which is appropriate as we need at least two observations to compute dissimilarities.
   MatrixXd Pairs = cvec*cvec.transpose(); Pairs -= cvec.asDiagonal();
   MatrixXd oDemes = MatrixXd::Zero(o,3);
   int niters = mcmc.num_iters_to_save();
