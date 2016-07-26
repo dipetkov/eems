@@ -15,7 +15,7 @@ if (file.exists("./rEEMSplots/")) {
 `rEEMSplots` requires a few other packages in order to work. If these are not already installed, an error message would appear.
 
 ```
-ERROR: dependencies ‘Rcpp’, ‘RcppEigen’, ‘geosphere’, ‘raster’, ‘rgeos’, ‘sp’ are not available for package ‘rEEMSplots’
+ERROR: dependencies ‘Rcpp’, ‘RcppEigen’, ‘raster’, ‘rgeos’, ‘sp’ are not available for package ‘rEEMSplots’
 * removing ‘/Library/Frameworks/R.framework/Versions/3.2/Resources/library/rEEMSplots’
 Warning message:
 In install.packages("rEEMSplots", repos = NULL, type = "source") :
@@ -27,7 +27,7 @@ In install.packages("rEEMSplots", repos = NULL, type = "source") :
 Once the compiler and GEOS are both available, install the packages required by `rEEMSplots`.
 
 ```
-install.packages(c("Rcpp","RcppEigen","geosphere","raster","rgeos","sp"))
+install.packages(c("Rcpp","RcppEigen","raster","rgeos","sp"))
 ```
 
 Finally, try to install `rEEMSplots` again:

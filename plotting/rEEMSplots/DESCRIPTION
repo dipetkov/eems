@@ -18,7 +18,6 @@ BugReports: https://github.com/dipetkov/eems/issues
 Imports:
     Rcpp (>= 0.12.0),
     RcppEigen (>= 0.3.2.5.0),
-    geosphere (>= 1.4-3),
     raster (>= 2.4-15),
     rgeos (>= 0.3-11),
     sp (>= 1.1-1)

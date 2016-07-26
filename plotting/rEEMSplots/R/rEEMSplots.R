@@ -1,7 +1,7 @@
 
 #' @useDynLib rEEMSplots
 #' @import Rcpp RcppEigen
-#' @import geosphere raster rgeos sp
+#' @import raster rgeos sp
 #' @importFrom graphics plot.new plot.window layout lcm par title axis Axis
 #' @importFrom graphics rect box points polygon abline mtext legend
 #' @importFrom graphics .filled.contour
@@ -619,11 +619,7 @@ one.prob.contour <- function(mcmcpath, dimns, Props, longlat, plot.params, is.mr
     ## Probabilities are lie in the range [0, 1] but I can experiment with different ways
     ## to split the range [0, 1] into bins.
     prob.levels <- plot.params$prob.levels
-    if (length(prob.levels) == 3) {
-        prob.colors <- c("#F0F0F0", "#252525")
-    } else {
-        prob.colors <- rev(gray.colors(length(prob.levels) - 1))
-    }
+    prob.colors <- rev(gray.colors(length(prob.levels) - 1))
     
     if (is.mrates) {
         main.title <- paste("Posterior probability P(m ", direction, " 0 | diffs)")
@@ -859,18 +855,8 @@ geo.distm <- function(coord, longlat, plot.params) {
         long <- coordinates(coord)[, 1]
         lat <- coordinates(coord)[, 2]
     }
-    ## geoshpere::distm expects longitudes in the range [-180, +180]
-    ## and latutudes in the range [-90, 90]
-    if (min(long) < -180 || max(long) > 180 || min(lat) < -90 || max(lat) > 90) {
-        writeLines(paste0('Warning (geosphere):',
-                          'eems.plots uses geosphere::distm to compute the great circle distances\n',
-                          'between all pairs of sampling locations. The `distm` function expects\n',
-                          'longitudes in the range [-180, +180] and latutudes in the range [-90, 90].\n'))
-        n <- length(long)
-        Dist <- matrix(0, n, n)
-    } else {
-        Dist <- geosphere::distm(cbind(long, lat), fun = distHaversine) / 1000
-    }
+    x <- cbind(long, lat)
+    Dist <- sp::spDists(x, x, longlat = TRUE)
     Dist <- Dist[upper.tri(Dist, diag = FALSE)]
     return(Dist)
 }
@@ -1300,7 +1286,7 @@ load.required.package <- function(package, required.by) {
 #' @param remove.singletons Remove demes with a single observation from the diagnostic scatter plots. Defaults to TRUE.
 #' @param add.abline Add the line \code{y = x} to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.
 #' @param add.title A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.
-#' @param prob.levels A numeric vector of breaks in the range \code{[0, 1]} for splitting the posterior probabilities \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)} into bins. Defaults to \code{c(0, 0.95, 1)}.
+#' @param prob.levels A numeric vector of breaks in the range \code{[0, 1]} for splitting the posterior probabilities \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)} into bins. Defaults to \code{c(0.9, 0.95)}.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
 #' @examples
@@ -1457,7 +1443,7 @@ eems.plots <- function(mcmcpath,
                        ## Color palette
                        eems.colors = NULL, 
                        ## Breaks for P(m > 0 | diffs) and P(m < 0 | diffs)
-                       prob.levels = c(0, 0.95, 1),
+                       prob.levels = c(0.9, 0.95),
                        
                        ## Properties of the color key
                        add.colbar = TRUE, 
