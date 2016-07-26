@@ -5,11 +5,11 @@ resistance_distance <- function(M) {
     .Call('rEEMSplots_resistance_distance', PACKAGE = 'rEEMSplots', M)
 }
 
-rcppstandardize_rates <- function(tiles, rates, seeds, marks, distm) {
-    .Call('rEEMSplots_rcppstandardize_rates', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
+rcppstandardize_rates <- function(tiles, rates, seeds, marks, distm, zvals, prgt0, prlt0) {
+    invisible(.Call('rEEMSplots_rcppstandardize_rates', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm, zvals, prgt0, prlt0))
 }
 
-rcppdont_standardize_rates <- function(tiles, rates, seeds, marks, distm) {
-    .Call('rEEMSplots_rcppdont_standardize_rates', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
+rcppdont_standardize_rates <- function(tiles, rates, seeds, marks, distm, zvals) {
+    invisible(.Call('rEEMSplots_rcppdont_standardize_rates', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm, zvals))
 }
 

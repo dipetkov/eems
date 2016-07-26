@@ -73,46 +73,57 @@ Eigen::VectorXd compute_contour_vals(const Eigen::MatrixXd &marks,
 // Compute the average contour, by calling compute_contour_vals repeatedly
 //
 // [[Rcpp::export]]
-Eigen::VectorXd rcppstandardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
-                                      const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
-                                      const std::string &distm) {
+void rcppstandardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
+                           const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
+                           const std::string &distm,
+                           Eigen::VectorXd &zvals, Eigen::VectorXd &prgt0, Eigen::VectorXd &prlt0) {
     bool use_weighted_mean = true;
     int nmrks = marks.rows();
-    Eigen::VectorXd Zvals = Eigen::VectorXd::Zero(nmrks);
-    Eigen::VectorXd zvals = Eigen::VectorXd::Zero(nmrks);
+    Eigen::VectorXd zval = Eigen::VectorXd::Zero(nmrks);
+    Eigen::VectorXd ones = Eigen::VectorXd::Ones(nmrks);
+    // Vector to store the migration rates m (or diversity rates q).
+    zvals = Eigen::VectorXd::Zero(nmrks);
+    // Vectors to store the number of times (m > 0) and (m < 0).
+    prgt0 = Eigen::VectorXd::Zero(nmrks);
+    prlt0 = Eigen::VectorXd::Zero(nmrks);
     for ( int iter = 0, start = 0 ; iter < tiles.size() ; iter++ ) {
         int now_tiles = (int)tiles(iter);
         Eigen::VectorXd now_rates = rates.segment(start, now_tiles);
         Eigen::MatrixXd now_seeds = seeds.block(start, 0, now_tiles, 2);
         if (use_weighted_mean) {
-            zvals = compute_contour_vals(marks, now_rates, now_seeds, distm);
-            zvals = zvals.array() - zvals.mean();
+            zval = compute_contour_vals(marks, now_rates, now_seeds, distm);
+            zval = zval.array() - zval.mean();
         } else {
             now_rates = now_rates.array() - now_rates.mean();
-            zvals = compute_contour_vals(marks, now_rates, now_seeds, distm);
+            zval = compute_contour_vals(marks, now_rates, now_seeds, distm);
         }
-        Zvals += zvals;
+        prgt0 += (zval.array() > 0.0).select(ones, 0.0);
+        prlt0 += (zval.array() < 0.0).select(ones, 0.0);
+        zvals += zval;
         start += now_tiles;
     }
     // Do not divide by the number of iterations here but in 'average.eems.contours' instead
-    // Zvals = Zvals.array() / tiles.size();
-    return Zvals;
+    // as we might be combing results from several output directories.
+    // zvals = zvals.array() / tiles.size();
 }
-// Compute the average contour, by calling compute_contour_vals repeatedly
+// Compute the average contour, by calling compute_contour_vals repeatedly,
+// this time without normalizing the rates to have mean 0. Without normalizing,
+// it doesn't make sense to keep track of the number of times (m > 0) and (m < 0).
 //
 // [[Rcpp::export]]
-Eigen::VectorXd rcppdont_standardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
-                                           const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
-                                           const std::string &distm) {
-    Eigen::VectorXd Zvals = Eigen::VectorXd::Zero(marks.rows());
+void rcppdont_standardize_rates(const Eigen::VectorXd &tiles, const Eigen::VectorXd &rates,
+                                const Eigen::MatrixXd &seeds, const Eigen::MatrixXd &marks,
+                                const std::string &distm,
+                                Eigen::VectorXd &zvals) {
+    zvals = Eigen::VectorXd::Zero(marks.rows());
     for ( int iter = 0, start = 0 ; iter < tiles.size() ; iter++ ) {
         int now_tiles = (int)tiles(iter);
         Eigen::VectorXd now_rates = rates.segment(start, now_tiles);
         Eigen::MatrixXd now_seeds = seeds.block(start, 0, now_tiles, 2);
-        Zvals += compute_contour_vals(marks, now_rates, now_seeds, distm);
+        zvals += compute_contour_vals(marks, now_rates, now_seeds, distm);
         start += now_tiles;
     }
     // Do not divide by the number of iterations here but in 'average.eems.contours' instead
-    // Zvals = Zvals.array() / tiles.size();
-    return Zvals;
+    // as we might be combing results from several output directories.
+    // zvals = zvals.array() / tiles.size();
 }

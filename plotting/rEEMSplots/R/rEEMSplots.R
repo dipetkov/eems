@@ -220,6 +220,10 @@ check.plot.params <- function(params) {
     if (is.logical(params$q.log_scale)) params$q.log_scale <- params$q.log_scale[1]
     else params$q.log_scale <- TRUE
     
+    params$prob.levels <- params$prob.levels[params$prob.levels >= 0]
+    params$prob.levels <- params$prob.levels[params$prob.levels <= 1]
+    params$prob.levels <- sort(unique(c(0, params$prob.levels, 1)))
+    
     return(params)
 }
 eems.colscale <- function(Zvals, num.levels, colscale) {
@@ -411,14 +415,21 @@ read.voronoi <- function(mcmcpath, longlat, is.mrates, log_scale) {
 }
 transform.rates <- function(dimns, tiles, rates, xseed, yseed, zero_mean) {
     if (zero_mean) {
-        Zvals <- .Call("rEEMSplots__rcppstandardize_rates", PACKAGE = "rEEMSplots", 
+        rslts <- .Call("rEEMSplots__rcppstandardize_rates", PACKAGE = "rEEMSplots", 
                        tiles, rates, cbind(xseed, yseed), dimns$marks, dimns$dist.metric)
+        Zvals <- matrix(rslts$zvals, nrow = dimns$nxmrks, ncol = dimns$nymrks)
+        PrGT0 <- matrix(rslts$prgt0, nrow = dimns$nxmrks, ncol = dimns$nymrks)
+        PrLT0 <- matrix(rslts$prlt0, nrow = dimns$nxmrks, ncol = dimns$nymrks)
     } else {
-        Zvals <- .Call("rEEMSplots__rcppdont_standardize_rates", PACKAGE = "rEEMSplots", 
+        rslts <- .Call("rEEMSplots__rcppdont_standardize_rates", PACKAGE = "rEEMSplots", 
                        tiles, rates, cbind(xseed, yseed), dimns$marks, dimns$dist.metric)
+        Zvals <- matrix(rslts$zvals, nrow = dimns$nxmrks, ncol = dimns$nymrks)
+        ## Without normalizing the migration rates m to have mean 0,
+        ## it doesn't make sense to keep track of the number of times (m > 0) and (m < 0).
+        PrGT0 <- NULL
+        PrLT0 <- NULL
     }
-    return(list(Zvals = matrix(Zvals, nrow = dimns$nxmrks, ncol = dimns$nymrks),
-                niters = length(tiles)))
+    return(list(Zvals = Zvals, PrGT0 = PrGT0, PrLT0 = PrLT0, niters = length(tiles)))
 }
 filled.contour.points <- function(mcmcpath, longlat, plot.params, highlight) {
     if (is.null(highlight)) {
@@ -602,6 +613,47 @@ one.eems.contour <- function(mcmcpath, dimns, Zmean, longlat, plot.params, is.mr
                     })
     return (list(eems.colors = eems.colors, eems.levels = eems.levels))
 }
+one.prob.contour <- function(mcmcpath, dimns, Props, longlat, plot.params, is.mrates, direction,
+                             plot.xy = NULL, highlight.samples = NULL) {
+    
+    ## Probabilities are lie in the range [0, 1] but I can experiment with different ways
+    ## to split the range [0, 1] into bins.
+    prob.levels <- plot.params$prob.levels
+    if (length(prob.levels) == 3) {
+        prob.colors <- c("#F0F0F0", "#252525")
+    } else {
+        prob.colors <- rev(gray.colors(length(prob.levels) - 1))
+    }
+    
+    if (is.mrates) {
+        main.title <- paste("Posterior probability P(m ", direction, " 0 | diffs)")
+        key.title <- "pr"
+    } else {
+        main.title <- paste("Posterior probability P(q ", direction, " 0 | diffs)")
+        key.title <- "pr"
+    }
+    rr <- flip(raster::raster(t(Props), 
+                              xmn = dimns$xlim[1], xmx = dimns$xlim[2], 
+                              ymn = dimns$ylim[1], ymx = dimns$ylim[2]), direction = 'y')
+    if (!is.null(plot.params$proj.in)) {
+        raster::projection(rr) <- CRS(plot.params$proj.in)
+        rr <- raster::projectRaster(rr, crs = CRS(plot.params$proj.out))
+    }
+    myfilledContour(rr, col = prob.colors, levels = prob.levels, asp = 1, 
+                    add.key = TRUE, ## plot.params$add.colbar, 
+                    key.axes = axis(4, at = prob.levels, tick = FALSE, hadj = 1, line = 3, cex.axis = 1.5), 
+                    key.title = mtext(key.title, side = 3, cex = 1.5, line = 1.5, font = 1), 
+                    add.title = TRUE, ##plot.params$add.title, 
+                    plot.title = mtext(text = main.title, side = 3, line = 0, cex = 1.5), 
+                    plot.axes = {
+                        filled.contour.outline(mcmcpath, longlat, plot.params);
+                        filled.contour.map(mcmcpath, longlat, plot.params);
+                        plot.xy;
+                        filled.contour.graph(mcmcpath, longlat, plot.params);
+                        filled.contour.points(mcmcpath, longlat, plot.params, highlight.samples);
+                    })
+    return (list(prob.colors = prob.colors, prob.levels = prob.levels))
+}
 random.eems.contour <- function(mcmcpath, dimns, longlat, plot.params, is.mrates, 
                                 plot.xy = NULL, highlight.samples = NULL) {
     if (is.mrates) {
@@ -652,6 +704,8 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
         log_scale <- plot.params$q.log_scale
     }
     Zmean <- matrix(0, dimns$nxmrks, dimns$nymrks)
+    PrGT0 <- matrix(0, dimns$nxmrks, dimns$nymrks)
+    PrLT0 <- matrix(0, dimns$nxmrks, dimns$nymrks)
     niters <- 0
     ## Loop over each output directory in mcmcpath to average the colored contour plots
     for (path in mcmcpath) {
@@ -668,13 +722,25 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
         rslt <- transform.rates(dimns, tiles, rates, xseed, yseed, zero_mean)
         Zmean <- Zmean + rslt$Zvals
         niters <- niters + rslt$niters
+        if (zero_mean) {
+            PrGT0 <- PrGT0 + rslt$PrGT0
+            PrLT0 <- PrLT0 + rslt$PrLT0
+        }
     }
     Zmean <- Zmean / niters
+    PrGT0 <- PrGT0 / niters
+    PrLT0 <- PrLT0 / niters
     ## Actually plot the colored contour plot
     ## Pass one mcmcpath (shouldn't matter which one) in case adding extra information
     ## (demes, edges, etc.) on top of the contour plot.
     rates.raster <- one.eems.contour(mcmcpath[1], dimns, Zmean, longlat, plot.params, is.mrates, 
                                      plot.xy = plot.xy, highlight.samples = highlight.samples)
+    if (zero_mean) {
+        raster.gt.0 <- one.prob.contour(mcmcpath[1], dimns, PrGT0, longlat, plot.params, is.mrates, ">",
+                                        plot.xy = plot.xy, highlight.samples = highlight.samples)
+        raster.lt.0 <- one.prob.contour(mcmcpath[1], dimns, PrLT0, longlat, plot.params, is.mrates, "<",
+                                        plot.xy = plot.xy, highlight.samples = highlight.samples)
+    }
     return(rates.raster)
 }
 ## This function is mainly for testing purposes and will create on Voronoi diagram for each saved MCMC iteration
@@ -1141,7 +1207,7 @@ myfilled.contour <- function (x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1,
     } else {
         par(plt = c(0.02, 0.98, 0.02, 0.98))
     }
-    plot.window(xlim, ylim, "", xaxs = xaxs, yaxs = yaxs, asp = asp)
+    plot.window(xlim, ylim, "", asp = asp)
     .filled.contour(x, y, z, levels, col)
     if (missing(plot.axes)) {
         if (axes) {
@@ -1189,16 +1255,24 @@ load.required.package <- function(package, required.by) {
 
 #' A function to plot effective migration and diversity surfaces from EEMS output
 #'
-#' Given a vector of EEMS output directories, this function generates six figures to visualize EEMS results:
+#' Given a vector of EEMS output directories, this function generates several figures to visualize EEMS results. It is a good idea to examine all these figures, which is why they are generated by default. 
 #' \itemize{
-#'  \item \code{plotpath-mrates01} (effective migration surface)
-#'  \item \code{plotpath-qrates01} (effective diversity surface)
-#'  \item \code{plotpath-rdist01} (between-demes component of genetic dissimilarity)
-#'  \item \code{plotpath-rdist02} (within-demes component of genetic dissimilarity)
-#'  \item \code{plotpath-rdist03} (between-demes dissimilarities vs geographic distances)
-#'  \item \code{plotpath-pilogl01} (posterior probability trace)
+#'  \item \code{plotpath-mrates01}: effective migration surface, which visualizes the estimated effective migration rates \code{m}, on the log10 scale after mean centering.
+#'  \item \code{plotpath-mrates02}: posterior probability \code{P(m > 0 | diffs)} for each location in the habitat. Since migration rates are visualized on the log10 scale after mean centering, 0 corresponds to the overall mean migration rate. By default, posterior probabilities that exceed 95\% are plotted in dark gray, the rest in light gray, to emphasize regions where effective migration rates are significantly higher than the overall average.
+#'  \item \code{plotpath-mrates03}: posterior probability \code{P(m < 0 | diffs)} for each location in the habitat. This plot emphasizes regions where the effective migration rates are significantly lower than the overall average.
+#'  \item \code{plotpath-qrates01}: effective diversity surface, which visualizes the estimated effective diversity rates \code{q}, on the log10 scale after mean centering.
+#'  \item \code{plotpath-qrates02}: posterior probability \code{P(q > 0 | diffs)}. Similar to \code{plotpath-mrates02} but applied to the effective diversity rates.
+#'  \item \code{plotpath-qrates03}: posterior probability \code{P(q < 0 | diffs)}. Similar to \code{plotpath-mrates03} but applied to the effective diversity rates.
+#'  \item \code{plotpath-rdist01}: scatter plot of the observed vs the fitted between-deme component of genetic dissimilarity, where one point represents a pair of sampled demes.
+#'  \item \code{plotpath-rdist01}: scatter plot of the observed vs the fitted within-deme component of genetic dissimilarity, where one point represents a sampled deme.
+#'  \item \code{plotpath-rdist03}: scatter plot of observed genetic dissimilarities between demes vs observed geographic distances between demes.
+#'  \item \code{plotpath-pilogl01}: posterior probability trace
 #' }
-#' The latter figures are helpful in checking that the MCMC sampler has converged (the trace plot \code{pilogl01}) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities \code{rdist0*}). \code{eems.plots} will work with a single EEMS output directory but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, it is a good idea to simulate several realizations of the Markov chain, each realization starting with a different value of the EEMS parameters.
+#' The \code{mrates} and \code{qrates} figures visualize (properties of) the effective migration and diversity rates across the habitat. The other figures can help to check that the MCMC sampler has converged (the trace plot \code{pilogl}) and that the EEMS model fits the data well (the scatter plots of genetic dissimilarities \code{rdist}). 
+#' 
+#' The function \code{eems.plots} will work given the results from a single EEMS run (one directory in \code{mcmcpath}) but it is better to run EEMS several times, randomly initializing the MCMC chain each time. In other words, simulate several realizations of the Markov chain and let each realization start from a different state in the parameter space (by using a different random seed).
+#' 
+#' Detail about the within-deme and between-deme components of genetic dissimilarity: Let \code{D(a,b)} be the dissimilarity between one individual from deme \code{a} and another individual from deme \code{b}. Then the within-deme component for \code{a} and \code{b} is simply \code{D(a,a)} and \code{D(b, b)}, respectively. The between-deme component is \code{D(a,b) - [D(a,a) + D(b,b)] / 2} and it represents dissimilarity that is due to the spatial structure of the population and is not a consequence of the local diversity in the two demes.
 #' @param mcmcpath A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.
 #' @param plotpath The full path and the file name for the graphics to be generated. 
 #' @param longlat A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).
@@ -1223,9 +1297,10 @@ load.required.package <- function(package, required.by) {
 #' @param eems.colors The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.
 #' @param m.colscale, q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.
 #' @param add.colbar A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.
-#' @param remove.singletons Remove demes with a single observation from the diagnostic scatterplots. Defaults to TRUE.
-#' @param add.abline Add the line \code{y = x} to the diagnostic scatterplots of observed vs fitted genetic dissimilarities.
+#' @param remove.singletons Remove demes with a single observation from the diagnostic scatter plots. Defaults to TRUE.
+#' @param add.abline Add the line \code{y = x} to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.
 #' @param add.title A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.
+#' @param prob.levels A numeric vector of breaks in the range \code{[0, 1]} for splitting the posterior probabilities \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)} into bins. Defaults to \code{c(0, 0.95, 1)}.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @export
 #' @examples
@@ -1381,6 +1456,8 @@ eems.plots <- function(mcmcpath,
                        
                        ## Color palette
                        eems.colors = NULL, 
+                       ## Breaks for P(m > 0 | diffs) and P(m < 0 | diffs)
+                       prob.levels = c(0, 0.95, 1),
                        
                        ## Properties of the color key
                        add.colbar = TRUE, 
@@ -1393,7 +1470,7 @@ eems.plots <- function(mcmcpath,
                        ## Add the line y = x to scatter plots
                        add.abline = FALSE, 
                        
-                       ## Highlight some points
+                       ## Highlight some points (not available yet)
                        highlight.demes = NULL, 
                        
                        ## Extra options
@@ -1406,7 +1483,8 @@ eems.plots <- function(mcmcpath,
                         col.map = col.map, col.grid = col.grid, col.outline = col.outline, col.demes = col.demes, 
                         lwd.map = lwd.map, lwd.grid = lwd.grid, lwd.outline = lwd.outline, pch.demes = pch.demes, 
                         min.cex.demes = min.cex.demes, proj.in = projection.in, add.colbar = add.colbar,
-                        max.cex.demes = max.cex.demes, proj.out = projection.out, add.title = add.title)
+                        max.cex.demes = max.cex.demes, proj.out = projection.out, add.title = add.title,
+                        prob.levels = prob.levels)
     plot.params <- check.plot.params(plot.params)
     
     ## A vector of EEMS output directories, for the same dataset.
@@ -1464,14 +1542,14 @@ eems.plots <- function(mcmcpath,
         dev.off( )
     }
     
+    save.params$height <- 6
+    save.params$width <- 6.5
+    
     ## Plot trace plot of posterior probability to check convergence
     save.graphics(paste0(plotpath, '-pilogl'), save.params)
     par(las = 0, font.main = 1, mar = c(5, 5, 4, 5) + 0.1, xpd = TRUE)
     plot.logposterior(mcmcpath)
     dev.off( )
-    
-    save.params$height <- 6
-    save.params$width <- 6.5
     
     if (!is.null(highlight.demes)) {
         load.required.package(package = 'dplyr', required.by = 'dist.scatterplot')
