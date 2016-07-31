@@ -582,14 +582,17 @@ one.eems.contour <- function(mcmcpath, dimns, Zmean, longlat, plot.params, is.mr
                              plot.xy = NULL, highlight.samples = NULL) {
     eems.colors <- plot.params$eems.colors
     num.levels <- length(eems.colors)
+    ## Still can't decide whether to label the legend "log(m)" or "m"....
     if (is.mrates) {
         eems.levels <- eems.colscale(Zmean, num.levels, plot.params$m.colscale)
-        main.title <- "Effective migration rates m"
-        key.title <- expression(paste(log, "(", italic(m), ")", sep = ""))
+        main.title <- "Posterior mean migration rates m (on the log10 scale)"
+        #key.title <- expression(paste(log, "(", italic(m), ")", sep = ""))
+        key.title <- "m"
     } else {
         eems.levels <- eems.colscale(Zmean, num.levels, plot.params$q.colscale)
-        main.title <- "Effective diversity rates q"
-        key.title <- expression(paste(log, "(", italic(q), ")", sep = ""))
+        main.title <- "Posterior mean diversity rates q (on the log10 scale)"
+        #key.title <- expression(paste(log, "(", italic(q), ")", sep = ""))
+        key.title <- "q"
     }
     rr <- flip(raster::raster(t(Zmean), 
                               xmn = dimns$xlim[1], xmx = dimns$xlim[2], 

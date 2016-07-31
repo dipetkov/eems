@@ -60,9 +60,9 @@ void EEMS::initialize_diffs( ) {
     alleles_to_read = p;
   }
   MatrixXd Sites = readMatrixXd(params.datapath + ".sites");
+  // Use `stringstream` instead of `to_string` to convert int to string.
   stringstream alleles_to_read_str; alleles_to_read_str << alleles_to_read;
   check_condition(Sites.rows() == n && Sites.cols() == alleles_to_read,
-		  // Use `stringstream` instead of `to_string` to convert int to string.
 		  "Check that the genotype matrix is a nIndiv-by-" + alleles_to_read_str.str() + " matrix.");
   cout << "  Read genotype data from " << params.datapath + ".diffs" << endl;
   ///////////////////////////////////////
@@ -113,8 +113,7 @@ void EEMS::initialize_diffs( ) {
     MatrixXd Di = - 2.0 * Si;
     Di += Si.diagonal().replicate(1,ni);
     Di += Si.diagonal().transpose().replicate(ni,1);
-    ll_atfixdf += logdet(Li*Li.transpose()) + nimin1 * (ln_2 + ln_pi)
-      + nimin1 * pseudologdet( - Li*Di*Li.transpose(),1);
+    ll_atfixdf += logdet(Li*Li.transpose()) + nimin1 * (ln_2 + ln_pi) + nimin1 * pseudologdet( - Li*Di*Li.transpose(),1);
     logn(i) = log(ni);
     nmin1(i) = nimin1;
     VectorXd ci = Ji.colwise().sum();
@@ -149,9 +148,15 @@ void EEMS::initialize_diffs( ) {
     Diffs_allSites += Di;
     Pairs_allSites += Pairs;
   }
-  Diffs_allSites.array() /= Pairs_allSites.array();
-  JtDobsJ_allSites = J.transpose()*Diffs_allSites*J;
-  JtDhatJ_allSites = MatrixXd::Zero(o,o);
+  // It is possible that a pair of individuals i and j have no loci in common,
+  // i.e., either i's allele or j's allele is missing at every locus in the data.
+  // In that case Diffs_allSites(i, j) = 0, Pairs_allSites(i, j) = 0
+  // and Diffs_allSites(i, j) / Pairs_allSites(i, j) = NaN.
+  // Let's make the 0s in the denominator 1, to avoid NaN's.
+  Pairs_allSites = (Pairs_allSites.array() > 0).select(Pairs_allSites.array(), 1);
+  Diffs_allSites = Diffs_allSites.cwiseQuotient(Pairs_allSites);
+  JtDobsJ_allSites = J.transpose() * Diffs_allSites * J;
+  JtDhatJ_allSites = MatrixXd::Zero(o, o);
   c_allSites = J.colwise().sum();
   cout << "[Diffs::initialize] Done." << endl << endl;
 }
