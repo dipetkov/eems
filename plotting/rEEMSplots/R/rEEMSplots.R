@@ -71,7 +71,8 @@ dist.axes.labels <- function(dist.type, remove.singletons = TRUE, subtitle = NUL
 sub.scattercols <- function(sizes) {
     return (c("black", "gray60")[1 + (sizes < 2)])
 }
-sub.scatterplot <- function(dist.type, dist.data, remove.singletons, add.abline, subtitle = NULL, add = FALSE) {
+sub.scatterplot <- function(dist.type, dist.data, remove.singletons, add.abline, add.r.squared,
+                            subtitle = NULL, add = FALSE) {
     if (remove.singletons) {
         dist.data <- dist.data[dist.data$size > 1, ]
     }
@@ -91,6 +92,12 @@ sub.scatterplot <- function(dist.type, dist.data, remove.singletons, add.abline,
         plot(dist.data$fitted, dist.data$obsrvd, type = "n", xlab = "", ylab = "")
         dist.axes.labels(dist.type, remove.singletons, subtitle)
         if (add.abline) abline(a = 0, b = 1, col = "red", lwd = 2)
+        if (add.r.squared) {
+            ## Fit a linear model for the observed dissimilarities as a function of the fitted ones
+            r.squared <- summary(lm(dist.data$obsrvd ~ dist.data$fitted))$r.squared
+            r.squared <- round(r.squared, digits = 3)
+            legend("topleft", legend = substitute(paste(R^2, " = ", val), list(val = r.squared)), bty = "n")
+        }
     }
     points(dist.data$fitted, 
            dist.data$obsrvd, 
@@ -873,7 +880,7 @@ geo.distm <- function(coord, longlat, plot.params) {
 }
 dist.scatterplot <- function(mcmcpath, longlat, plot.params, 
                              remove.singletons = TRUE, add.abline = FALSE, 
-                             highlight = NULL) {
+                             add.r.squared = FALSE, highlight = NULL) {
     writeLines('Plotting average dissimilarities within and between demes')
     for (path in mcmcpath) {
         stopifnot(all(file.exists(paste0(path, c('/rdistJtDhatJ.txt')),
@@ -938,7 +945,7 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
                                      fitted = JtDhatJ[upper.tri(JtDhatJ, diag = FALSE)], 
                                      obsrvd = JtDobsJ[upper.tri(JtDobsJ, diag = FALSE)], 
                                      stringsAsFactors = FALSE)
-        sub.scatterplot("JtDJ", JtDJ.component, remove.singletons, add.abline)
+        sub.scatterplot("JtDJ", JtDJ.component, remove.singletons, add.abline, add.r.squared)
         writeLines('There should be at least two observed demes to plot pairwise dissimilarities')
         return (NULL)
     }
@@ -1015,7 +1022,7 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
         #                 subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
         # sub.scatterplot("Between", B.component.beta, remove.singletons, add.abline, add = TRUE)
     } else {
-        sub.scatterplot("Between", B.component, remove.singletons, add.abline)
+        sub.scatterplot("Between", B.component, remove.singletons, add.abline, add.r.squared)
     }
     if (highlight.demes) {
         # W.component.alpha <- dplyr::select(W.component, fitted, obsrvd, size, starts_with("alpha"))
@@ -1023,7 +1030,7 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
         # sub.scatterplot("Within", W.component, remove.singletons, add.abline)
         # sub.scatterplot("Within", W.component.alpha, remove.singletons, add.abline, add = TRUE)
     } else {    
-        sub.scatterplot("Within", W.component, remove.singletons, add.abline)
+        sub.scatterplot("Within", W.component, remove.singletons, add.abline, add.r.squared)
     }
     if (highlight.demes) {
         # G.component.alpha <- dplyr::select(G.component, fitted, obsrvd, size, starts_with("alpha"))
@@ -1037,7 +1044,7 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
         #                 subtitle = expression(paste("Highlight ", beta, " in (", alpha, ", ", beta, ")")))
         # sub.scatterplot("GeoDist", G.component.beta, remove.singletons, add = TRUE)
     } else {
-        sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE)
+        sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE, add.r.squared)
     }
     return (list(B.component = B.component, W.component = W.component))
 }
@@ -1294,6 +1301,7 @@ load.required.package <- function(package, required.by) {
 #' @param add.colbar A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.
 #' @param remove.singletons Remove demes with a single observation from the diagnostic scatter plots. Defaults to TRUE.
 #' @param add.abline Add the line \code{y = x} to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.
+#' @param add.r.squared Add the R squared coefficient to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.
 #' @param add.title A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.
 #' @param prob.levels A vector of probabilities for plotting the posterior probability contours of \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)}. Defaults to \code{c(0.9, 0.95)}.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
@@ -1462,8 +1470,9 @@ eems.plots <- function(mcmcpath,
                        ## Remove demes with a single observation
                        remove.singletons = TRUE, 
                        
-                       ## Add the line y = x to scatter plots
-                       add.abline = FALSE, 
+                       ## Add the line y = x and/or the R squared coefficient to scatter plots
+                       add.abline = FALSE,
+                       add.r.squared = FALSE,
                        
                        ## Highlight some points (not available yet)
                        highlight.demes = NULL, 
@@ -1555,7 +1564,8 @@ eems.plots <- function(mcmcpath,
     par(las = 1, font.main = 1, mar = c(5, 5, 4, 2) + 0.1)
     B.and.W <- dist.scatterplot(mcmcpath, longlat, plot.params, 
                                 remove.singletons = remove.singletons,
-                                add.abline = add.abline, highlight = highlight.demes)
+                                add.abline = add.abline, add.r.squared = add.r.squared,
+                                highlight = highlight.demes)
     dev.off( )
     
     B.component <- B.and.W$B.component

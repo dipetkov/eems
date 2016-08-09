@@ -4,7 +4,7 @@
 \alias{eems.plots}
 \title{A function to plot effective migration and diversity surfaces from EEMS output}
 \usage{
-eems.plots(            mcmcpath,
+eems.plots(            mcmcpath, 
                        plotpath, 
                        longlat, 
                        
@@ -54,8 +54,9 @@ eems.plots(            mcmcpath,
                        ## Remove demes with a single observation
                        remove.singletons = TRUE, 
                        
-                       ## Add the line y = x to scatter plots
-                       add.abline = FALSE, 
+                       ## Add the line y = x and/or the R squared coefficient to scatter plots
+                       add.abline = FALSE,
+                       add.r.squared = FALSE,
                        
                        ## Highlight some points (not available yet)
                        highlight.demes = NULL, 
@@ -119,6 +120,8 @@ eems.plots(            mcmcpath,
 \item{remove.singletons}{Remove demes with a single observation from the diagnostic scatter plots. Defaults to TRUE.}
 
 \item{add.abline}{Add the line \code{y = x} to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.}
+
+\item{add.r.squared}{Add the R squared coefficient to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.}
 
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
 }
