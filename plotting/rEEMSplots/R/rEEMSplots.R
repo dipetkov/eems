@@ -653,6 +653,7 @@ one.prob.contour <- function(mcmcpath, dimns, Props, longlat, plot.params, is.mr
         raster::projection(rr) <- CRS(plot.params$proj.in)
         rr <- raster::projectRaster(rr, crs = CRS(plot.params$proj.out))
     }
+    
     myfilledContour(rr, col = prob.colors, levels = prob.levels, asp = 1, 
                     add.key = TRUE, #plot.params$add.colbar, 
                     key.axes = axis(4, at = prob.levels, labels = prob.labels,
@@ -664,6 +665,8 @@ one.prob.contour <- function(mcmcpath, dimns, Props, longlat, plot.params, is.mr
                     plot.axes = {
                         filled.contour.outline(mcmcpath, longlat, plot.params);
                         filled.contour.map(mcmcpath, longlat, plot.params);
+                        ## Including `plot.xy` here is pointless because it has already been 
+                        ## evaluated once to add extra points to the rates plot
                         plot.xy;
                         filled.contour.graph(mcmcpath, longlat, plot.params);
                         filled.contour.points(mcmcpath, longlat, plot.params, highlight.samples);
@@ -1046,7 +1049,7 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
     } else {
         sub.scatterplot("GeoDist", G.component, remove.singletons, add.abline = FALSE, add.r.squared)
     }
-    return (list(B.component = B.component, W.component = W.component))
+    return (list(B.component = B.component, W.component = W.component, G.component = G.component))
 }
 heatmap.resid <- function(datapath, mcmcpath) {
     mcmcpath <- mcmcpath
@@ -1562,15 +1565,17 @@ eems.plots <- function(mcmcpath,
     ## Plot scatter plots of observed vs fitted genetic differences
     save.graphics(paste0(plotpath, '-rdist'), save.params)
     par(las = 1, font.main = 1, mar = c(5, 5, 4, 2) + 0.1)
-    B.and.W <- dist.scatterplot(mcmcpath, longlat, plot.params, 
-                                remove.singletons = remove.singletons,
-                                add.abline = add.abline, add.r.squared = add.r.squared,
-                                highlight = highlight.demes)
+    dist.points <- dist.scatterplot(mcmcpath, longlat, plot.params, 
+                                    remove.singletons = remove.singletons,
+                                    add.abline = add.abline, add.r.squared = add.r.squared,
+                                    highlight = highlight.demes)
     dev.off( )
     
-    B.component <- B.and.W$B.component
-    W.component <- B.and.W$W.component
-    save(B.component, W.component, file = paste0(plotpath, '-rdist.RData'))
+    B.component <- dist.points$B.component
+    W.component <- dist.points$W.component
+    G.component <- dist.points$G.component
+    save(B.component, W.component, G.component,
+         file = paste0(plotpath, '-rdist.RData'))
 }
 
 #' A function to plot Voronoi diagrams of effective migration and diversity rates

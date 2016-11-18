@@ -176,7 +176,7 @@ void Graph::dlmwrite_grid(const string &mcmcpath) const {
   out.close( );
   out.open((mcmcpath + "/demes.txt").c_str(),ofstream::out);
   check_condition(out.is_open(), "Cannot open " + mcmcpath + "/demes.txt for writing");
-  out << DemeCoord << endl;
+  out << fixed << setprecision(6) <<  DemeCoord << endl;
   out.close( );
   out.open((mcmcpath + "/edges.txt").c_str(),ofstream::out);
   check_condition(out.is_open(), "Cannot open " + mcmcpath + "/edges.txt for writing");
