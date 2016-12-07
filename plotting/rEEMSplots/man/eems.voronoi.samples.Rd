@@ -4,61 +4,27 @@
 \alias{eems.voronoi.samples}
 \title{A function to plot Voronoi diagrams of effective migration and diversity rates}
 \usage{
-eems.voronoi.samples(            mcmcpath, 
-                                 plotpath, 
-                                 longlat, 
-                                 
-                                 ## Number of times to draw from p(m, q | diffs)
-                                 post.draws = 1, 
-                                 
-                                 ## Properties of the figures to generate
-                                 plot.width = 7, 
-                                 plot.height = 7, 
-                                 out.png = TRUE, 
-                                 res = 600, 
-                                 
-                                 ## Properties of the population grid
-                                 add.grid = FALSE, 
-                                 col.grid = "gray80", 
-                                 lwd.grid = 1, 
-                                 
-                                 ## Properties of the habitat outline
-                                 add.outline = TRUE, 
-                                 col.outline = "gray80",
-                                 lwd.outline = 2, 
-                                 
-                                 ## Properties of the graph vertices
-                                 add.demes = FALSE, 
-                                 col.demes = "gray80", 
-                                 pch.demes = 19, 
-                                 cex.demes = 1, 
-                                 
-                                 ## Properties of the Voronoi seeds
-                                 add.seeds = TRUE, 
-                                 col.seeds = "#8AE234", 
-                                 pch.seeds = 4, 
-                                 cex.seeds = 1, 
-                                 
-                                 ## Color palette
-                                 eems.colors = NULL, 
-                                 
-                                 ## Properties of the color key
-                                 m.colscale = NULL, 
-                                 q.colscale = NULL, 
-                                 
-                                 ## Extra options
-                                 add.title = FALSE)
+eems.voronoi.samples(mcmcpath, plotpath, longlat, post.draws = 1,
+  plot.width = 7, plot.height = 7, out.png = TRUE, res = 600,
+  add.grid = FALSE, col.grid = "gray80", lwd.grid = 1,
+  add.outline = TRUE, col.outline = "gray80", lwd.outline = 2,
+  add.demes = FALSE, col.demes = "gray80", pch.demes = 19,
+  cex.demes = 1, add.seeds = TRUE, col.seeds = "#8AE234", pch.seeds = 4,
+  cex.seeds = 1, eems.colors = NULL, m.colscale = NULL,
+  q.colscale = NULL, add.title = FALSE)
 }
 \arguments{
-\item{mcmcpath}{An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.}
+\item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
 
 \item{plotpath}{The full path and the file name for the graphics to be generated.}
 
 \item{longlat}{A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).}
 
-\item{post.draws}{The number of times to sample from the posterior distribution \code{p(m,q | diffs)}}
+\item{post.draws}{Number of times to sample from the posterior. The default is 1.}
 
-\item{plot.width, }{plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.}
+\item{plot.width}{The width of the graphics region for the two rate contour plots, in inches. The default value is 7.}
+
+\item{plot.height}{The height of the graphics region, in inches. The default value is 7.}
 
 \item{out.png}{A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.}
 
@@ -72,17 +38,17 @@ eems.voronoi.samples(            mcmcpath,
 
 \item{add.outline}{A logical value indicating whether to add the habitat outline or not.}
 
-\item{col.outline}{The color of the habitat outline. Defaults to \code{gray80}.}
+\item{col.outline}{The color of the habitat outline. Defaults to \code{white}.}
 
 \item{lwd.outline}{The line width of the habitat outline. Defaults to 2.}
 
-\item{add.demes}{A logical value indicating whether to add the graph demes or not.}
+\item{add.demes}{A logical value indicating whether to add the observed demes or not.}
 
-\item{col.demes}{The color of the demes. Defaults to \code{gray80}.}
+\item{col.demes}{The color of the demes. Defaults to \code{black}.}
 
-\item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 1.}
+\item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 19.}
 
-\item{cex.demes}{The size of the deme symbol/character. Defaults to 1.}
+\item{cex.demes}{The size of the symbol/character used for plotting observed demes. Defaults to 1.}
 
 \item{add.seeds}{A logical value indicating whether to add the Voronoi seeds or not.}
 
@@ -94,9 +60,9 @@ eems.voronoi.samples(            mcmcpath,
 
 \item{eems.colors}{The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.}
 
-\item{m.colscale, }{q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+\item{m.colscale}{A fixed range for log10-transformed migration rates. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
 
-\item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
+\item{q.colscale}{A fixed range for log10-transformed diversity rates.}
 
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
 }
@@ -108,18 +74,18 @@ Note about the implementation: \code{eems.voronoi.samples} samples randomly from
 }
 \examples{
 
-## Use the provided example or supply the path to your own EEMS run.
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example", sep = "")
-name.figures.to.save = path.expand("~/EEMS-example-rEEMSplots")
+# Use the provided example or supply the path to your own EEMS run.
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+name_figures <- path.expand(file.path("~", "EEMS-example"))
 
 library("deldir")
 
 ## Plot a series of Voronoi diagrams for the EEMS model parameters:
 ## the effective migration rates (m) and the effective diversity rates (q).
-eems.voronoi.samples(mcmcpath = eems.results.to.plot, 
-                     plotpath = paste0(name.figures.to.save, "-voronoi-diagrams"), 
+eems.voronoi.samples(mcmcpath = eems_results,
+                     plotpath = paste0(name_figures, "-voronoi-diagrams"),
                      longlat = TRUE, post.draws = 10)
-           
+
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

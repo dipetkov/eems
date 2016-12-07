@@ -4,67 +4,17 @@
 \alias{eems.plots}
 \title{A function to plot effective migration and diversity surfaces from EEMS output}
 \usage{
-eems.plots(            mcmcpath, 
-                       plotpath, 
-                       longlat, 
-                       
-                       ## Properties of the figures to generate
-                       plot.width = 7, 
-                       plot.height = 7, 
-                       out.png = TRUE, 
-                       res = 600, 
-                       xpd = TRUE, 
-                       
-                       ## Properties of the population grid
-                       add.grid = FALSE, 
-                       col.grid = "gray80", 
-                       lwd.grid = 1, 
-                       
-                       ## Properties of the observed demes
-                       add.demes = FALSE, 
-                       col.demes = "black", 
-                       pch.demes = 19, 
-                       min.cex.demes = 1, 
-                       max.cex.demes = 3, 
-                       
-                       ## Properties of the habitat outline
-                       add.outline = FALSE, 
-                       col.outline = "gray90", 
-                       lwd.outline = 2, 
-                       
-                       ## Properties of the cartographic projection
-                       projection.in = NULL, 
-                       projection.out = NULL, 
-                       
-                       ## Properties of the geographic map
-                       add.map = FALSE, 
-                       col.map = "gray60", 
-                       lwd.map = 2, 
-                       
-                       ## Color palette
-                       eems.colors = NULL, 
-                       ## Breaks for P(m > 0 | diffs) and P(m < 0 | diffs)
-                       prob.levels = c(0.9, 0.95),
-                       
-                       ## Properties of the color key
-                       add.colbar = TRUE, 
-                       m.colscale = NULL, 
-                       q.colscale = NULL, 
-                       
-                       ## Remove demes with a single observation
-                       remove.singletons = TRUE, 
-                       
-                       ## Add the line y = x and/or the R squared coefficient to scatter plots
-                       add.abline = FALSE,
-                       add.r.squared = FALSE,
-                       
-                       ## Highlight some points (not available yet)
-                       highlight.demes = NULL, 
-                       
-                       ## Extra options
-                       add.title = TRUE, 
-                       m.plot.xy = NULL, 
-                       q.plot.xy = NULL)
+eems.plots(mcmcpath, plotpath, longlat, plot.width = 7, plot.height = 7,
+  out.png = TRUE, res = 600, xpd = TRUE, add.grid = FALSE,
+  col.grid = "gray80", lwd.grid = 1, add.demes = FALSE,
+  col.demes = "black", pch.demes = 19, min.cex.demes = 1,
+  max.cex.demes = 3, add.outline = FALSE, col.outline = "gray90",
+  lwd.outline = 2, projection.in = NULL, projection.out = NULL,
+  add.map = FALSE, col.map = "gray60", lwd.map = 2, eems.colors = NULL,
+  prob.levels = c(0.9, 0.95), add.colbar = TRUE, m.colscale = NULL,
+  q.colscale = NULL, remove.singletons = TRUE, add.abline = FALSE,
+  add.r.squared = FALSE, add.title = TRUE, m.plot.xy = NULL,
+  q.plot.xy = NULL)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
@@ -73,7 +23,9 @@ eems.plots(            mcmcpath,
 
 \item{longlat}{A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).}
 
-\item{plot.width, }{plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.}
+\item{plot.width}{The width of the graphics region for the two rate contour plots, in inches. The default value is 7.}
+
+\item{plot.height}{The height of the graphics region, in inches. The default value is 7.}
 
 \item{out.png}{A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.}
 
@@ -93,7 +45,9 @@ eems.plots(            mcmcpath,
 
 \item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 19.}
 
-\item{min.cex.demes, }{max.cex.demes The minimum and the maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
+\item{min.cex.demes}{The minimum size of the deme symbol/character.}
+
+\item{max.cex.demes}{The maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
 
 \item{add.outline}{A logical value indicating whether to add the habitat outline or not.}
 
@@ -101,7 +55,9 @@ eems.plots(            mcmcpath,
 
 \item{lwd.outline}{The line width of the habitat outline. Defaults to 2.}
 
-\item{projection.in, }{projection.out The input and the output cartographic projections, each specified as a PROJ.4 string. Requires the \code{rgdal} package.}
+\item{projection.in}{The input cartographic projection, specified as a PROJ.4 string. Requires the \code{rgdal} package.}
+
+\item{projection.out}{The output cartographic projection, specified as a PROJ.4 string.}
 
 \item{add.map}{A logical value indicating whether to add a high-resolution geographic map. Requires the \code{rworldmap} and \code{rworldxtra} packages. It also requires that \code{projection.in} is specified.}
 
@@ -115,7 +71,9 @@ eems.plots(            mcmcpath,
 
 \item{add.colbar}{A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.}
 
-\item{m.colscale, }{q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+\item{m.colscale}{A fixed range for log10-transformed migration rates. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+
+\item{q.colscale}{A fixed range for log10-transformed diversity rates.}
 
 \item{remove.singletons}{Remove demes with a single observation from the diagnostic scatter plots. Defaults to TRUE.}
 
@@ -124,9 +82,13 @@ eems.plots(            mcmcpath,
 \item{add.r.squared}{Add the R squared coefficient to the diagnostic scatter plots of observed vs fitted genetic dissimilarities.}
 
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
+
+\item{m.plot.xy}{Statements which add graphical elements (e.g. points) on top of the migration sufrace.}
+
+\item{q.plot.xy}{Statements which add graphical elements (e.g. points) on top of the diversity surface.}
 }
 \description{
-Given a vector of EEMS output directories, this function generates several figures to visualize EEMS results. It is a good idea to examine all these figures, which is why they are generated by default. 
+Given a vector of EEMS output directories, this function generates several figures to visualize EEMS results. It is a good idea to examine all these figures, which is why they are generated by default.
 \itemize{
  \item \code{plotpath-mrates01}: effective migration surface. This contour plot visualizes the estimated effective migration rates \code{m}, on the log10 scale after mean centering.
  \item \code{plotpath-mrates02}: posterior probabilities \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)} for each location in the habitat. Since migration rates are visualized on the log10 scale after mean centering, 0 corresponds to the overall mean migration rate. This contour plot emphasizes regions with effective migration that is significantly higher/lower than the overall average.
@@ -146,116 +108,109 @@ Detail about the within-deme and between-deme components of genetic dissimilarit
 }
 \examples{
 
-## Use the provided example or supply the path to your own EEMS run.
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example")
-name.figures.to.save = path.expand("~/EEMS-example-rEEMSplots")
+# Use the provided example or supply the path to your own EEMS run.
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+name_figures <- path.expand(file.path("~", "EEMS-example"))
 
 ## Produce the five EEMS figures, with default values for all optional parameters.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-default"), 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-default"),
            longlat = TRUE)
+
+datapath <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+coord <- read.table(paste0(datapath, ".coord"))
+
+# Add the original sampling locations on top of the contour plot.
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-sampling-locations"),
+           longlat = TRUE,
+           m.plot.xy = { points(coord, col = "purple") },
+           q.plot.xy = { points(coord, col = "purple") })
 
 ## Flip the x and y axis, i.e., assume that the x coordinate is the latitude
 ## and the y coordinate is the longitude.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-axes-flipped"), 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-axes-flipped"),
            longlat = FALSE)
 
 ## Generate PNG figures with height 9 inches, width 8 inches
 ## and resolution 600 dots per inch.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-demes-and-edges"), 
-           longlat = TRUE, 
-           plot.height = 8, 
-           plot.width = 7, 
-           res = 600, 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-demes-and-edges"),
+           longlat = TRUE,
+           plot.height = 8,
+           plot.width = 7,
+           res = 600,
            out.png = TRUE)
 
 ## Generate PDF figures with height 9 inches and width 8 inches.
 ## The resolution option, res, is ignored.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-output-PDFs"), 
-           longlat = TRUE, 
-           plot.height = 8, 
-           plot.width = 7, 
-           res = 600, 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-output-PDFs"),
+           longlat = TRUE,
+           plot.height = 8,
+           plot.width = 7,
+           res = 600,
            out.png = FALSE)
 
 ## Choose somewhat impractical colors and shapes for the outline, the grid and the demes.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-demes-and-edges"), 
-           longlat = TRUE, 
-           add.grid = TRUE, 
-           col.grid = "gray90", 
-           lwd.grid = 2, 
-           add.outline = TRUE, 
-           col.outline = "blue", 
-           lwd.outline = 5, 
-           add.demes = TRUE, 
-           col.demes = "red", 
-           pch.demes = 5, 
-           min.cex.demes = 0.5, 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-demes-and-edges"),
+           longlat = TRUE,
+           add.grid = TRUE,
+           col.grid = "gray90",
+           lwd.grid = 2,
+           add.outline = TRUE,
+           col.outline = "blue",
+           lwd.outline = 5,
+           add.demes = TRUE,
+           col.demes = "red",
+           pch.demes = 5,
+           min.cex.demes = 0.5,
            max.cex.demes = 1.5)
 
 library("rgdal")
 
 ## Produce contour plots in the Mercator projection (used by Google Maps)
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-cartographic-projections"), 
-           longlat = TRUE, 
-           projection.in = "+proj=longlat +datum=WGS84", 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-cartographic-projections"),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
            projection.out = "+proj=merc +datum=WGS84")
 
 library("rworldmap")
 library("rworldxtra")
 
 ## Add a high-resolution geographic map
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-geographic-map"), 
-           longlat = TRUE, 
-           projection.in = "+proj=longlat +datum=WGS84", 
-           projection.out = "+proj=merc +datum=WGS84", 
-           add.map = TRUE, 
-           col.map = "black", 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-geographic-map"),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
+           projection.out = "+proj=merc +datum=WGS84",
+           add.map = TRUE,
+           col.map = "black",
            lwd.map = 5)
 
 library("RColorBrewer")
 
 ## Use a divergent Red to Blue color scheme from the RColorBrewer package
 ## instead of the default DarkOrange to Blue color scheme.
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-new-eems-colors"), 
-           longlat = TRUE, 
-           projection.in = "+proj=longlat +datum=WGS84", 
-           projection.out = "+proj=merc +datum=WGS84", 
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-new-eems-colors"),
+           longlat = TRUE,
+           projection.in = "+proj=longlat +datum=WGS84",
+           projection.out = "+proj=merc +datum=WGS84",
            eems.colors = brewer.pal(11, "RdBu"))
 
-## Specify the color scales for the migration and diversity rates 
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-fix-colscales"), 
-           longlat = TRUE, 
-           add.outline = TRUE, 
-           col.outline = "gray", 
-           m.colscale = c(-3, 3), 
+## Specify the color scales for the migration and diversity rates
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-fix-colscales"),
+           longlat = TRUE,
+           add.outline = TRUE,
+           col.outline = "gray",
+           m.colscale = c(-3, 3),
            q.colscale = c(-0.3, +0.3))
 
-## In the diagnostic scatter plots, highlight demes in the South in red
-## All demes in the population grid, as (longitude, latitude) pairs
-demes = read.table(paste0(eems.results.to.plot, "/demes.txt"))
-demes.long = demes[, 1]
-demes.lat = demes[, 2]
-## The demes in the South, defined as the region below the 10th parallel south
-south = demes[demes.lat < -10, ]
-highlight.demes = data.frame(
-    x = south[, 1], 
-    y = south[, 2], 
-    col = "red", 
-    stringsAsFactors = FALSE)
-eems.plots(mcmcpath = eems.results.to.plot, 
-           plotpath = paste0(name.figures.to.save, "-highlight-demes"), 
-           longlat = TRUE, 
-           highlight.demes = highlight.demes)
-           
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

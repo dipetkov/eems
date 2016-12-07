@@ -4,58 +4,16 @@
 \alias{eems.posterior.draws}
 \title{A function to plot Voronoi diagrams of effective migration and diversity rates}
 \usage{
-eems.posterior.draws(            mcmcpath, 
-                                 plotpath, 
-                                 longlat, 
-                                 
-                                 ## Number of times to draw from p(m, q | diffs)
-                                 post.draws = 1, 
-                                 
-                                 ## Properties of the figures to generate
-                                 plot.width = 7, 
-                                 plot.height = 7, 
-                                 out.png = TRUE, 
-                                 res = 600, 
-                                 xpd = TRUE, 
-                                 
-                                 ## Properties of the population grid
-                                 add.grid = FALSE, 
-                                 col.grid = "gray80", 
-                                 lwd.grid = 1, 
-                                 
-                                 ## Properties of the observed demes
-                                 add.demes = FALSE, 
-                                 col.demes = "black", 
-                                 pch.demes = 19, 
-                                 min.cex.demes = 1, 
-                                 max.cex.demes = 3, 
-                                 
-                                 ## Properties of the habitat outline
-                                 add.outline = FALSE, 
-                                 col.outline = "gray90", 
-                                 lwd.outline = 2, 
-                                 
-                                 ## Properties of the cartographic projection
-                                 projection.in = NULL, 
-                                 projection.out = NULL, 
-                                 
-                                 ## Properties of the geographic map
-                                 add.map = FALSE, 
-                                 col.map = "gray60", 
-                                 lwd.map = 2, 
-                                 
-                                 ## Color palette
-                                 eems.colors = NULL, 
-                                 
-                                 ## Properties of the color key
-                                 add.colbar = FALSE, 
-                                 m.colscale = NULL, 
-                                 q.colscale = NULL, 
-                                 
-                                 ## Extra options
-                                 add.title = FALSE, 
-                                 m.plot.xy = NULL, 
-                                 q.plot.xy = NULL)
+eems.posterior.draws(mcmcpath, plotpath, longlat, post.draws = 1,
+  plot.width = 7, plot.height = 7, out.png = TRUE, res = 600,
+  xpd = TRUE, add.grid = FALSE, col.grid = "gray80", lwd.grid = 1,
+  add.demes = FALSE, col.demes = "black", pch.demes = 19,
+  min.cex.demes = 1, max.cex.demes = 3, add.outline = FALSE,
+  col.outline = "gray90", lwd.outline = 2, projection.in = NULL,
+  projection.out = NULL, add.map = FALSE, col.map = "gray60",
+  lwd.map = 2, eems.colors = NULL, add.colbar = FALSE,
+  m.colscale = NULL, q.colscale = NULL, add.title = FALSE,
+  m.plot.xy = NULL, q.plot.xy = NULL)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
@@ -64,7 +22,11 @@ eems.posterior.draws(            mcmcpath,
 
 \item{longlat}{A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).}
 
-\item{plot.width, }{plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.}
+\item{post.draws}{Number of times to sample from the posterior. The default is 1.}
+
+\item{plot.width}{The width of the graphics region for the two rate contour plots, in inches. The default value is 7.}
+
+\item{plot.height}{The height of the graphics region, in inches. The default value is 7.}
 
 \item{out.png}{A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.}
 
@@ -84,7 +46,9 @@ eems.posterior.draws(            mcmcpath,
 
 \item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 19.}
 
-\item{min.cex.demes, }{max.cex.demes The minimum and the maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
+\item{min.cex.demes}{The minimum size of the deme symbol/character.}
+
+\item{max.cex.demes}{The maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
 
 \item{add.outline}{A logical value indicating whether to add the habitat outline or not.}
 
@@ -92,7 +56,9 @@ eems.posterior.draws(            mcmcpath,
 
 \item{lwd.outline}{The line width of the habitat outline. Defaults to 2.}
 
-\item{projection.in, }{projection.out The input and the output cartographic projections, each specified as a PROJ.4 string. Requires the \code{rgdal} package.}
+\item{projection.in}{The input cartographic projection, specified as a PROJ.4 string. Requires the \code{rgdal} package.}
+
+\item{projection.out}{The output cartographic projection, specified as a PROJ.4 string.}
 
 \item{add.map}{A logical value indicating whether to add a high-resolution geographic map. Requires the \code{rworldmap} and \code{rworldxtra} packages. It also requires that \code{projection.in} is specified.}
 
@@ -102,9 +68,17 @@ eems.posterior.draws(            mcmcpath,
 
 \item{eems.colors}{The EEMS color scheme as a vector of colors, ordered from low to high. Defaults to a DarkOrange to Blue divergent palette with six orange shades, white in the middle, six blue shades. Acknowledgement: The default color scheme is adapted from the \code{dichromat} package.}
 
-\item{m.colscale, }{q.colscale A fixed range for log10-transformed migration and diversity rates, respectively. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+\item{add.colbar}{A logical value indicating whether to add the color bar (the key that shows how colors map to rates) to the right of the plot. Defaults to TRUE.}
+
+\item{m.colscale}{A fixed range for log10-transformed migration rates. If the estimated rates fall outside the specified range, then the color scale is ignored. By default, no range is specified for either type of rates.}
+
+\item{q.colscale}{A fixed range for log10-transformed diversity rates.}
 
 \item{add.title}{A logical value indicating whether to add the main title in the contour plots. Defaults to TRUE.}
+
+\item{m.plot.xy}{Statements which add graphical elements (e.g. points) on top of the migration sufrace.}
+
+\item{q.plot.xy}{Statements which add graphical elements (e.g. points) on top of the diversity surface.}
 }
 \description{
 Given a set of EEMS output directories, this function takes random draws from the posterior distribution of the migration and diversity rate parameters. Each draw is visualized as two Voronoi diagrams; the migration diagram is saved to a file ending in \code{mvoronoiXX}, the diversity diagram is saved to a file ending in \code{qvoronoiXX} where \code{XX} is a numeric id. Specify the number of times to draw from the posterior with the argument \code{post.draws}. If \code{post.draws = 10}, then \code{eems.posterior.draws} will generate plots with id \code{XX = 1} to \code{XX = 10}.
@@ -114,16 +88,16 @@ Note about the implementation: \code{eems.voronoi.samples} samples randomly from
 }
 \examples{
 
-## Use the provided example or supply the path to your own EEMS run.
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example", sep = "")
-name.figures.to.save = path.expand("~/EEMS-example-rEEMSplots")
+# Use the provided example or supply the path to your own EEMS run.
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+name_figures <- path.expand(file.path("~", "EEMS-example"))
 
 ## Plot a series of Voronoi diagrams for the EEMS model parameters:
 ## the effective migration rates (m) and the effective diversity rates (q).
-eems.posterior.draws(mcmcpath = eems.results.to.plot, 
-                     plotpath = paste0(name.figures.to.save, "-posterior-draws"), 
+eems.posterior.draws(mcmcpath = eems_results,
+                     plotpath = paste0(name_figures, "-posterior-draws"),
                      longlat = TRUE, post.draws = 10)
-           
+
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

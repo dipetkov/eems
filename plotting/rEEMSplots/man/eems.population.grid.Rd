@@ -4,38 +4,13 @@
 \alias{eems.population.grid}
 \title{A function to plot the constructed population grid and, optionally, the initial sampling locations.}
 \usage{
-eems.population.grid(            mcmcpath, 
-                                 plotpath, 
-                                 longlat, 
-                                 
-                                 ## Properties of the figures to generate
-                                 plot.width = 7, 
-                                 plot.height = 7, 
-                                 out.png = TRUE, 
-                                 res = 600, 
-                                 
-                                 ## Properties of the population grid
-                                 add.grid = TRUE, 
-                                 col.grid = "gray80", 
-                                 lwd.grid = 1, 
-                                 
-                                 ## Properties of the observed demes
-                                 add.demes = FALSE, 
-                                 col.demes = "black", 
-                                 pch.demes = 19, 
-                                 min.cex.demes = 1, 
-                                 max.cex.demes = 3, 
-                                 
-                                 ## Properties of the habitat outline
-                                 add.outline = TRUE, 
-                                 col.outline = "gray90", 
-                                 lwd.outline = 2, 
-                                 
-                                 ## Properties of the sampling locations
-                                 add.coord = FALSE, 
-                                 col.coord = "red", 
-                                 pch.coord = 3,
-                                 datapath = NULL)
+eems.population.grid(mcmcpath, plotpath, longlat, plot.width = 7,
+  plot.height = 7, out.png = TRUE, res = 600, add.grid = TRUE,
+  col.grid = "gray80", lwd.grid = 1, add.demes = FALSE,
+  col.demes = "black", pch.demes = 19, min.cex.demes = 1,
+  max.cex.demes = 3, add.outline = TRUE, col.outline = "gray90",
+  lwd.outline = 2, add.coord = FALSE, col.coord = "red", pch.coord = 3,
+  datapath = NULL)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
@@ -44,7 +19,9 @@ eems.population.grid(            mcmcpath,
 
 \item{longlat}{A logical value indicating whether the coordinates are given as pairs (longitude, latitude) or (latitude, longitude).}
 
-\item{plot.width, }{plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.}
+\item{plot.width}{The width of the graphics region for the two rate contour plots, in inches. The default value is 7.}
+
+\item{plot.height}{The height of the graphics region, in inches. The default value is 7.}
 
 \item{out.png}{A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.}
 
@@ -62,7 +39,9 @@ eems.population.grid(            mcmcpath,
 
 \item{pch.demes}{The symbol, specified as an integer, or the character to be used for plotting the demes. Defaults to 19.}
 
-\item{min.cex.demes, }{max.cex.demes The minimum and the maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
+\item{min.cex.demes}{The minimum size of the deme symbol/character.}
+
+\item{max.cex.demes}{The maximum size of the deme symbol/character. Defaults to 1 and 3, respectively. If \code{max.cex.demes} > \code{min.cex.demes}, then demes with more samples also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and the deme with the most samples has size \code{max.cex.demes}.}
 
 \item{add.outline}{A logical value indicating whether to add the habitat outline or not.}
 
@@ -76,7 +55,7 @@ eems.population.grid(            mcmcpath,
 
 \item{pch.coord}{The symbol, specified as an integer, or the character to be used for plotting the sampling locations. Defaults to 3.}
 
-\item{datapath}{The full path and the file name of the input dataset (the three files datapath.coord, datapath.diffs, datapath.outer). Must be specified if \code{add.coord = TRUE}.}
+\item{datapath}{The full path and the file name of the input dataset (the three files datapath.coord, datapath.diffs, datapath.outer). Must be specified if \code{add_coord = TRUE}.}
 }
 \description{
 Given an EEMS output directory, this function generates one figure to visualize the EEMS population grid.
@@ -86,25 +65,26 @@ This can be helpful if EEMS exits with the error message "The population grid is
 \examples{
 
 ## Use the provided example or supply the path to your own EEMS run.
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-example")
-name.figures.to.save = path.expand("~/EEMS-example-grid_is_connected")
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+name_figures <- path.expand(file.path("~", "EEMS-example-grid_is_connected"))
 
-eems.population.grid(eems.results.to.plot,
-                     name.figures.to.save,
+eems.population.grid(eems_results,
+                     name_figures,
                      longlat = TRUE,
                      add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
                      add.grid = TRUE, col.grid = "green", lwd.grid = 2)
 
-## It is more interesting to see an example where the grid is unconnected due to the unusual shape of the habitat.
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-popgrid")
-name.figures.to.save = path.expand("~/EEMS-example-grid_is_not_connected")
+## It is more interesting to see an example where the grid is unconnected 
+## due to the unusual shape of the habitat.
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-popgrid")
+name_figures <- path.expand(file.path("~", "EEMS-example-grid_is_not_connected"))
 
-eems.population.grid(eems.results.to.plot,
-                     name.figures.to.save,
+eems.population.grid(eems_results,
+                     name_figures,
                      longlat = FALSE,
                      add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
                      add.grid = TRUE, col.grid = "green", lwd.grid = 2)
-           
+
 }
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}}

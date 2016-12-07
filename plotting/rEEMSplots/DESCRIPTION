@@ -20,14 +20,16 @@ Imports:
     RcppEigen (>= 0.3.2.5.0),
     raster (>= 2.4-15),
     rgeos (>= 0.3-11),
-    sp (>= 1.1-1)
+    sp (>= 1.1-1),
+    stats (>= 3.3.2),
+    utils (>= 3.3.2)
 Depends:
     R (>= 3.2.0)
 Suggests:
     RColorBrewer (>= 1.1),
+    Matrix (>= 1.2.7.1),
     deldir (>= 0.1),
     rgdal (>= 0.9),
-    dplyr (>= 0.4.2),
     rworldmap (>= 1.3),
     rworldxtra (>= 1.01)
 NeedsCompilation: yes

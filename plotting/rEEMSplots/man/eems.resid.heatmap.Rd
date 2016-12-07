@@ -4,34 +4,28 @@
 \alias{eems.resid.heatmap}
 \title{A function to plot a heatmap of the residual pairwise dissimilarities, abs(observed - fitted)}
 \usage{
-eems.resid.heatmap(            datapath, 
-                               mcmcpath, 
-                               plotpath, 
-                               
-                               ## Properties of the figure to generate
-                               plot.width = 7, 
-                               plot.height = 7, 
-                               out.png = TRUE, 
-                               res = 600, 
-                               
-                               ## (Divergent) color palette
-                               heatmap.cols = NULL, 
-                               heatmap.colscale = NULL)
+eems.resid.heatmap(datapath, mcmcpath, plotpath, plot.width = 7,
+  plot.height = 7, out.png = TRUE, res = 600, heatmap.cols = NULL,
+  heatmap.colscale = NULL)
 }
 \arguments{
 \item{datapath}{The full path and the file name of the input Diffs matrix, which is not copied by \code{runeems} to the output directory.}
 
-\item{mcmcpath}{An EEMS output directory. If mcmcpath is a vector of directories, then only the first (existing) directory is used.}
+\item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
 
 \item{plotpath}{The full path and the file name for the graphics to be generated.}
 
-\item{plot.width, }{plot.height The width and height of the graphics region for the two rate contour plots, in inches. The default values are both 7.}
+\item{plot.width}{The width of the graphics region for the two rate contour plots, in inches. The default value is 7.}
+
+\item{plot.height}{The height of the graphics region, in inches. The default value is 7.}
 
 \item{out.png}{A logical value indicating whether to generate output graphics as PNGs (the default) or PDFs.}
 
 \item{res}{Resolution, in dots per inch; used only if \code{out.png} is set to TRUE. The default is 600.}
 
 \item{heatmap.cols}{The heatmap color palette as a vector of colors, ordered from low to high. Defaults to the "Reds" divergent palette in the RColorBrewer package.}
+
+\item{heatmap.colscale}{A fixed range for the heatmap colors. The default is NULL, so the color space is the observed range of the residuals.}
 }
 \description{
 Given a set of EEMS output directories, this function generates a heatmap of the n-by-n matrix of residual dissimilarities between pairs of individuals. The residuals are the differences between the
@@ -43,15 +37,15 @@ Applicable only in the case of SNP data when the observed dissimilarity matrix i
 \examples{
 
 ## Use the provided example or supply the path to your own EEMS run
-eems.dataset.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-barrier")
-eems.results.to.plot = paste0(path.package("rEEMSplots"), "/extdata/EEMS-barrier")
-name.figures.to.save = path.expand("~/EEMS-barrier")
+eems_dataset <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-barrier")
+eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-barrier")
+name_figures <- path.expand(file.path("~", "EEMS-barrier"))
 
-eems.resid.heatmap(datapath = eems.dataset.to.plot, 
-                   mcmcpath = eems.results.to.plot, 
-                   plotpath = name.figures.to.save, 
+eems.resid.heatmap(datapath = eems_dataset,
+                   mcmcpath = eems_results,
+                   plotpath = name_figures,
                    heatmap.cols = c("gray99", "red"))
-           
+
 }
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.population.grid}}
