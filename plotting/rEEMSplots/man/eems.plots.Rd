@@ -107,17 +107,17 @@ The function \code{eems.plots} will work given the results from a single EEMS ru
 Detail about the within-deme and between-deme components of genetic dissimilarity: Let \code{D(a,b)} be the dissimilarity between one individual from deme \code{a} and another individual from deme \code{b}. Then the within-deme component for \code{a} and \code{b} is simply \code{D(a,a)} and \code{D(b, b)}, respectively. The between-deme component is \code{D(a,b) - [D(a,a) + D(b,b)] / 2} and it represents dissimilarity that is due to the spatial structure of the population and is not a consequence of the local diversity in the two demes.
 }
 \examples{
-
 # Use the provided example or supply the path to your own EEMS run.
-eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
-name_figures <- path.expand(file.path("~", "EEMS-example"))
+extdata_path <- system.file("extdata", package = "rEEMSplots")
+eems_results <- file.path(extdata_path, "EEMS-example")
+name_figures <- file.path(path.expand("~"), "EEMS-example")
 
 ## Produce the five EEMS figures, with default values for all optional parameters.
 eems.plots(mcmcpath = eems_results,
            plotpath = paste0(name_figures, "-default"),
            longlat = TRUE)
 
-datapath <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
+datapath <- file.path(extdata_path, "EEMS-example")
 coord <- read.table(paste0(datapath, ".coord"))
 
 # Add the original sampling locations on top of the contour plot.
@@ -168,29 +168,7 @@ eems.plots(mcmcpath = eems_results,
            pch.demes = 5,
            min.cex.demes = 0.5,
            max.cex.demes = 1.5)
-
-library("rgdal")
-
-## Produce contour plots in the Mercator projection (used by Google Maps)
-eems.plots(mcmcpath = eems_results,
-           plotpath = paste0(name_figures, "-cartographic-projections"),
-           longlat = TRUE,
-           projection.in = "+proj=longlat +datum=WGS84",
-           projection.out = "+proj=merc +datum=WGS84")
-
-library("rworldmap")
-library("rworldxtra")
-
-## Add a high-resolution geographic map
-eems.plots(mcmcpath = eems_results,
-           plotpath = paste0(name_figures, "-geographic-map"),
-           longlat = TRUE,
-           projection.in = "+proj=longlat +datum=WGS84",
-           projection.out = "+proj=merc +datum=WGS84",
-           add.map = TRUE,
-           col.map = "black",
-           lwd.map = 5)
-
+           
 library("RColorBrewer")
 
 ## Use a divergent Red to Blue color scheme from the RColorBrewer package
@@ -198,8 +176,6 @@ library("RColorBrewer")
 eems.plots(mcmcpath = eems_results,
            plotpath = paste0(name_figures, "-new-eems-colors"),
            longlat = TRUE,
-           projection.in = "+proj=longlat +datum=WGS84",
-           projection.out = "+proj=merc +datum=WGS84",
            eems.colors = brewer.pal(11, "RdBu"))
 
 ## Specify the color scales for the migration and diversity rates
@@ -210,7 +186,51 @@ eems.plots(mcmcpath = eems_results,
            col.outline = "gray",
            m.colscale = c(-3, 3),
            q.colscale = c(-0.3, +0.3))
+           
+library("rgdal")
+projection_none <- "+proj=longlat +datum=WGS84"
+projection_mercator <- "+proj=merc +datum=WGS84"
 
+## Produce contour plots in the Mercator projection (used by Google Maps)
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-cartographic-projections"),
+           longlat = TRUE,
+           projection.in = projection_none,
+           projection.out = projection_mercator)
+
+library("rworldmap")
+library("rworldxtra")
+
+## Add a high-resolution geographic map
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-geographic-map"),
+           longlat = TRUE,
+           projection.in = projection_none,
+           projection.out = projection_mercator,
+           add.map = TRUE,
+           col.map = "black",
+           lwd.map = 5)
+           
+## Add the map of Africa explicitly by passing the shape file
+map_world <- getMap()
+map_africa <- map_world[which(map_world@data$continent == "Africa"), ]
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-shapefile"),
+           longlat = TRUE,
+           m.plot.xy = { plot(map_africa, col = NA, add = TRUE) },
+           q.plot.xy = { plot(map_africa, col = NA, add = TRUE) })
+
+## Apply the Mercator projection and add the map of Africa
+## Don't forget to apply the same projection to the map as well
+map_africa <- spTransform(map_africa, CRSobj = CRS(projection_mercator))
+eems.plots(mcmcpath = eems_results,
+           plotpath = paste0(name_figures, "-shapefile-projected"),
+           longlat = TRUE,
+           projection.in = projection_none,
+           projection.out = projection_mercator,
+           m.plot.xy = { plot(map_africa, col = NA, add = TRUE) },
+           q.plot.xy = { plot(map_africa, col = NA, add = TRUE) })
+           
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

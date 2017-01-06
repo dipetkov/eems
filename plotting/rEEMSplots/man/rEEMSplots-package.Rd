@@ -38,9 +38,3 @@ structure with estimated effective migration surfaces. Nature Genetics
 48, 94 -- 100 (2016).
 }
 \keyword{ package }
-\examples{
-eems.plots(mcmcpath, plotpath, longlat,
-           add.map = FALSE,
-           add.grid = TRUE,
-           add.demes = TRUE)
-}

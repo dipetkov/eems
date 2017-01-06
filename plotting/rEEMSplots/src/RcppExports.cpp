@@ -6,46 +6,33 @@
 
 using namespace Rcpp;
 
-// resistance_distance
-Eigen::MatrixXd resistance_distance(const Eigen::MatrixXd& M);
-RcppExport SEXP rEEMSplots_resistance_distance(SEXP MSEXP) {
+// tiles2contours_standardize
+Rcpp::List tiles2contours_standardize(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm);
+RcppExport SEXP rEEMSplots_tiles2contours_standardize(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(resistance_distance(M));
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type tiles(tilesSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type rates(ratesSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type seeds(seedsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type marks(marksSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type distm(distmSEXP);
+    rcpp_result_gen = Rcpp::wrap(tiles2contours_standardize(tiles, rates, seeds, marks, distm));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcppstandardize_rates
-void rcppstandardize_rates(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm, Eigen::VectorXd& zvals, Eigen::VectorXd& prgt0, Eigen::VectorXd& prlt0);
-RcppExport SEXP rEEMSplots_rcppstandardize_rates(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP, SEXP zvalsSEXP, SEXP prgt0SEXP, SEXP prlt0SEXP) {
+// tiles2contours
+Rcpp::List tiles2contours(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm);
+RcppExport SEXP rEEMSplots_tiles2contours(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type tiles(tilesSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type rates(ratesSEXP);
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type seeds(seedsSEXP);
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type marks(marksSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type distm(distmSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd& >::type zvals(zvalsSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd& >::type prgt0(prgt0SEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd& >::type prlt0(prlt0SEXP);
-    rcppstandardize_rates(tiles, rates, seeds, marks, distm, zvals, prgt0, prlt0);
-    return R_NilValue;
-END_RCPP
-}
-// rcppdont_standardize_rates
-void rcppdont_standardize_rates(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm, Eigen::VectorXd& zvals);
-RcppExport SEXP rEEMSplots_rcppdont_standardize_rates(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP, SEXP zvalsSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type tiles(tilesSEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type rates(ratesSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type seeds(seedsSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type marks(marksSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type distm(distmSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd& >::type zvals(zvalsSEXP);
-    rcppdont_standardize_rates(tiles, rates, seeds, marks, distm, zvals);
-    return R_NilValue;
+    rcpp_result_gen = Rcpp::wrap(tiles2contours(tiles, rates, seeds, marks, distm));
+    return rcpp_result_gen;
 END_RCPP
 }

@@ -73,10 +73,10 @@ Given a set of EEMS output directories, this function takes random draws from th
 Note about the implementation: \code{eems.voronoi.samples} samples randomly from the posterior draws saved during the execution of EEMS, after burn-in and thinning.
 }
 \examples{
-
 # Use the provided example or supply the path to your own EEMS run.
-eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
-name_figures <- path.expand(file.path("~", "EEMS-example"))
+extdata_path <- system.file("extdata", package = "rEEMSplots")
+eems_results <- file.path(extdata_path, "EEMS-example")
+name_figures <- file.path(path.expand("~"), "EEMS-example")
 
 library("deldir")
 
@@ -85,7 +85,6 @@ library("deldir")
 eems.voronoi.samples(mcmcpath = eems_results,
                      plotpath = paste0(name_figures, "-voronoi-diagrams"),
                      longlat = TRUE, post.draws = 10)
-
 }
 \references{
 Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.

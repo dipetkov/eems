@@ -63,10 +63,10 @@ All edges are shown in the same color to visualize the grid before estimating mi
 This can be helpful if EEMS exits with the error message "The population grid is not connected".
 }
 \examples{
-
 ## Use the provided example or supply the path to your own EEMS run.
-eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-example")
-name_figures <- path.expand(file.path("~", "EEMS-example-grid_is_connected"))
+extdata_path <- system.file("extdata", package = "rEEMSplots")
+eems_results <- file.path(extdata_path, "EEMS-example")
+name_figures <- file.path(path.expand("~"), "EEMS-grid_connected")
 
 eems.population.grid(eems_results,
                      name_figures,
@@ -76,15 +76,14 @@ eems.population.grid(eems_results,
 
 ## It is more interesting to see an example where the grid is unconnected 
 ## due to the unusual shape of the habitat.
-eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-popgrid")
-name_figures <- path.expand(file.path("~", "EEMS-example-grid_is_not_connected"))
+eems_results <- file.path(extdata_path, "EEMS-popgrid")
+name_figures <- path.expand(file.path("~", "EEMS-grid_not_connected"))
 
 eems.population.grid(eems_results,
                      name_figures,
                      longlat = FALSE,
                      add.outline = TRUE, col.outline = "purple", lwd.outline = 3,
                      add.grid = TRUE, col.grid = "green", lwd.grid = 2)
-
 }
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}}

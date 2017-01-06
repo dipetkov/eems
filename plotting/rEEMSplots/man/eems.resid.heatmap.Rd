@@ -35,17 +35,16 @@ In both the residual matrix and the corresponding heat map, individuals are are 
 Applicable only in the case of SNP data when the observed dissimilarity matrix is computed explicitly.
 }
 \examples{
-
 ## Use the provided example or supply the path to your own EEMS run
-eems_dataset <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-barrier")
-eems_results <- file.path(path.package("rEEMSplots"), "extdata", "EEMS-barrier")
-name_figures <- path.expand(file.path("~", "EEMS-barrier"))
+extdata_path <- system.file("extdata", package = "rEEMSplots")
+eems_dataset <- file.path(extdata_path, "EEMS-barrier")
+eems_results <- file.path(extdata_path, "EEMS-barrier")
+name_figures <- file.path(path.expand("~"), "EEMS-barrier")
 
 eems.resid.heatmap(datapath = eems_dataset,
                    mcmcpath = eems_results,
                    plotpath = name_figures,
                    heatmap.cols = c("gray99", "red"))
-
 }
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.population.grid}}
