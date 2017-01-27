@@ -25,8 +25,8 @@ using namespace Eigen;
 #define UTIL_H
 
 const double Inf = numeric_limits<double>::infinity();
-const double ln_2 = boost::math::constants::ln_two<double>();
-const double ln_pi = log(boost::math::constants::pi<double>());
+const double ln_2 = boost::math::double_constants::ln_two;
+const double ln_pi = log(boost::math::double_constants::pi);
 const double Earth_radiusX2 = 2.0 * 6378137.0;
 
 typedef Eigen::SparseMatrix<double> SpMat; // Declares a column-major sparse matrix type of double

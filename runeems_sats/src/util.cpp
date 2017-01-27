@@ -272,10 +272,11 @@ MatrixXd greatcirc_dist(const MatrixXd &X, const MatrixXd &Y) {
   int nr = X.rows();
   int nc = Y.rows();
   // Convert from degrees to radians
-  ArrayXXd lon1 = X.col(0).replicate(1, nc).array() * boost::math::constants::degree<double>();
-  ArrayXXd lat1 = X.col(1).replicate(1, nc).array() * boost::math::constants::degree<double>();
-  ArrayXXd lon2 = Y.col(0).transpose().replicate(nr, 1).array() * boost::math::constants::degree<double>();
-  ArrayXXd lat2 = Y.col(1).transpose().replicate(nr, 1).array() * boost::math::constants::degree<double>();
+  double degree = boost::math::double_constants::degree;
+  ArrayXXd lon1 = X.col(0).replicate(1, nc).array() * degree;
+  ArrayXXd lat1 = X.col(1).replicate(1, nc).array() * degree;
+  ArrayXXd lon2 = Y.col(0).transpose().replicate(nr, 1).array() * degree;
+  ArrayXXd lat2 = Y.col(1).transpose().replicate(nr, 1).array() * degree;
   // The haversine function is hav(theta) = (1 - cos(theta)) / 2
   ArrayXXd hav_lon = 0.5 * (1.0 - (lon2 - lon1).cos());
   ArrayXXd hav_lat = 0.5 * (1.0 - (lat2 - lat1).cos());
