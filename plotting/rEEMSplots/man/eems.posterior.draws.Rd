@@ -104,4 +104,3 @@ Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improv
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 }
-

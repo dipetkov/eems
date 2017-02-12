@@ -34,4 +34,4 @@ Suggests:
     rworldxtra (>= 1.01)
 NeedsCompilation: yes
 LinkingTo: Rcpp, RcppEigen
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

@@ -264,7 +264,7 @@ which.dist.metric <- function(mcmcpath) {
     }
     return (dist.metric)
 }
-read.dimns <- function(path, longlat, nxmrks = NULL, nymrks = NULL) {
+read.dimns <- function(path, longlat, nxmrks = NULL, nymrks = NULL, coord = NULL) {
     eems.output <- NULL
     datapath.outer <- paste0(path, ".outer")
     mcmcpath.outer <- file.path(path, "outer.txt")
@@ -282,11 +282,19 @@ read.dimns <- function(path, longlat, nxmrks = NULL, nymrks = NULL) {
         outer <- scan(datapath.outer, what = numeric(), quiet = TRUE)
     }
     outer <- matrix(outer, ncol = 2, byrow = TRUE)
+    if (is.null(coord)) {
+        coord <- matrix(0, ncol = 2, nrow = 0)
+    } else {
+        coord <- as.matrix(coord, ncol = 2, byrow = TRUE)
+    }
     ## "Close" the outline if the first row is not the same as the last row
     if (sum(head(outer, 1) != tail(outer, 1))) {
         outer <- rbind(outer, head(outer, 1))
     }
-    if (!longlat) { outer <- outer[, c(2, 1)] }
+    if (!longlat) { 
+        outer <- outer[, c(2, 1)] 
+        coord <- coord[, c(2, 1)]
+    }
     xlim <- range(outer[, 1])
     ylim <- range(outer[, 2])
     aspect <- abs((diff(ylim) / diff(xlim)) / cos(mean(ylim) * pi / 180))
@@ -312,7 +320,7 @@ read.dimns <- function(path, longlat, nxmrks = NULL, nymrks = NULL) {
     return(list(nxmrks = nxmrks, xmrks = xmrks, xlim = xlim, xspan = diff(xlim),
                 nymrks = nymrks, ymrks = ymrks, ylim = ylim, yspan = diff(ylim),
                 marks = marks, nmrks = c(nxmrks, nymrks), aspect = aspect,
-                outer = outer, dist.metric = dist.metric))
+                outer = outer, coord = coord, dist.metric = dist.metric))
 }
 read.edges <- function(mcmcpath) {
     edges <- read.table(file.path(mcmcpath, "edges.txt"), colClasses = numeric())
@@ -428,22 +436,42 @@ read.voronoi <- function(mcmcpath, longlat, is.mrates, log_scale) {
     return(list(rates = rates, tiles = tiles, xseed = xseed, yseed = yseed))
 }
 transform.rates <- function(dimns, tiles, rates, xseed, yseed, zero_mean) {
+    
+    # Bind together the points which make up the raster image
+    # and the extra points provided by the user, if any
+    marks <- rbind(dimns$marks, dimns$coord)
+    coord_raster <- nrow(dimns$marks)
+    coord_extra <- nrow(dimns$coord)
+    
+    # Compute the rates at all the points
     if (zero_mean) {
         rslts <- tiles2contours_standardize(tiles, rates, cbind(xseed, yseed),
-                                            dimns$marks, dimns$dist.metric)
-        Zvals <- matrix(rslts$zvals, nrow = dimns$nxmrks, ncol = dimns$nymrks)
-        PrGT0 <- matrix(rslts$prgt0, nrow = dimns$nxmrks, ncol = dimns$nymrks)
-        PrLT0 <- matrix(rslts$prlt0, nrow = dimns$nxmrks, ncol = dimns$nymrks)
+                                            marks, dimns$dist.metric)
     } else {
         rslts <- tiles2contours(tiles, rates, cbind(xseed, yseed),
-                                dimns$marks, dimns$dist.metric)
-        Zvals <- matrix(rslts$zvals, nrow = dimns$nxmrks, ncol = dimns$nymrks)
-        ## Without normalizing the migration rates m to have mean 0,
-        ## it doesn't make sense to keep track of the number of times (m > 0) and (m < 0).
+                                marks, dimns$dist.metric)
+    }
+    
+    Zvals <- matrix(rslts$zvals[seq_len(coord_raster)], 
+                    nrow = dimns$nxmrks, ncol = dimns$nymrks)
+    if (coord_extra > 0) {
+        Zvals_extra <- rslts$zvals[seq_len(coord_extra) + coord_raster]
+    } else {
+        Zvals_extra <- NULL
+    }
+    if (zero_mean) {   
+        # Without normalizing the migration rates m to have mean 0,
+        # it doesn't make sense to keep track of the number of times (m > 0) and (m < 0).
+        PrGT0 <- matrix(rslts$prgt0[seq_len(coord_raster)], 
+                        nrow = dimns$nxmrks, ncol = dimns$nymrks)
+        PrLT0 <- matrix(rslts$prlt0[seq_len(coord_raster)], 
+                        nrow = dimns$nxmrks, ncol = dimns$nymrks)
+    } else {
         PrGT0 <- NULL
         PrLT0 <- NULL
     }
-    return(list(Zvals = Zvals, PrGT0 = PrGT0, PrLT0 = PrLT0, niters = length(tiles)))
+    return(list(Zvals = Zvals, PrGT0 = PrGT0, PrLT0 = PrLT0, 
+                Zvals_extra = Zvals_extra, niters = length(tiles)))
 }
 filled.contour.points <- function(mcmcpath, longlat, plot.params, highlight) {
     if (is.null(highlight)) {
@@ -599,16 +627,13 @@ one.eems.contour <- function(mcmcpath, dimns, Zmean, longlat, plot.params, is.mr
                              plot.xy = NULL, highlight.samples = NULL) {
     eems.colors <- plot.params$eems.colors
     num.levels <- length(eems.colors)
-    ## Still can't decide whether to label the legend "log(m)" or "m"....
     if (is.mrates) {
         eems.levels <- eems.colscale(Zmean, num.levels, plot.params$m.colscale)
         main.title <- "Posterior mean migration rates m (on the log10 scale)"
-        #key.title <- expression(paste(log, "(", italic(m), ")", sep = ""))
         key.title <- "log(m)"
     } else {
         eems.levels <- eems.colscale(Zmean, num.levels, plot.params$q.colscale)
         main.title <- "Posterior mean diversity rates q (on the log10 scale)"
-        #key.title <- expression(paste(log, "(", italic(q), ")", sep = ""))
         key.title <- "log(q)"
     }
     rr <- flip(raster::raster(t(Zmean),
@@ -735,6 +760,8 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
     Zmean <- matrix(0, dimns$nxmrks, dimns$nymrks)
     PrGT0 <- matrix(0, dimns$nxmrks, dimns$nymrks)
     PrLT0 <- matrix(0, dimns$nxmrks, dimns$nymrks)
+    coord_extra <- nrow(dimns$coord)
+    Zmean_extra <- numeric(coord_extra)
     niters <- 0
     ## Loop over each output directory in mcmcpath to average the colored contour plots
     for (path in mcmcpath) {
@@ -754,6 +781,7 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
         yseed <- voronoi$yseed
         rslt <- transform.rates(dimns, tiles, rates, xseed, yseed, zero_mean)
         Zmean <- Zmean + rslt$Zvals
+        Zmean_extra <- Zmean_extra + rslt$Zvals_extra
         niters <- niters + rslt$niters
         if (zero_mean) {
             PrGT0 <- PrGT0 + rslt$PrGT0
@@ -763,11 +791,15 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
     Zmean <- Zmean / niters
     PrGT0 <- PrGT0 / niters
     PrLT0 <- PrLT0 / niters
+    Zmean_extra <- Zmean_extra / niters
     ## Actually plot the colored contour plot
     ## Pass one mcmcpath (shouldn't matter which one) in case adding extra information
     ## (demes, edges, etc.) on top of the contour plot.
     rates.raster <- one.eems.contour(mcmcpath[1], dimns, Zmean, longlat, plot.params, is.mrates,
                                      plot.xy = plot.xy, highlight.samples = highlight.samples)
+    xyz.values <- cbind(dimns$coord, Zmean_extra)
+    rates.raster$xyz.values <- xyz.values
+    
     if (zero_mean) {
         raster.prob <- one.prob.contour(mcmcpath[1], dimns, PrGT0 - PrLT0, longlat, plot.params, is.mrates,
                                         plot.xy = plot.xy, highlight.samples = highlight.samples)
@@ -1269,6 +1301,7 @@ load.required.package <- function(package, required.by) {
 #' @param prob.levels A vector of probabilities for plotting the posterior probability contours of \code{P(m > 0 | diffs)} and \code{P(m < 0 | diffs)}. Defaults to \code{c(0.9, 0.95)}.
 #' @param m.plot.xy Statements which add graphical elements (e.g. points) on top of the migration sufrace.
 #' @param q.plot.xy Statements which add graphical elements (e.g. points) on top of the diversity surface.
+#' @param xy.coords Additional coordinates at which to estimate the migration and diversity rates.
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @examples
 #' # Use the provided example or supply the path to your own EEMS run.
@@ -1394,7 +1427,23 @@ load.required.package <- function(package, required.by) {
 #'            projection.out = projection_mercator,
 #'            m.plot.xy = { plot(map_africa, col = NA, add = TRUE) },
 #'            q.plot.xy = { plot(map_africa, col = NA, add = TRUE) })
-#'            
+#' 
+#' ## Compute the migration and diversity rates at specific points
+#' xy.coords <- matrix(c(13.70,  3.20,
+#'                       37.10, -7.20,
+#'                       36.10, -4.10,
+#'                       34.58, -5.67), ncol = 2, byrow = TRUE)
+#' eems.plots(mcmcpath = eems_results,
+#'            plotpath = paste0(name_figures, "-default"),
+#'            longlat = TRUE,
+#'            xy.coords = xy.coords)
+#' load(paste0(name_figures, "-default", "-rdist.RData"))
+#' ## The RData file contains the following five objects:
+#' ## "B.component" "G.component" "W.component" "xym.values"  "xyq.values"
+#' ## Migration rate for each coordinate, on the log10 scale and after mean-centering
+#' xym.values
+#' ## Diversity rate for each coordinate, on the log10 scale and after mean-centering
+#' xyq.values
 #' @seealso \code{\link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}, \link{eems.population.grid}}
 #' @export
 
@@ -1432,7 +1481,8 @@ eems.plots <- function(mcmcpath,
                        add.r.squared = FALSE,
                        add.title = TRUE,
                        m.plot.xy = NULL,
-                       q.plot.xy = NULL) {
+                       q.plot.xy = NULL,
+                       xy.coords = NULL) {
     
     plot.params <- list(eems.colors = eems.colors, m.colscale = m.colscale, q.colscale = q.colscale,
                         add.map = add.map, add.grid = add.grid, add.outline = add.outline, add.demes = add.demes,
@@ -1449,7 +1499,7 @@ eems.plots <- function(mcmcpath,
     if (!length(mcmcpath))
         stop('Please provide at least one existing EEMS output directory, mcmcpath')
     
-    dimns <- read.dimns(mcmcpath[1], longlat)
+    dimns <- read.dimns(mcmcpath[1], longlat, coord = xy.coords)
     
     save.params <- list(height = plot.height, width = plot.width, res = res, out.png = out.png)
     
@@ -1463,12 +1513,18 @@ eems.plots <- function(mcmcpath,
                                            is.mrates = TRUE, plot.xy = m.plot.xy)
     dev.off( )
     
+    xym.values <- mrates.raster$xyz.values
+    colnames(xym.values) <- c("x", "y", "m")
+    
     ## Plot filled contour of estimated effective diversity rates
     save.graphics(paste0(plotpath, '-qrates'), save.params)
     par(las = 1, font.main = 1, xpd = xpd)
     qrates.raster <- average.eems.contours(mcmcpath, dimns, longlat, plot.params,
                                            is.mrates = FALSE, plot.xy = q.plot.xy)
     dev.off( )
+    
+    xyq.values <- qrates.raster$xyz.values
+    colnames(xyq.values) <- c("x", "y", "q")
     
     if (!add.colbar) {
         
@@ -1518,7 +1574,7 @@ eems.plots <- function(mcmcpath,
     B.component <- dist.points$B.component
     W.component <- dist.points$W.component
     G.component <- dist.points$G.component
-    save(B.component, W.component, G.component,
+    save(B.component, W.component, G.component, xym.values, xyq.values,
          file = paste0(plotpath, '-rdist.RData'))
 }
 

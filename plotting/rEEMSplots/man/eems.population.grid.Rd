@@ -88,4 +88,3 @@ eems.population.grid(eems_results,
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.resid.heatmap}}
 }
-

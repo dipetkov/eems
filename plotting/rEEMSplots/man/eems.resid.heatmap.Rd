@@ -49,4 +49,3 @@ eems.resid.heatmap(datapath = eems_dataset,
 \seealso{
 \code{\link{eems.plots}, \link{eems.voronoi.samples}, \link{eems.posterior.draws}, \link{eems.population.grid}}
 }
-
