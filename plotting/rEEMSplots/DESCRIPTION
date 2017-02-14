@@ -3,7 +3,8 @@ Version: 0.0.0.9000
 Date: 2015-03-04
 Title: Generate EEMS graphics output
 Authors@R: person("Desislava", "Petkova", email = "desislavka@gmail.com", role = c("aut", "cre"))
-Description: Provides several functions to visualize the results of EEMS.
+Description: Provides several functions to visualize the results of analyzing
+    geo-referenced genetic data with EEMS as well as to evaluate the EEMS model fit.
     \code{eems.plots} produces contour plots of the effective migration and diversity rates,
     as well as scatterplots of observed vs fitted genetic dissimilarities.
     \code{eems.population.grid} plots the population grid, with all edges in the same color,

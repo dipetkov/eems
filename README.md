@@ -2,7 +2,7 @@
 
 This repository contains an implementation of the EEMS method for analyzing and visualizing spatial population structure from geo-referenced genetic samples. EEMS uses the concept of *effective migration* to model the relationship between genetics and geography, and it outputs an **e**stimated **e**ffective **m**igration **s**urface (hence, EEMS) - a visual representation of population structure that can highlight potential regions of higher-than-average and lower-than-average historic gene flow.
 
-Please consider reading the paper `EEMS-article.pdf` and the documentation `EEMS-doc.pdf` first.
+Please consider reading the paper `EEMS-article.pdf` (or the published version [here](http://www.nature.com/ng/journal/v48/n1/full/ng.3464.html)) and the documentation `EEMS-doc.pdf` first.
 
 * The directory `bed2diffs` contains a small program that reads genotypes in Plink binary format and computes the matrix of average pairwise differences, to pass to EEMS.
 * The directory `pipeline` contains a pipeline with the goal to combine all scripts.
@@ -62,7 +62,7 @@ Finally, the EEMS results can be visualized with the function `eems.plots` defin
 ## Part 1: Install rEEMSplots
 ## Check that the current directory contains the rEEMSplots source directory
 if (file.exists("./rEEMSplots")) {
-  install.packages("rEEMSplots", repos=NULL, type="source")
+  install.packages("rEEMSplots", repos = NULL, type = "source")
 } else {
   stop("Move to the directory that contains the rEEMSplots source to install the package.")
 }
@@ -77,10 +77,48 @@ library(rEEMSplots)
 mcmcpath = "./data/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes200-simno1"
 plotpath = "./plot/barrier-schemeX-nIndiv300-nSites3000-EEMS-nDemes200-simno1-rEEMSplots"
 
-eems.plots(mcmcpath,plotpath,longlat = TRUE)
+eems.plots(mcmcpath, plotpath, longlat = TRUE)
 ```
 
-This generates several figures automatically (to encourage looking at all the figures). There are examples in `EEMS-doc.pdf`, with captions that explain each figure.
+The function `eems.plots` generates several figures automatically (to encourage looking at all the figures). There are examples in `EEMS-doc.pdf`, with captions that explain each figure. `eems.plots` also saves several objects to an RData file, which can be read back from the file with `load`.
+
+```
+load(paste0(plotpath, "-rdist.RData"))
+
+ls()
+#> [1] "B.component" "G.component" "W.component" "xym.values"  "xyq.values"
+
+library("ggplot2")
+library("dplyr")
+
+## Reproduce plotpath-rdist01.png,
+## which plots observed vs fitted dissimilarities between demes
+ggplot(B.component %>% filter(size > 1),
+       aes(fitted, obsrvd)) +
+  geom_point()
+
+## Reproduce plotpath-rdist02.png,
+## which plots observed vs fitted dissimilarities within demes
+ggplot(W.component %>% filter(size > 1),
+       aes(fitted, obsrvd)) +
+  geom_point()
+
+## Reproduce plotpath-rdist03.png,
+## which plots observed dissimilarities against great circle distances between demes
+ggplot(W.component %>% filter(size > 1),
+       aes(fitted, obsrvd)) +
+  geom_point()
+
+## Empty matrices unless you have specified additional coordinates
+## at which to estimate the migration and diversity rates
+## with the `xy.coords` argument to `eems.plots`
+xym.values
+xyq.values
+```
+
+### Shiny app
+
+The between-demes dissimilarities data saved in `plotpath-rdist.RData` can be visualized with a little interactive Shiny app available [here](https://dipetkov.shinyapps.io/rEEMSshiny/). It can help to identify outliers in the pairwise scatter plots, if any, with specific geographic locations on the map.
 
 ### The MATLAB/Octave implementation
 
