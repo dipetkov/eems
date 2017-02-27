@@ -10,9 +10,13 @@ Please consider reading the paper `EEMS-article.pdf` (or the published version [
 * The directory `runeems_sats` contains a C++ implementation of EEMS to use with microsatellite data.
 * The directory `runeems_snps` contains a C++ implementation of EEMS to use with SNP data.
 
-### The C++ implementation
+### C++ implementation
 
-The C++ implementation uses the [Eigen](http://eigen.tuxfamily.org) template library for linear algebra computations and the [Boost](http://www.boost.org) libraries for random number generation and the habitat geometry. EEMS has been tested with Eigen 3.2.2 and Boost 1_57. After downloading Eigen (which does not need installation) and installing Boost, update the variables `EIGEN_INC`, `BOOST_LIB`, `BOOST_INC` in the Makefile. The dynamic Boost libraries are linked to slightly differently on a Mac and a Linux machine, so run `make darwin` on a Mac or `make linux` on a Linux machine. This C++ implementation has not been tested on Windows.
+The C++ implementation uses the [Eigen](http://eigen.tuxfamily.org) template library for linear algebra computations and the [Boost](http://www.boost.org) libraries for random number generation and the habitat geometry. EEMS has been tested with Eigen 3.2.2 and Boost 1.57 and might not be compatible with newer versions of Boost/Eigen. After downloading Eigen (which does not need installation) and installing Boost, update the variables `EIGEN_INC`, `BOOST_LIB`, `BOOST_INC` in the Makefile. The dynamic Boost libraries are linked to slightly differently on a Mac and a Linux machine, so run `make darwin` on a Mac or `make linux` on a Linux machine. This C++ implementation has not been tested on Windows.
+
+*Note*: The C++ code is not compatible with Boost 1.63; downgrade to Boost 1.57 to compile it.
+
+### EEMS for SNPs and microsatellites
 
 There are two versions of EEMS: `runeems_snps` for SNP data and `runeems_sats` for microsatellite data. The data input format and the EEMS model are somewhat different for SNPs and microsatellites, hence the two versions. The source code can be found in `runeems_snps/src` and `runeems_sats/src`, respectively. The directories `runeems_snps/data` and `runeems_sats/data` contain data, simulated with `ms`, to illustrate the input file format and how EEMS is run.
 
@@ -96,7 +100,11 @@ library("dplyr")
 ggplot(B.component %>% filter(size > 1),
        aes(fitted, obsrvd)) +
   geom_point()
+```
 
+The data frame `B.component` contains information about the dissimilarities between observed pairs of demes (alpha, beta). "Observed" means that each deme has at least one sampled individual assigned to it. Furthermore, each deme has two coordinates (x and y, longitude and latitude) and these are labeled `alpha.x, alpha.y` for deme alpha and `beta.x, beta.y` for deme beta.
+
+```
 ## Reproduce plotpath-rdist02.png,
 ## which plots observed vs fitted dissimilarities within demes
 ggplot(W.component %>% filter(size > 1),
@@ -118,7 +126,7 @@ xyq.values
 
 ### Shiny app
 
-The between-demes dissimilarities data saved in `plotpath-rdist.RData` can be visualized with a little interactive Shiny app available [here](https://dipetkov.shinyapps.io/rEEMSshiny/). It can help to identify outliers in the pairwise scatter plots, if any, with specific geographic locations on the map.
+It is straightforward to make the scatter plots which plot fitted vs observed dissimilarities between demes. But it is even more useful to link the dissimilarities to the corresponding locations in the habitat. The between-demes dissimilarities saved in `plotpath-rdist.RData` can be visualized with a little interactive Shiny app available [here](https://dipetkov.shinyapps.io/rEEMSshiny/). It can help to identify outliers in the pairwise scatter plots, if any, with specific geographic locations on the map.
 
 ### The MATLAB/Octave implementation
 

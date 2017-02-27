@@ -80,9 +80,9 @@ void Params::check_input_arguments() {
   sigmaShape_2 /= 2.0;
   sigmaScale_2 /= 2.0;
   /////////////////////////////////////////////////////
-  cout << "Using Boost " << BOOST_LIB_VERSION << " (EEMS was tested with version 1_59)" << endl
+  cout << "Using Boost " << BOOST_LIB_VERSION << " (EEMS was tested with version 1_57)" << endl
        << "      Eigen " << EIGEN_WORLD_VERSION << "." << EIGEN_MAJOR_VERSION << "." << EIGEN_MINOR_VERSION
-       << " (EEMS was tested with version 3.2.7)" << endl << endl;
+       << " (EEMS was tested with version 3.2.2)" << endl << endl;
   check_condition(numeric_limits<double>::has_infinity, "No representation for infinity");
   check_condition(boost::filesystem::exists(datapath + ".coord"),
 		  "Check that " + datapath + ".coord exists");

@@ -3,6 +3,8 @@
 
 The program `runeems_sats` implements the EEMS method for analyzing spatial population structure. This version uses raw microsatellite data.
 
+*Note*: EEMS has been tested with Eigen 3.2.2 and Boost 1_57 and might not be compatible with newer versions of Boost/Eigen.
+
 * `src` contains the C++ source code, which needs to be compiled.
 * `data` contains simulated data generated with [ms](http://home.uchicago.edu/rhudson1/source/mksamples.html) to illustrate the input file format.
 
