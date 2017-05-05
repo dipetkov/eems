@@ -1419,7 +1419,7 @@ load.required.package <- function(package, required.by) {
 #' 
 #' ## Apply the Mercator projection and add the map of Africa
 #' ## Don't forget to apply the same projection to the map as well
-#' map_africa <- spTransform(map_africa, CRSobj = CRS(projection_mercator))
+#' map_africa <- spTransform(map_africa, CRS(projection_mercator))
 #' eems.plots(mcmcpath = eems_results,
 #'            plotpath = paste0(name_figures, "-shapefile-projected"),
 #'            longlat = TRUE,
@@ -1427,6 +1427,34 @@ load.required.package <- function(package, required.by) {
 #'            projection.out = projection_mercator,
 #'            m.plot.xy = { plot(map_africa, col = NA, add = TRUE) },
 #'            q.plot.xy = { plot(map_africa, col = NA, add = TRUE) })
+#'            
+#' ## Similarly we can add points, lines, labels, etc.
+#' ## Here is how to add a set of colored "labels" on top of
+#' ## the migration/diversity rates and the Africa map
+#' coords <- matrix(c(-10,  10,
+#'                     10,  10,
+#'                     30,   0,
+#'                     40, -10,
+#'                     30, -20), ncol = 2, byrow = TRUE)
+#' colors <- c("red", "green", "blue", "purple", "orange")
+#' labels <- LETTERS[1:5]
+#' coords_merc <- sp::spTransform(SpatialPoints(coords, CRS(projection_none)), 
+#'                                CRS(projection_mercator))
+#' ## `coords_merc` is a SpatialPoints structure
+#' ## but we only need the coordinates themselves
+#' coords_merc <- coords_merc@coords
+#' ## Coordinates in latitude/longitude
+#' coords
+#' ## The same coordinates projected
+#' coords_merc                              
+#'                                
+#' eems.plots(mcmcpath = eems_results,
+#'            plotpath = paste0(name_figures, "-labels-projected"),
+#'            longlat = TRUE,
+#'            projection.in = projection_none,
+#'            projection.out = projection_mercator,
+#'            m.plot.xy = { text(coords_merc, col = colors, pch = labels, font = 2) },
+#'            q.plot.xy = { text(coords_merc, col = colors, pch = labels, font = 2) })
 #' 
 #' ## Compute the migration and diversity rates at specific points
 #' xy.coords <- matrix(c(13.70,  3.20,
