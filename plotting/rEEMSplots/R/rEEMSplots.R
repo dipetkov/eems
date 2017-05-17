@@ -1333,7 +1333,7 @@ load.required.package <- function(package, required.by) {
 #' ## Generate PNG figures with height 9 inches, width 8 inches
 #' ## and resolution 600 dots per inch.
 #' eems.plots(mcmcpath = eems_results,
-#'            plotpath = paste0(name_figures, "-demes-and-edges"),
+#'            plotpath = paste0(name_figures, "-output-PNGs"),
 #'            longlat = TRUE,
 #'            plot.height = 8,
 #'            plot.width = 7,
