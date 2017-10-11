@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // tiles2contours_standardize
 Rcpp::List tiles2contours_standardize(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm);
-RcppExport SEXP rEEMSplots_tiles2contours_standardize(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
+RcppExport SEXP _rEEMSplots_tiles2contours_standardize(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // tiles2contours
 Rcpp::List tiles2contours(const Eigen::VectorXd& tiles, const Eigen::VectorXd& rates, const Eigen::MatrixXd& seeds, const Eigen::MatrixXd& marks, const std::string& distm);
-RcppExport SEXP rEEMSplots_tiles2contours(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
+RcppExport SEXP _rEEMSplots_tiles2contours(SEXP tilesSEXP, SEXP ratesSEXP, SEXP seedsSEXP, SEXP marksSEXP, SEXP distmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,4 +35,15 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(tiles2contours(tiles, rates, seeds, marks, distm));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_rEEMSplots_tiles2contours_standardize", (DL_FUNC) &_rEEMSplots_tiles2contours_standardize, 5},
+    {"_rEEMSplots_tiles2contours", (DL_FUNC) &_rEEMSplots_tiles2contours, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_rEEMSplots(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

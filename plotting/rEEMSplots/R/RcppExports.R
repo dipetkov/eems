@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 tiles2contours_standardize <- function(tiles, rates, seeds, marks, distm) {
-    .Call('rEEMSplots_tiles2contours_standardize', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
+    .Call('_rEEMSplots_tiles2contours_standardize', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
 }
 
 tiles2contours <- function(tiles, rates, seeds, marks, distm) {
-    .Call('rEEMSplots_tiles2contours', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
+    .Call('_rEEMSplots_tiles2contours', PACKAGE = 'rEEMSplots', tiles, rates, seeds, marks, distm)
 }
 
