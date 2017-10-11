@@ -8,7 +8,17 @@ Data::Data(std::string datapath)
   this->datapath = datapath;
   if( pio_open( &plink_file, datapath.c_str() ) != PIO_OK )
     {
-      std::cerr << "[Data::getsize] Error opening plink files " << datapath << ".[bed/bim/fam]" << std::endl;
+      std::cerr << "[Data::getsize] Error opening plink files " << datapath << ".[bed/bim/fam] "
+		<< std::endl << std::endl
+		<< "This error means that libplinkio (https://github.com/mfranberg/libplinkio) "
+		<< "cannot read the dataset correctly."
+		<< std::endl << std::endl
+		<< "Make sure that plink can process the dataset without non-standard input "
+		<< "options such as `--allow-extra-chr` which indicates that the data "
+		<< "contains unrecognized chromosome codes."
+		<< std::endl << std::endl
+		<< "For example, check that `plink --bfile datapath --freq` runs without errors."
+		<< std::endl << std::endl;
       exit(1);
     }
   if( !pio_one_locus_per_row( &plink_file ) ) 

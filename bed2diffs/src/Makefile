@@ -6,7 +6,6 @@ OBJ = bed2diffs_v1.o data.o
 CXXFLAGS = -I${PLINKIO}/include -O3 -Wall -Werror -fopenmp
 LDFLAGS = -lplinkio
 
-CXX = /usr/local/bin/c++-5
 
 all:
 	@echo "Use 'make linux' on a Linux machine, or 'make darwin' on a Mac."
