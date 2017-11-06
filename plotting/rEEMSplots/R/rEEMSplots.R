@@ -940,6 +940,13 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
     Sizes <- oDemes[, 3]
     nPops <- nrow(oDemes)
     Demes <- seq(nPops)
+    if (nPops < 2) {
+        message("All individuals sampled from the same deme. ",
+                "Check that individual and habitat coordinates are given ",
+                "in consistent order (either latitude/longitude or ",
+                "longitude/latitude) in the *.outer and *.coord files.")
+        return(NULL)
+    }
     JtDobsJ <- matrix(0, nPops, nPops)
     JtDhatJ <- matrix(0, nPops, nPops)
     for (path in mcmcpath) {
