@@ -317,6 +317,11 @@ read.dimns <- function(path, longlat, nxmrks = NULL, nymrks = NULL, coord = NULL
     } else {
         dist.metric <- 'euclidean'
     }
+    # If no additional coordinates at which to estimate m and q rates
+    # are specified, report the m and q estimates at the raster marks
+    if (!nrow(coord)) {
+        coord <- marks
+    }
     return(list(nxmrks = nxmrks, xmrks = xmrks, xlim = xlim, xspan = diff(xlim),
                 nymrks = nymrks, ymrks = ymrks, ylim = ylim, yspan = diff(ylim),
                 marks = marks, nmrks = c(nxmrks, nymrks), aspect = aspect,
@@ -742,9 +747,8 @@ random.eems.contour <- function(mcmcpath, dimns, longlat, plot.params, is.mrates
     rslt <- transform.rates(dimns, now.tiles, now.rates, now.xseed, now.yseed, zero_mean)
     Zvals <- rslt$Zvals
     ## Actually plot the colored contour plot
-    rates.raster <- one.eems.contour(mcmcpath[1], dimns, Zvals, longlat, plot.params, is.mrates,
-                                     plot.xy = plot.xy, highlight.samples = highlight.samples)
-    return(rates.raster)
+    one.eems.contour(mcmcpath[1], dimns, Zvals, longlat, plot.params, is.mrates,
+                     plot.xy = plot.xy, highlight.samples = highlight.samples)
 }
 average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrates,
                                   plot.xy = NULL, highlight.samples = NULL) {
@@ -792,6 +796,7 @@ average.eems.contours <- function(mcmcpath, dimns, longlat, plot.params, is.mrat
     PrGT0 <- PrGT0 / niters
     PrLT0 <- PrLT0 / niters
     Zmean_extra <- Zmean_extra / niters
+    
     ## Actually plot the colored contour plot
     ## Pass one mcmcpath (shouldn't matter which one) in case adding extra information
     ## (demes, edges, etc.) on top of the contour plot.
