@@ -1006,8 +1006,10 @@ dist.scatterplot <- function(mcmcpath, longlat, plot.params,
                                      fitted = JtDhatJ[upper.tri(JtDhatJ, diag = FALSE)],
                                      obsrvd = JtDobsJ[upper.tri(JtDobsJ, diag = FALSE)],
                                      stringsAsFactors = FALSE)
-        sub.scatterplot("JtDJ", JtDJ.component, remove.singletons, add.abline, add.r.squared)
-        message('There should be at least two observed demes to plot pairwise dissimilarities')
+        sub.scatterplot("JtDJ", JtDJ.component, remove.singletons=FALSE,
+                        add.abline, add.r.squared)
+        message("There is one or zero demes with multiple observed individuals; ",
+                "plotting dissimilarities between singletons instead.")
         return (NULL)
     }
     out1 <- JtDJ2BandW(JtDobsJ, Sizes)
