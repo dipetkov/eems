@@ -3,7 +3,7 @@ PLINKIO = /usr/local
 EXE = bed2diffs_v1
 OBJ = bed2diffs_v1.o data.o
 
-CXXFLAGS = -I${PLINKIO}/include -O3 -Wall -Werror
+CXXFLAGS = -I${PLINKIO} -O3 -Wall -Werror
 LDFLAGS = -lplinkio
 
 

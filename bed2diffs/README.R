@@ -10,10 +10,25 @@ opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE)
 
 #' ## bed2diffs
 #' `bed2diffs` is a small program that reads genetic data in plink binary format (i.e., from a set of three files with extensions bed/bim/fam) and computes the average genetic dissimilarity matrix.
-#' 
+#'
 #' ### Compilation
+#'
+#' `bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotype data stored in plink binary format. To install libplinkio, first clone the GitHub repository and get the latest version (commit 781e9ee37076).
+#'
+#' ```
+#' git clone https://github.com/mfranberg/libplinkio
+#' cd libplinkio
+#' git checkout 781e9ee37076
+#' ```
+#'
+#' Then follow the instructions to install libplinkio to a custom location /path/to/plinkio. Finally, update `PLINKIO` in the Makefile in `src` and `src-without-openmp` directories.
 #' 
-#' `bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotype data stored in plink binary format. Use the instructions for installing to a custom location /path/to/plinkio. Then update `PLINKIO` in the Makefile in `src` and `src-without-openmp` directories.
+#' ```
+#' mkdir build
+#' cd build
+#' ../configure --prefix=/path/to/plinkio
+#' make && make check && make install
+#' ```
 #' 
 #' Optionally, `bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences. Multithreading is useful if the data contains millions of SNPs. Choose the `src` directory to compile `bed2diffs` with OpenMP support; otherwise, choose the `src-wout-openmp` directory. Finally, to compile, use `make linux` on a Linux machine or `make darwin` on a Mac.
 #' 

@@ -5,7 +5,22 @@ bed2diffs
 
 ### Compilation
 
-`bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotype data stored in plink binary format. Use the instructions for installing to a custom location /path/to/plinkio. Then update `PLINKIO` in the Makefile in `src` and `src-without-openmp` directories.
+`bed2diffs` uses the [libplinkio](https://github.com/fadern/libplinkio) library to read genotype data stored in plink binary format. To install libplinkio, first clone the GitHub repository and get the latest version (commit 781e9ee37076).
+
+```
+git clone https://github.com/mfranberg/libplinkio
+cd libplinkio
+git checkout 781e9ee37076
+```
+
+Then follow the instructions to install libplinkio to a custom location /path/to/plinkio. Finally, update `PLINKIO` in the Makefile in `src` and `src-without-openmp` directories.
+
+```
+mkdir build
+cd build
+../configure --prefix=/path/to/plinkio
+make && make check && make install
+```
 
 Optionally, `bed2diffs` uses OpenMP to parallelize the computation of the pairwise differences. Multithreading is useful if the data contains millions of SNPs. Choose the `src` directory to compile `bed2diffs` with OpenMP support; otherwise, choose the `src-wout-openmp` directory. Finally, to compile, use `make linux` on a Linux machine or `make darwin` on a Mac.
 
@@ -32,11 +47,11 @@ or, to use two threads, type
     ./src/bed2diffs_v1 --bfile ./test/example-SNP-major-mode --nthreads 2
 
     ## Set the number of OpenMP threads to 1
-    ## 
-    ## Compute the average genetic differences according to: 
+    ##
+    ## Compute the average genetic differences according to:
     ##   Dij = (1/|Mij|) sum_{m in Mij} (z_{im} - z_{jm})^2
     ##   where Mij is the set of SNPs where both i and j are called
-    ## 
+    ##
     ## Detected plink dataset ./test/example-SNP-major-mode.[bed/bim/fam] with 6 samples and 6 SNPs
     ## Computed average pairwise differences across 6 SNPs
 
@@ -65,18 +80,18 @@ The second dataset is in sample-major mode. This means that the bed file stores 
     ./src/bed2diffs_v1 --bfile ./test/example-sample-major-mode
 
     ## Set the number of OpenMP threads to 1
-    ## 
-    ## Compute the average genetic differences according to: 
+    ##
+    ## Compute the average genetic differences according to:
     ##   Dij = (1/|Mij|) sum_{m in Mij} (z_{im} - z_{jm})^2
     ##   where Mij is the set of SNPs where both i and j are called
-    ## 
+    ##
     ## [Data::getsize] bed2diffs requires plink files [bed/bim/fam] in SNP-major mode
 
 We can use `plink` can transpose the data into SNP-major mode, which is the default:
 
     plink --bfile ./test/example-sample-major-mode --transpose --make-bed --out ./test/example-sample-major-mode-transposed
 
-    ## 
+    ##
     ## @----------------------------------------------------------@
     ## |        PLINK!       |     v1.07      |   10/Aug/2009     |
     ## |----------------------------------------------------------|
@@ -85,11 +100,11 @@ We can use `plink` can transpose the data into SNP-major mode, which is the defa
     ## |  For documentation, citation & bug-report instructions:  |
     ## |        http://pngu.mgh.harvard.edu/purcell/plink/        |
     ## @----------------------------------------------------------@
-    ## 
-    ## Skipping web check... [ --noweb ] 
+    ##
+    ## Skipping web check... [ --noweb ]
     ## Writing this text to log file [ ./test/example-sample-major-mode-transposed.log ]
     ## Analysis started: Thu Aug  3 00:41:18 2017
-    ## 
+    ##
     ## Options in effect:
     ##  --noweb
     ##  --bfile ./test/example-sample-major-mode
@@ -97,12 +112,12 @@ We can use `plink` can transpose the data into SNP-major mode, which is the defa
     ##  --recode
     ##  --make-bed
     ##  --out ./test/example-sample-major-mode-transposed
-    ## 
+    ##
     ## ** For gPLINK compatibility, do not use '.' in --out **
-    ## Reading map (extended format) from [ ./test/example-sample-major-mode.bim ] 
+    ## Reading map (extended format) from [ ./test/example-sample-major-mode.bim ]
     ## 6 markers to be included from [ ./test/example-sample-major-mode.bim ]
-    ## Reading pedigree information from [ ./test/example-sample-major-mode.fam ] 
-    ## 6 individuals read from [ ./test/example-sample-major-mode.fam ] 
+    ## Reading pedigree information from [ ./test/example-sample-major-mode.fam ]
+    ## 6 individuals read from [ ./test/example-sample-major-mode.fam ]
     ## 1 individuals with nonmissing phenotypes
     ## Assuming a disease phenotype (1=unaff, 2=aff, 0=miss)
     ## Missing phenotype value is also -9
@@ -110,7 +125,7 @@ We can use `plink` can transpose the data into SNP-major mode, which is the defa
     ## 4 males, 0 females, and 2 of unspecified sex
     ## Warning, found 2 individuals with ambiguous sex codes
     ## Writing list of these individuals to [ ./test/example-sample-major-mode-transposed.nosex ]
-    ## Reading genotype bitfile from [ ./test/example-sample-major-mode.bed ] 
+    ## Reading genotype bitfile from [ ./test/example-sample-major-mode.bed ]
     ## Detected that binary PED file is v1.00 individual-major mode
     ## Before frequency and genotyping pruning, there are 6 SNPs
     ## Converting data to SNP-major format
@@ -122,12 +137,12 @@ We can use `plink` can transpose the data into SNP-major mode, which is the defa
     ## After frequency and genotyping pruning, there are 6 SNPs
     ## After filtering, 1 cases, 0 controls and 5 missing
     ## After filtering, 4 males, 0 females, and 2 of unspecified sex
-    ## Writing pedigree information to [ ./test/example-sample-major-mode-transposed.fam ] 
-    ## Writing map (extended format) information to [ ./test/example-sample-major-mode-transposed.bim ] 
-    ## Writing genotype bitfile to [ ./test/example-sample-major-mode-transposed.bed ] 
+    ## Writing pedigree information to [ ./test/example-sample-major-mode-transposed.fam ]
+    ## Writing map (extended format) information to [ ./test/example-sample-major-mode-transposed.bim ]
+    ## Writing genotype bitfile to [ ./test/example-sample-major-mode-transposed.bed ]
     ## Using (default) SNP-major mode
     ## Converting data to SNP-major format
-    ## 
+    ##
     ## Analysis finished: Thu Aug  3 00:41:18 2017
 
 Finally, `bed2diffs_v1` produces the same genetic dissimilarity matrix from the transposed data.
@@ -200,13 +215,13 @@ Here is the dissimilarity matrix for the example dataset, computed with `bed2dif
     ./src/bed2diffs_v2 --bfile ./test/example-SNP-major-mode
 
     ## Set the number of OpenMP threads to 1
-    ## 
-    ## Compute the average genetic differences according to: 
+    ##
+    ## Compute the average genetic differences according to:
     ##   Dij = (1/|Mtot|) sum_{m in Mtot} (z*_{im} - z*_{jm})^2
     ##   where Mtot is the set of all SNPs and
     ##   z*_{im} = z_{im} if sample i is called at marker m
     ##           = zbar_m (the average genotype at m) otherwise
-    ## 
+    ##
     ## Detected plink dataset ./test/example-SNP-major-mode.[bed/bim/fam] with 6 samples and 6 SNPs
     ## Computed average pairwise differences across 6 SNPs
 
@@ -249,14 +264,14 @@ See Documentation/bed2diffs-doc.pdf for a slightly longer explanation about the 
 
 ``` r
 # Use the "pairwise.complete.obs" method to compute pairwise dissimilarities
-# This straightforward implementation 
+# This straightforward implementation
 # uses a double loop, so would be slow if the sample size is large.
 bed2diffs_v1 <- function(genotypes) {
-  
+
   nIndiv <- nrow(genotypes)
   nSites <- ncol(genotypes)
   diffs <- matrix(0, nIndiv, nIndiv)
-  
+
   for (i in seq(nIndiv - 1)) {
     for (j in seq(i + 1, nIndiv)) {
       x <- genotypes[i, ]
@@ -265,35 +280,35 @@ bed2diffs_v1 <- function(genotypes) {
       diffs[j, i] <- diffs[i, j]
     }
   }
-  
+
   diffs
 }
 
 # Compute the diffs matrix using the "mean allele frequency"
 # imputation method
 bed2diffs_v2 <- function(genotypes) {
-  
+
   nIndiv <- nrow(genotypes)
   nSites <- ncol(genotypes)
   missing <- is.na(genotypes)
-  
+
   ## Impute NAs with the column means (= twice the allele frequencies)
   geno_means <- colMeans(genotypes, na.rm = TRUE)
   # nIndiv rows of genotype means
-  geno_means <- matrix(geno_means, nrow = nIndiv, ncol = nSites, byrow = TRUE) 
-  
+  geno_means <- matrix(geno_means, nrow = nIndiv, ncol = nSites, byrow = TRUE)
+
   ## Set the means which correspond to observed genotypes to 0
   geno_means[missing == FALSE] <- 0
-  ## Set the missing genotypes to 0 (used to be NA) 
+  ## Set the missing genotypes to 0 (used to be NA)
   genotypes[missing == TRUE] <- 0
   genotypes <- genotypes + geno_means
-  
+
   similarities <- genotypes %*% t(genotypes) / nSites
   self_similarities <- diag(similarities)
   vector1s <- rep(1, nIndiv)
-  
-  diffs <- 
-    self_similarities %*% t(vector1s) + 
+
+  diffs <-
+    self_similarities %*% t(vector1s) +
     vector1s %*% t(self_similarities) - 2 * similarities
   diffs
 }
