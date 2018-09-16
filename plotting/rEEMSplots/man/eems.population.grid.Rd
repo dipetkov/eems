@@ -9,8 +9,8 @@ eems.population.grid(mcmcpath, plotpath, longlat, plot.width = 7,
   col.grid = "gray80", lwd.grid = 1, add.demes = FALSE,
   col.demes = "black", pch.demes = 19, min.cex.demes = 1,
   max.cex.demes = 3, add.outline = TRUE, col.outline = "gray90",
-  lwd.outline = 2, add.coord = FALSE, col.coord = "red", pch.coord = 3,
-  datapath = NULL)
+  lwd.outline = 2, add.coord = FALSE, col.coord = "red",
+  pch.coord = 3, datapath = NULL)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}

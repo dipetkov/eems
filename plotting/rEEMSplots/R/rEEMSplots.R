@@ -1122,13 +1122,17 @@ myheatmap <- function(x, col = NULL, colscale = NULL) {
 }
 ## By default, all figures are saved as bitmap PNG images. However,
 ## it is straightforward to use another format (Here the alternative is PDF)
-save.graphics <- function(plotpath, plot.params) {
+save.graphics <- function(plotpath, plot.params, ...) {
     if (plot.params$out.png) {
-        bitmap(paste0(plotpath, '%02d.png'), type = 'png16m', res = plot.params$res,
-               height = plot.params$height, width = plot.params$width, units = 'in')
+        bitmap(paste0(plotpath, '%02d.png'), type = 'png16m',
+               res = plot.params$res, units = 'in',
+               height = plot.params$height, 
+               width = plot.params$width, ...)
     } else {
         pdf(paste0(plotpath, '%02d.pdf'),
-            height = plot.params$height, width = plot.params$width, onefile = FALSE)
+            height = plot.params$height, 
+            width = plot.params$width, 
+            onefile = FALSE, ...)
     }
 }
 
@@ -1316,6 +1320,7 @@ load.required.package <- function(package, required.by) {
 #' @param m.plot.xy Statements which add graphical elements (e.g. points) on top of the migration sufrace.
 #' @param q.plot.xy Statements which add graphical elements (e.g. points) on top of the diversity surface.
 #' @param xy.coords Additional coordinates at which to estimate the migration and diversity rates.
+#' @param ... Extra parameters passed to the graphics generating functions (\code{bitmap} for png and \code{pdf} for pdf).
 #' @references Light A and Bartlein PJ (2004). The End of the Rainbow? Color Schemes for Improved Data Graphics. EOS Transactions of the American Geophysical Union, 85(40), 385.
 #' @examples
 #' # Use the provided example or supply the path to your own EEMS run.
@@ -1352,7 +1357,8 @@ load.required.package <- function(package, required.by) {
 #'            plot.height = 8,
 #'            plot.width = 7,
 #'            res = 600,
-#'            out.png = TRUE)
+#'            out.png = TRUE,
+#'            useDingbats = FALSE)
 #'
 #' ## Generate PDF figures with height 9 inches and width 8 inches.
 #' ## The resolution option, res, is ignored.
@@ -1524,7 +1530,8 @@ eems.plots <- function(mcmcpath,
                        add.title = TRUE,
                        m.plot.xy = NULL,
                        q.plot.xy = NULL,
-                       xy.coords = NULL) {
+                       xy.coords = NULL,
+                       ...) {
     
     plot.params <- list(eems.colors = eems.colors, m.colscale = m.colscale, q.colscale = q.colscale,
                         add.map = add.map, add.grid = add.grid, add.outline = add.outline, add.demes = add.demes,
@@ -1549,7 +1556,7 @@ eems.plots <- function(mcmcpath,
     message(mcmcpath)
     
     ## Plot filled contour of estimated effective migration rates
-    save.graphics(paste0(plotpath, '-mrates'), save.params)
+    save.graphics(paste0(plotpath, '-mrates'), save.params, ...)
     par(las = 1, font.main = 1, xpd = xpd)
     mrates.raster <- average.eems.contours(mcmcpath, dimns, longlat, plot.params,
                                            is.mrates = TRUE, plot.xy = m.plot.xy)

@@ -9,9 +9,9 @@ eems.voronoi.samples(mcmcpath, plotpath, longlat, post.draws = 1,
   add.grid = FALSE, col.grid = "gray80", lwd.grid = 1,
   add.outline = TRUE, col.outline = "gray80", lwd.outline = 2,
   add.demes = FALSE, col.demes = "gray80", pch.demes = 19,
-  cex.demes = 1, add.seeds = TRUE, col.seeds = "#8AE234", pch.seeds = 4,
-  cex.seeds = 1, eems.colors = NULL, m.colscale = NULL,
-  q.colscale = NULL, add.title = FALSE)
+  cex.demes = 1, add.seeds = TRUE, col.seeds = "#8AE234",
+  pch.seeds = 4, cex.seeds = 1, eems.colors = NULL,
+  m.colscale = NULL, q.colscale = NULL, add.title = FALSE)
 }
 \arguments{
 \item{mcmcpath}{A vector of EEMS output directories, for the same dataset. Warning: There is minimal checking that the given  directories are for the same dataset.}
