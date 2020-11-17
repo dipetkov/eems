@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     po::options_description generic_options("Generic options");
     generic_options.add_options()
       ("help", "Produce this help message")
-      ("params", po::value<string>(&config_file),
+      ("params", po::value<string>(&config_file)->required(),
        "Specify the EEMS configuration file")
       ;
     
