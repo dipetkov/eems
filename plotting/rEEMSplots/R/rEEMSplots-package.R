@@ -3,8 +3,8 @@
 #' @import Rcpp RcppEigen
 #' @import raster rgeos sp
 #' @import graphics grDevices
-#' @importFrom stats lm
-#' @importFrom utils read.table
+#' @importFrom stats lm na.omit
+#' @importFrom utils read.table write.table
 NULL
 
 load.required.package <- function(package, required.by) {
