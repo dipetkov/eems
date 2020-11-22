@@ -1,6 +1,5 @@
 Package: rEEMSplots
-Version: 0.0.0.9000
-Date: 2015-03-04
+Version: 0.0.1
 Title: Generate EEMS graphics output
 Authors@R: person("Desislava", "Petkova", email = "desislavka@gmail.com", role = c("aut", "cre"))
 Description: Provides several functions to visualize the results of analyzing
