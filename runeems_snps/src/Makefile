@@ -6,7 +6,7 @@ BOOST_INC = /usr/local/include
 EXE = runeems_snps
 OBJ = runeems_snps.o eems.o util.o mcmc.o draw.o habitat.o graph.o
 
-CXXFLAGS = -I${BOOST_INC} -I${EIGEN_INC} -O3 -DNDEBUG
+CXXFLAGS = -std=c++14 -I${BOOST_INC} -I${EIGEN_INC} -O3 -DNDEBUG
 LDFLAGS = \
 	-lboost_system \
 	-lboost_program_options \

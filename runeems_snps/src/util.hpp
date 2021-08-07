@@ -21,6 +21,8 @@ using namespace Eigen;
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/algorithm/string.hpp>
 
+#define BOOST_ALLOW_DEPRECATED_HEADERS
+
 #ifndef UTIL_H
 #define UTIL_H
 
