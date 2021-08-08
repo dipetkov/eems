@@ -12,9 +12,7 @@ Please consider reading the paper `EEMS-article.pdf` (or the published version [
 
 ### C++ implementation
 
-The C++ implementation uses the [Eigen](http://eigen.tuxfamily.org) template library for linear algebra computations and the [Boost](http://www.boost.org) libraries for random number generation and the habitat geometry. EEMS has been tested with Eigen 3.2.2 and Boost 1.57 and might not be compatible with newer versions of Boost/Eigen. After downloading Eigen (which does not need installation) and installing Boost, update the variables `EIGEN_INC`, `BOOST_LIB`, `BOOST_INC` in the Makefile. The dynamic Boost libraries are linked to slightly differently on a Mac and a Linux machine, so run `make darwin` on a Mac or `make linux` on a Linux machine. This C++ implementation has not been tested on Windows.
-
-*Note*: The C++ code is not compatible with Boost 1.63; downgrade to Boost 1.57 to compile it.
+The C++ implementation uses the [Eigen](http://eigen.tuxfamily.org) template library for linear algebra computations and the [Boost](http://www.boost.org) libraries for random number generation and the habitat geometry. EEMS has been tested with Eigen ~~3.2.2~~ 3.3.9 and Boost ~~1.57~~ 1.76.0 and might not be compatible with newer versions of Boost/Eigen. After downloading Eigen (which does not need installation) and installing Boost, update the variables `EIGEN_INC`, `BOOST_LIB`, `BOOST_INC` in the Makefile. The dynamic Boost libraries are linked to slightly differently on a Mac and a Linux machine, so run `make darwin` on a Mac or `make linux` on a Linux machine. This C++ implementation has not been tested on Windows.
 
 ### EEMS for SNPs and microsatellites
 
