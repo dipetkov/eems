@@ -38,17 +38,14 @@ myfilled.contour <- function(x = seq(0, 1, length.out = nrow(z)),
         z <- x$z
         y <- x$y
         x <- x$x
-      }
-      else {
+      } else {
         z <- x
         x <- seq.int(0, 1, length.out = nrow(z))
       }
-    }
-    else {
+    } else {
       stop("no 'z' matrix specified")
     }
-  }
-  else if (is.list(x)) {
+  } else if (is.list(x)) {
     y <- x$y
     x <- x$x
   }
@@ -76,8 +73,7 @@ myfilled.contour <- function(x = seq(0, 1, length.out = nrow(z)),
       if (axes) {
         axis(4)
       }
-    }
-    else {
+    } else {
       key.axes
     }
     if (!missing(key.title)) {
@@ -103,8 +99,7 @@ myfilled.contour <- function(x = seq(0, 1, length.out = nrow(z)),
       Axis(x, side = 1)
       Axis(y, side = 2)
     }
-  }
-  else {
+  } else {
     plot.axes
   }
   if (frame.plot) {

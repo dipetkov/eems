@@ -9,11 +9,37 @@ remove_demes_outside_habitat(habitat, mcmcpath, gridpath)
 \arguments{
 \item{habitat}{A SpatialPolygons habitat (possibly with holes).}
 
-\item{mcmcpath}{An EEMS output directory which contrains at a minimum the files
-demes.txt, edges.txt, ipmap.txt.}
+\item{mcmcpath}{An EEMS output directory which contains demes.txt and edges.txt.}
 
 \item{gridpath}{Output filename.}
 }
 \description{
 Remove demes that lie outside of the habitat
+}
+\examples{
+extdata <- system.file("extdata", package = "rEEMSplots")
+
+# The input is an EEMS run with the default regular triangular grid without holes
+eems_run_with_default_habitat<- file.path(extdata, "EEMS-barrier")
+# The output filepath; three files with the same name but different extension to be created
+custom_grid_path_with_holes <- file.path(path.expand("~"), "gridpath-with-holes")
+
+# Load the population habitat
+outer <- read.table(file.path(eems_run_with_default_habitat, "outer.txt"))
+# Each hole is a ring (simple closed polygon) and the holes don't overlap
+hole1 <- data.frame(V1 = c(2., 5., 5., 2., 2.), V2 = c(2., 2., 5., 5., 2.))
+hole2 <- data.frame(V1 = c(6.5, 10., 8., 6.5), V2 = c(2.5, 5., 5., 2.5))
+
+# Create the new habitat with holes
+new_habitat_with_holes <- create_habitat_with_holes(outer, list(hole1, hole2))
+
+# plot(new_habitat_with_holes, col = "gray")
+
+# This function creates three files:
+# * The pair gridpath.demes and gridpath.edges which specify a custom population grid with holes
+# * The plot gridpath.png which visualizes the custom grid with demes in red and edges in green
+remove_demes_outside_habitat(
+  habitat=new_habitat_with_holes,
+  mcmcpath=eems_run_with_default_habitat,
+  gridpath=custom_grid_path_with_holes)
 }
