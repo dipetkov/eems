@@ -13,14 +13,11 @@ void Graph::generate_grid(const string &datapath, const string &gridpath, const 
   if (gridpath.empty()) {
     cout << "  Generate population grid and sample assignment" << endl;
     make_triangular_grid(habitat,nDemeDensity);
-    map_indiv_to_deme(datapath,nIndiv);
   } else {
-    cout << "  Load population grid and sample assignment from " << gridpath << endl;
-    // Read the population grid (demes and edges)
+    cout << "  Load population grid (demes & edges) from " << gridpath << endl;
     read_input_grid(gridpath,DemeCoord,DemePairs);
-    // Read the assignment of individuals to demes
-    read_indiv_to_deme(gridpath,DemeCoord.rows(),indiv2deme);
   }
+  map_indiv_to_deme(datapath,nIndiv);
   dlmwrite_grid(mcmcpath);
   check_condition(is_connected(), "The population grid is not connected.");
   // Finally, reorder the demes, whether the graph is constructed on the fly or loaded from files
@@ -270,14 +267,4 @@ void Graph::read_input_grid(const string &gridpath, MatrixXd &DemeCoord, MatrixX
   DemePairs = DemePairs.array() - 1;
   check_condition(DemePairs.minCoeff() >= 0 && DemePairs.maxCoeff() < DemeCoord.rows(),
 		  "Check that " + gridpath + ".edges is a list of two indices per row, in the range [0,nDemes).");
-}
-// Read the assignment of individuals to demes
-void Graph::read_indiv_to_deme(const string &gridpath, const int nDemes, VectorXi &indiv2deme) {
-  MatrixXd tempi = readMatrixXd(gridpath + ".ipmap");
-  check_condition(tempi.cols() == 1,
-		  "Check that " + gridpath + ".ipmap is a list of deme indices, one index per row.");
-  indiv2deme = tempi.col(0).cast<int>();
-  indiv2deme = indiv2deme.array() - 1;
-  check_condition(indiv2deme.minCoeff() >= 0 && indiv2deme.maxCoeff() < nDemes,
-		  "Check that " + gridpath + ".ipmap is a list of deme indices, in the range [0, nDemes).");
 }

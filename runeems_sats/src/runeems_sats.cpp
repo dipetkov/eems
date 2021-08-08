@@ -40,7 +40,7 @@ int main(int argc, char** argv)
       ("prevpath", po::value<string>(&params.prevpath)->default_value(""),
        "Full path to previous output directory, i.e., the mcmcpath in a previous EEMS run.")
       ("gridpath", po::value<string>(&params.gridpath)->default_value(""),
-       "Full path to a set of three files: gridpath.demes, gridpath.edges and gridpath.ipmap.")
+       "Full path to a set of two files: gridpath.demes and gridpath.edges.")
       // Interpret the input nDemes as a suggestion because there are some further constraints
       // when constructing a regular triangular grid in an irregular habitat
       ("nDemes", po::value<int>(&params.nDemes),
