@@ -1,3 +1,12 @@
+# https://github.com/r-spatial/sf/issues/572
+st_envelope <- function(x) {
+  st_as_sfc(st_bbox(x))
+}
+st_is_ring <- function(x) {
+  boundary <- st_polygonize(x)
+  !st_is_empty(boundary)
+}
+
 # Redefine the 'filledContour' function from the 'raster' package
 # since I don't like how the legend looks.
 # For now, I have only changed how the legend/bar is plotted,
@@ -226,10 +235,10 @@ check.habitat.outer.is.valid <- function(mcmcpath, longlat) {
   # and Closed (end points overlap).
   x <- outer[, 1]
   y <- outer[, 2]
-  l <- readWKT(paste("LINESTRING(", paste(paste(x, y), collapse = ", "), ")"))
-  if (!rgeos::gIsRing(l, byid = FALSE)) {
+  l <- st_as_sfc(paste("LINESTRING(", paste(paste(x, y), collapse = ", "), ")"))
+  if (!st_is_ring(l)) {
     message(
-      "Error (rgeos):\n",
+      "Error:\n",
       "The habitat geometry is not a valid ring (a ring is both simple and closed)\n",
       "Let the habitat be the rectangle defined by (xmin, ymin) and (xmax, yxmax)\n",
       "where xmin, xmax = range(longitude) and ymin, ymax = range(latitude)."
@@ -253,13 +262,13 @@ filled.contour.map <- function(mcmcpath, longlat, plot.params) {
 
 filled.contour.outline <- function(mcmcpath, longlat, plot.params) {
   outer <- check.habitat.outer.is.valid(mcmcpath, longlat)
-  boundary <- sp::SpatialPolygons(list(Polygons(list(Polygon(outer, hole = FALSE)), "1")))
+  boundary <- st_polygon(list(outer))
   if (!is.null(plot.params$proj.in)) {
-    proj4string(boundary) <- CRS(plot.params$proj.in)
-    boundary <- sp::spTransform(boundary, CRSobj = CRS(plot.params$proj.out))
+    boundary <- st_sfc(boundary, crs = plot.params$proj.in)
+    boundary <- st_transform(boundary, plot.params$proj.out)
   }
   # The filledContour fills a rectangular plot; now color the habitat exterior white.
-  exterior <- rgeos::gDifference(rgeos::gEnvelope(boundary), boundary)
+  exterior <- st_difference(st_envelope(boundary), boundary)
   if (!is.null(exterior)) {
     plot(exterior, col = "white", border = "white", add = TRUE)
   }

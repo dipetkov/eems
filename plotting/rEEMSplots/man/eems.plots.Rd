@@ -94,8 +94,7 @@ the deme with the most samples has size \code{max.cex.demes}.}
 
 \item{lwd.outline}{The line width of the habitat outline. Defaults to 2.}
 
-\item{projection.in}{The input cartographic projection, specified as a PROJ.4 string.
-Requires the \code{rgdal} package.}
+\item{projection.in}{The input cartographic projection, specified as a PROJ.4 string.}
 
 \item{projection.out}{The output cartographic projection, specified as a PROJ.4 string.}
 
@@ -292,7 +291,6 @@ eems.plots(
   q.colscale = c(-0.3, +0.3)
 )
 
-library("rgdal")
 projection_none <- "+proj=longlat +datum=WGS84"
 projection_mercator <- "+proj=merc +datum=WGS84"
 

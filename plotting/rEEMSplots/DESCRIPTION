@@ -1,5 +1,5 @@
 Package: rEEMSplots
-Version: 0.0.1
+Version: 0.0.2
 Title: Generate EEMS graphics output
 Authors@R: person("Desislava", "Petkova", email = "desislavka@gmail.com", role = c("aut", "cre"))
 Description: Provides several functions to visualize the results of analyzing
@@ -20,8 +20,8 @@ Imports:
     RcppEigen (>= 0.3.2.5.0),
     methods,
     raster (>= 2.4-15),
-    rgeos (>= 0.3-11),
     sp (>= 1.1-1),
+    sf,
     stats (>= 3.3.2),
     utils (>= 3.3.2)
 Depends:
@@ -31,7 +31,6 @@ Suggests:
     Matrix (>= 1.2.7.1),
     deldir (>= 0.1),
     dichromat,
-    rgdal (>= 0.9),
     rworldmap (>= 1.3),
     rworldxtra (>= 1.01)
 NeedsCompilation: yes

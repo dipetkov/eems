@@ -72,7 +72,6 @@
 #' also have bigger size: the deme with the fewest samples has size \code{min.cex.demes} and
 #' the deme with the most samples has size \code{max.cex.demes}.
 #' @param projection.in The input cartographic projection, specified as a PROJ.4 string.
-#' Requires the \code{rgdal} package.
 #' @param projection.out The output cartographic projection, specified as a PROJ.4 string.
 #' @param add.map A logical value indicating whether to add a high-resolution geographic map.
 #' Requires the \code{rworldmap} and \code{rworldxtra} packages. It also requires that
@@ -209,7 +208,6 @@
 #'   q.colscale = c(-0.3, +0.3)
 #' )
 #'
-#' library("rgdal")
 #' projection_none <- "+proj=longlat +datum=WGS84"
 #' projection_mercator <- "+proj=merc +datum=WGS84"
 #'

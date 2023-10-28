@@ -1,6 +1,6 @@
 #' @useDynLib rEEMSplots
 #' @import Rcpp RcppEigen
-#' @import raster rgeos sp
+#' @import raster sf sp
 #' @import graphics grDevices
 #' @importFrom stats lm na.omit
 #' @importFrom utils read.table write.table

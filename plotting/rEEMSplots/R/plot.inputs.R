@@ -18,8 +18,6 @@ check.plot.params <- function(params) {
     if (!is.null(params$proj.out)) {
       stop("Specify the input projection, projection.in, as a PROJ.4 string")
     }
-  } else {
-    load.required.package(package = "rgdal", required.by = "projection.in")
   }
 
   if (is.logical(params$add.map)) {
