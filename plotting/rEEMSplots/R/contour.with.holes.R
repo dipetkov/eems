@@ -1,4 +1,3 @@
-
 #' Create a habitat with holes
 #' @param outer A two-column matrix of coordinates (longitude, latitude).
 #' @param holes List of holes. Each hole is a two-column matrix of coordinates
@@ -65,7 +64,7 @@ plot_basic_popgrid <- function(gridpath, col.grid = "green", col.demes = "red", 
 #' extdata <- system.file("extdata", package = "rEEMSplots")
 #'
 #' # The input is an EEMS run with the default regular triangular grid without holes
-#' eems_run_with_default_habitat<- file.path(extdata, "EEMS-barrier")
+#' eems_run_with_default_habitat <- file.path(extdata, "EEMS-barrier")
 #' # The output filepath; three files with the same name but different extension to be created
 #' custom_grid_path_with_holes <- file.path(path.expand("~"), "gridpath-with-holes")
 #'
@@ -74,7 +73,7 @@ plot_basic_popgrid <- function(gridpath, col.grid = "green", col.demes = "red", 
 #' # Each hole is a ring (simple closed polygon) and the holes don't overlap
 #' hole1 <- data.frame(V1 = c(2., 5., 5., 2., 2.), V2 = c(2., 2., 5., 5., 2.))
 #' hole2 <- data.frame(V1 = c(6.5, 10., 8., 6.5), V2 = c(2.5, 5., 5., 2.5))
-#' 
+#'
 #' # Create the new habitat with holes
 #' new_habitat_with_holes <- create_habitat_with_holes(outer, list(hole1, hole2))
 #'
@@ -84,10 +83,10 @@ plot_basic_popgrid <- function(gridpath, col.grid = "green", col.demes = "red", 
 #' # * The pair gridpath.demes and gridpath.edges which specify a custom population grid with holes
 #' # * The plot gridpath.png which visualizes the custom grid with demes in red and edges in green
 #' remove_demes_outside_habitat(
-#'   habitat=new_habitat_with_holes,
-#'   mcmcpath=eems_run_with_default_habitat,
-#'   gridpath=custom_grid_path_with_holes)
-
+#'   habitat = new_habitat_with_holes,
+#'   mcmcpath = eems_run_with_default_habitat,
+#'   gridpath = custom_grid_path_with_holes
+#' )
 remove_demes_outside_habitat <- function(habitat, mcmcpath, gridpath) {
   demes <- read.table(file.path(mcmcpath, "demes.txt"))
   edges <- read.table(file.path(mcmcpath, "edges.txt"))

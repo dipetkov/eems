@@ -1,4 +1,3 @@
-
 #' @useDynLib rEEMSplots
 #' @import Rcpp RcppEigen
 #' @import raster rgeos sp

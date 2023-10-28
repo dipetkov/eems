@@ -1,4 +1,3 @@
-
 # This function is mainly for testing purposes and will create on Voronoi diagram
 # for each saved MCMC iteration
 voronoi.diagram <- function(mcmcpath, dimns, longlat, plot.params,

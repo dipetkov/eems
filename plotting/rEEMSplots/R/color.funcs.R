@@ -1,4 +1,3 @@
-
 default.eems.colors <- function() {
   c(
     # orange sequence, from dark to light

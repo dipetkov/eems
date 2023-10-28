@@ -1,6 +1,4 @@
-
 check.plot.params <- function(params) {
-
   ## Is there a way to check if a string is a valid PROJ.4 string?
   if (is.character(params$proj.in)) {
     params$proj.in <- params$proj.in[1]
@@ -417,13 +415,17 @@ read.edges <- function(mcmcpath) {
 
 read.graph <- function(path, longlat) {
   eems.output <- NULL
-  if (file.exists(file.path(path, "demes.txt")) &&
-    file.exists(file.path(path, "ipmap.txt")) &&
-    file.exists(file.path(path, "outer.txt"))) {
+  if (
+    file.exists(file.path(path, "demes.txt")) &&
+      file.exists(file.path(path, "ipmap.txt")) &&
+      file.exists(file.path(path, "outer.txt"))
+  ) {
     eems.output <- TRUE
-  } else if (file.exists(paste0(path, ".coord")) &&
-    file.exists(paste0(path, ".diffs")) &&
-    file.exists(paste0(path, ".outer"))) {
+  } else if (
+    file.exists(paste0(path, ".coord")) &&
+      file.exists(paste0(path, ".diffs")) &&
+      file.exists(paste0(path, ".outer"))
+  ) {
     eems.output <- FALSE
   }
   if (is.null(eems.output)) {

@@ -1,4 +1,3 @@
-
 #' A function to plot effective migration and diversity surfaces from EEMS output
 #'
 #' Given a vector of EEMS output directories, this function generates several figures

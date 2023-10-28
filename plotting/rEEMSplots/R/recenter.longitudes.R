@@ -1,4 +1,3 @@
-
 #' Shift spatial object longitudinally
 #'
 #' The function `sp::recenter` shifts coordinates for a Pacific view by shifting longitudes

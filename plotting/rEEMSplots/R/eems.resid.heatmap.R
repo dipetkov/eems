@@ -1,4 +1,3 @@
-
 myheatmap <- function(x, col = NULL, colscale = NULL) {
   if (!is.matrix(x)) x <- as.matrix(x)
   r <- nrow(x)
@@ -27,9 +26,11 @@ heatmap.resid <- function(datapath, mcmcpath) {
   nChains <- 0
   Delta <- matrix(0, nIndiv, nIndiv)
   for (path in mcmcpath) {
-    if (file.exists(file.path(path, "rdistJtDobsJ.txt")) &&
-      file.exists(file.path(path, "rdistJtDhatJ.txt")) &&
-      file.exists(file.path(path, "rdistoDemes.txt"))) {
+    if (
+      file.exists(file.path(path, "rdistJtDobsJ.txt")) &&
+        file.exists(file.path(path, "rdistJtDhatJ.txt")) &&
+        file.exists(file.path(path, "rdistoDemes.txt"))
+    ) {
       message(path)
       nChains <- nChains + 1
       ipmap <- scan(file.path(path, "ipmap.txt"), what = numeric(), quiet = TRUE)

@@ -1,4 +1,3 @@
-
 #' A function to plot Voronoi diagrams of effective migration and diversity rates
 #'
 #' Given a set of EEMS output directories, this function takes random draws from the posterior

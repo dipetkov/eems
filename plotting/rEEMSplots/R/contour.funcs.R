@@ -1,4 +1,3 @@
-
 # Redefine the 'filledContour' function from the 'raster' package
 # since I don't like how the legend looks.
 # For now, I have only changed how the legend/bar is plotted,

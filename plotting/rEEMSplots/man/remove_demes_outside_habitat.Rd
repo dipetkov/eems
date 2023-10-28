@@ -20,7 +20,7 @@ Remove demes that lie outside of the habitat
 extdata <- system.file("extdata", package = "rEEMSplots")
 
 # The input is an EEMS run with the default regular triangular grid without holes
-eems_run_with_default_habitat<- file.path(extdata, "EEMS-barrier")
+eems_run_with_default_habitat <- file.path(extdata, "EEMS-barrier")
 # The output filepath; three files with the same name but different extension to be created
 custom_grid_path_with_holes <- file.path(path.expand("~"), "gridpath-with-holes")
 
@@ -39,7 +39,8 @@ new_habitat_with_holes <- create_habitat_with_holes(outer, list(hole1, hole2))
 # * The pair gridpath.demes and gridpath.edges which specify a custom population grid with holes
 # * The plot gridpath.png which visualizes the custom grid with demes in red and edges in green
 remove_demes_outside_habitat(
-  habitat=new_habitat_with_holes,
-  mcmcpath=eems_run_with_default_habitat,
-  gridpath=custom_grid_path_with_holes)
+  habitat = new_habitat_with_holes,
+  mcmcpath = eems_run_with_default_habitat,
+  gridpath = custom_grid_path_with_holes
+)
 }

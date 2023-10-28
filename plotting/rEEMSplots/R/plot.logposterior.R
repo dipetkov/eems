@@ -1,4 +1,3 @@
-
 plot.logposterior <- function(mcmcpath) {
   message("Plotting posterior probability trace")
   nchains <- length(mcmcpath)

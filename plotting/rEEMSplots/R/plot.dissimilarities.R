@@ -1,4 +1,3 @@
-
 JtDJ2BandW <- function(JtDJ, sizes = NULL) {
   # There should be NAs on the main diagonal of JtDobsJ -- these elements correspond to demes with
   # a single observed sample. And since there is a single sample taken, the average dissimilarity

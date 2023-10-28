@@ -1,4 +1,3 @@
-
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
     "rEEMSplots uses DarkOrange to Blue color scheme, with 'white' as the midpoint color.\n",

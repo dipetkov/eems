@@ -1,4 +1,3 @@
-
 #' A function to plot the constructed population grid and optionally the initial sampling locations
 #'
 #' Given an EEMS output directory, this function generates one figure to visualize the EEMS
