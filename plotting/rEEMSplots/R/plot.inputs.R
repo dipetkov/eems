@@ -302,7 +302,7 @@ which.dist.metric <- function(mcmcpath) {
   Lines <- readLines(file.path(mcmcpath, "eemsrun.txt"))
   for (i in seq(Lines)) {
     s <- gsub("\\s", "", Lines[i]) # Remove any empty space
-    x <- strsplit(s, "distance = ")[[1]] # Is there a line 'distance = xxx'?
+    x <- strsplit(s, "distance=")[[1]] # Is there a line 'distance = xxx'?
     if (length(x) == 2) dist.metric <- tolower(x[2]) # What is the distance metric?
   }
   if ((dist.metric == "euclidean") || (dist.metric == "greatcirc")) {
